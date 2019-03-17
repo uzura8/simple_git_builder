@@ -4,11 +4,12 @@ import requests
 import pickle
 from flask import current_app
 from bs4 import BeautifulSoup
+from app.models import Transaction, Category
 #from urllib.parse import urljoin
 
 class Scraper:
     options = {}
-    services = {}
+    accounts = {}
     headers = {}
     ses = None
     base_dir = os.path.dirname(os.path.abspath(__file__)) + '/../'
@@ -22,14 +23,14 @@ class Scraper:
             except KeyError:
                 self.options[key] = val
         self.headers = {'User-Agent': self.options['user_ua']}
-        self.services = current_app.config['SCRAPE_INFOS']['services']
+        self.accounts = current_app.config['SCRAPE_INFOS']['accounts']
 
 
     def main(self, format='dict'):
         if not self.ses:
             self.set_session()
 
-        transactions = self.scrape_services()
+        transactions = self.scrape_accounts()
         #!!!!!!!!!!!!!!!!
         from pprint import pprint
         pprint(transactions)
@@ -96,20 +97,25 @@ class Scraper:
         return BeautifulSoup(r.content, 'html.parser', from_encoding=encoding)
 
 
-    def scrape_services(self):
-        for name, infos in self.services.items():
+    def scrape_accounts(self):
+        for key, infos in self.accounts.items():
             service_id = infos['id']
             target_url = self.get_url('accounts/show/' + service_id)
             soup = self.get_response(target_url)
             elms = soup.find_all('tr', class_='transaction_list')
-            self.scrape_transactions(elms)
+            self.scrape_transactions(elms, key)
 
 
-    def scrape_transactions(self, elms):
-        transactions = []
+    def scrape_transactions(self, elms, account_key):
         for elm in elms:
-            transaction = self.scrape_transaction(elm)
-            transactions.append(transaction)
+            trs = self.scrape_transaction(elm)
+            if not trs:
+                continue
+            trs['account_code'] = account_key
+            category_ids = self.get_category_ids(trs['categories'])
+            trs['category_id'] = category_ids['parent']
+            del trs['categories']
+            Transaction.create(trs)
 
 
     def scrape_transaction(self, elm):
@@ -129,17 +135,48 @@ class Scraper:
 
         target_elm = elm.find('td', class_='date')
         items = target_elm['data-table-sortable-value'].split('-')
-        transaction['date'] = items[0]
+        transaction['date'] = items[0].replace('/', '-')
 
-        target_elms = elm.select('.note.calc')
-        transaction['account'] = '' 
-        if target_elms:
-            transaction['account'] = target_elms[0].text.strip()
+        #target_elms = elm.select('.note.calc')
+        #transaction['account'] = ''
+        #if target_elms:
+        #    transaction['account'] = target_elms[0].text.strip()
 
+        transaction['categories'] = {}
         target_elm = elm.find('a', class_='v_l_ctg')
-        transaction['div'] = target_elm.text.strip() if target_elm else ''
-
-        target_elm = elm.find('a', class_='v_l_ctg')
-        transaction['subdiv'] = target_elm.text.strip() if target_elm else ''
+        transaction['categories']['parent'] = target_elm.text.strip() \
+                                                if target_elm else ''
+        target_elm = elm.find('a', class_='v_m_ctg')
+        transaction['categories']['child'] = target_elm.text.strip() \
+                                                if target_elm else ''
 
         return transaction
+
+
+    def get_category_ids(self, names):
+        parent_id = 0
+        child_id = 0
+        try:
+            parent_name = names['parent']
+        except IndexError:
+            parent_name = ''
+
+        try:
+            child_name = names['child']
+        except IndexError:
+            child_name = ''
+
+        if not parent_name:
+            return {'parent':parent_id, 'child':child_id}
+
+        parent_id = Category.get_id_by_name(parent_name)
+        if not parent_id:
+            parent = Category(name=parent_name, parent_id=1)
+            parent_id = parent.id
+        if child_name:
+            child_id = Category.get_id_by_name(child_name)
+            if not child_id:
+                child = Category(name=child_name, parent_id=parent_id)
+                child_id = child.id
+
+        return {'parent':parent_id, 'child':child_id}
