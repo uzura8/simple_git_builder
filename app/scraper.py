@@ -1,5 +1,6 @@
 import os
 import re
+import time
 from datetime import datetime, timedelta
 import requests
 import pickle
@@ -155,6 +156,7 @@ class Scraper:
             soup = self.get_response(target_url)
             elms = soup.find_all('tr', class_='transaction_list')
             self.scrape_transactions(elms, code)
+            time.sleep(self.options['crawl_sleep_sec'])
 
 
     def scrape_transactions(self, elms, account_code):
@@ -218,11 +220,15 @@ class Scraper:
         parent_id = Category.get_id_by_name(parent_name)
         if not parent_id:
             parent = Category(name=parent_name, parent_id=1)
+            db.session.add(parent)
+            db.session.commit()
             parent_id = parent.id
         if child_name:
             child_id = Category.get_id_by_name(child_name)
             if not child_id:
                 child = Category(name=child_name, parent_id=parent_id)
+                db.session.add(child)
+                db.session.commit()
                 child_id = child.id
 
         return {'parent':parent_id, 'child':child_id}
