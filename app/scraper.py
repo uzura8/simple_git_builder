@@ -1,10 +1,12 @@
 import os
+import re
 from datetime import datetime, timedelta
 import requests
 import pickle
 from flask import current_app
 from bs4 import BeautifulSoup
-from app.models import Transaction, Category
+from app import db
+from app.models import Account, Transaction, Category
 #from urllib.parse import urljoin
 
 class Scraper:
@@ -23,13 +25,13 @@ class Scraper:
             except KeyError:
                 self.options[key] = val
         self.headers = {'User-Agent': self.options['user_ua']}
-        self.accounts = current_app.config['SCRAPE_INFOS']['accounts']
 
 
     def main(self, format='dict'):
         if not self.ses:
             self.set_session()
 
+        self.set_accounts()
         transactions = self.scrape_accounts()
         #!!!!!!!!!!!!!!!!
         from pprint import pprint
@@ -97,21 +99,70 @@ class Scraper:
         return BeautifulSoup(r.content, 'html.parser', from_encoding=encoding)
 
 
+    def set_accounts(self):
+        target_url = self.get_url('accounts')
+        soup = self.get_response(target_url)
+        tables = soup.find_all(id='account-table')
+
+        elms = tables[0].select('a')
+        act_dict = self.scrape_account_links(elms, '/accounts/show_manual/')
+
+        elms = tables[1].select('a')
+        act_dict_auto = self.scrape_account_links(elms, '/accounts/show/')
+
+        act_dict.update(act_dict_auto)
+        self.update_accounts(act_dict)
+        self.accounts = act_dict
+
+
+    def update_accounts(self, act_dict):
+        accounts = Account.query.all()
+        if accounts:
+            for account in accounts:
+                code = account.code
+                try:
+                    name = act_dict[code]
+                    if name != account.name:
+                        account.name = name
+                        accounts[code] = name
+                        db.session.add(account)
+                        db.session.commit()
+                except KeyError:
+                    account.delete()
+                    db.session.commit()
+        else:
+            for code, name in act_dict.items():
+                account = Account(code=code, name=name)
+                db.session.add(account)
+                db.session.commit()
+
+
+    def scrape_account_links(self, elms, uri):
+        accounts = {}
+        for elm in elms:
+            match = re.match(r'' + uri + '(.+)', elm['href'])
+            if not match:
+                continue
+            code = match.group(1)
+            name = elm.text.strip().replace('\u3000', ' ').replace(',', '')
+            accounts[code] = name
+        return accounts
+
+
     def scrape_accounts(self):
-        for key, infos in self.accounts.items():
-            service_id = infos['id']
-            target_url = self.get_url('accounts/show/' + service_id)
+        for code, name in self.accounts.items():
+            target_url = self.get_url('accounts/show/' + code)
             soup = self.get_response(target_url)
             elms = soup.find_all('tr', class_='transaction_list')
-            self.scrape_transactions(elms, key)
+            self.scrape_transactions(elms, code)
 
 
-    def scrape_transactions(self, elms, account_key):
+    def scrape_transactions(self, elms, account_code):
         for elm in elms:
             trs = self.scrape_transaction(elm)
             if not trs:
                 continue
-            trs['account_code'] = account_key
+            trs['account_code'] = account_code
             category_ids = self.get_category_ids(trs['categories'])
             trs['category_id'] = category_ids['parent']
             del trs['categories']
@@ -136,11 +187,6 @@ class Scraper:
         target_elm = elm.find('td', class_='date')
         items = target_elm['data-table-sortable-value'].split('-')
         transaction['date'] = items[0].replace('/', '-')
-
-        #target_elms = elm.select('.note.calc')
-        #transaction['account'] = ''
-        #if target_elms:
-        #    transaction['account'] = target_elms[0].text.strip()
 
         transaction['categories'] = {}
         target_elm = elm.find('a', class_='v_l_ctg')
