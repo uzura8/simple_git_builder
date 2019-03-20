@@ -31,3 +31,7 @@ pip-selfcheck.json
 adapter.wsgi
 
 /var/*
+
+package-lock.json
+/node_modules/*
+/app/statics/*/*

@@ -62,7 +62,7 @@ class Account(db.Model, TimestampMixin):
     __tablename__ = 'account'
     code = db.Column('code', db.String(50), nullable=False, primary_key = True)
     name = db.Column('name', db.String(256), nullable=False)
-    transaction = db.relationship('Transaction')
+    #transaction = db.relationship('Transaction')
 
     @classmethod
     def get_dict(self):
@@ -90,6 +90,23 @@ class Transaction(db.Model, TimestampMixin):
     amount = db.Column('amount', db.Integer, nullable=False)
     date = db.Column('date', db.Date, nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    account = db.relation('Account', order_by='Account.code',
+                           uselist=False, backref='transaction')
+
+
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'account_code': self.account_code,
+            'name': self.name,
+            'amount': self.amount,
+            'date': self.date,
+            'category_id': self.category_id,
+            'created_at': self.created_at,
+            'account_name': self.account.name,
+        }
+        return data
+
 
     @classmethod
     def get_one_by_id(self, id):

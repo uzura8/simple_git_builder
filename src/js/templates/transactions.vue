@@ -1,0 +1,52 @@
+<template>
+<div>
+  <h1 class="title">
+    Transactions
+  </h1>
+  <div v-if="transactions">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>date</th>
+          <th>content</th>
+          <th>amount</th>
+          <th>account</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in transactions" :key="item.id">
+          <td>{{item.date | dateFormat('YYYY/MM/DD(ddd)')}}</td>
+          <td>{{item.name}}</td>
+          <td>{{item.amount | numFormat()}}</td>
+          <td>{{item.account_name}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</template>
+
+<script>
+export default {
+  data(){
+    return {}
+  },
+  computed: {
+    transactions () {
+      return this.$store.state.transaction.list
+      //return this.$store.getters.sortedTransactions
+    }
+  },
+  created() {
+    this.loadTransactions();
+  },
+  methods: {
+    loadTransactions: function() {
+      this.$store.dispatch('fetchTransactions')
+        .catch(err => Promise.reject(err))
+        .then(() => {
+        })
+    }
+  }
+}
+</script>

@@ -1,5 +1,6 @@
 from flask import jsonify, request
 from . import bp
+from app.models import Account, Transaction
 #from app import db, InvalidArgumentException
 
 
@@ -8,8 +9,12 @@ def before_request():
     pass
 
 
-@bp.route('/items', methods=['GET'])
-def items():
+@bp.route('/transactions', methods=['GET'])
+def transactions():
     items = []
-    #search_word = request.args.get('q', '').strip()
-    return jsonify(items), 200
+    items = Transaction.query.outerjoin(
+        Account,
+        Transaction.account_code == Account.code
+    ).order_by(Transaction.date.desc()).all()
+    body = [item.to_dict() for item in items]
+    return jsonify(body), 200

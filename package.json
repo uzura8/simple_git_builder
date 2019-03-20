@@ -1,0 +1,43 @@
+{
+  "name": "frontend-webpack-vue-babel",
+  "version": "1.0.0",
+  "description": "template for frontend to use vue and babel builded by webpack",
+  "main": "src/js/index.js",
+  "scripts": {
+    "build": "webpack --mode=production",
+    "dev": "webpack --mode=development",
+    "watch": "webpack --mode=development --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Shingo Yamada",
+  "license": "MTI",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "buefy": "^0.7.3",
+    "es6-promise": "^4.2.6",
+    "moment": "^2.24.0",
+    "vue": "^2.6.9",
+    "vue-router": "^3.0.2",
+    "vuex": "^3.1.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.4",
+    "@babel/polyfill": "^7.2.5",
+    "@babel/preset-env": "^7.3.4",
+    "autoprefixer": "^9.5.0",
+    "babel-loader": "^8.0.5",
+    "css-loader": "^2.1.1",
+    "eslint": "^5.15.3",
+    "mini-css-extract-plugin": "^0.5.0",
+    "node-sass": "^4.11.0",
+    "postcss-loader": "^3.0.0",
+    "precss": "^4.0.0",
+    "sass-loader": "^7.1.0",
+    "terser-webpack-plugin": "^1.2.3",
+    "vue-loader": "^15.7.0",
+    "vue-template-compiler": "^2.6.9",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0"
+  }
+}
