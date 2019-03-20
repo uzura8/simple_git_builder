@@ -2,8 +2,8 @@ import * as types from './mutation-types'
 import { Transaction } from '../api'
 
 export default {
-  fetchTransactions: ({ commit }) => {
-    return Transaction.fetch()
+  fetchTransactions: ({ commit }, payload) => {
+    return Transaction.fetch(payload.month)
       .then(({ lists }) => {
         commit(types.FETCH_TRANSACTIONS_LIST, lists)
       })

@@ -1,10 +1,11 @@
 import client from './client'
 
 export default {
-  fetch: (id=0) => {
-    const uri = id ? `transactions/${id}` : 'transactions';
+  fetch: (month) => {
+    const uri = 'transactions';
+    const options = { params: { month: month } };
     return new Promise((resolve, reject) => {
-      client.get(uri)
+      client.get(uri, options)
         .then(res => resolve({ lists: res.data }))
         .catch(err => {
           reject(new Error(err.response.data.message || err.message))

@@ -27,9 +27,13 @@
 </template>
 
 <script>
+import { moment } from '../bootstrap';
+
 export default {
   data(){
-    return {}
+    return {
+      month: ''
+    }
   },
   computed: {
     transactions () {
@@ -38,11 +42,12 @@ export default {
     }
   },
   created() {
-    this.loadTransactions();
+    if (!this.month) this.month = moment().format('YYYY-MM');
+    this.loadTransactions(this.month);
   },
   methods: {
-    loadTransactions: function() {
-      this.$store.dispatch('fetchTransactions')
+    loadTransactions: function(month) {
+      this.$store.dispatch('fetchTransactions', { month:month })
         .catch(err => Promise.reject(err))
         .then(() => {
         })
