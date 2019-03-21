@@ -38,12 +38,11 @@ def generate_config_js(output_dir):
 
 
 @manager.command
-def scrape():
-    #if not arg:
-    #    raise Exception('No Argument')
-
+@manager.option('-m', '--mode', default='normal', help='mode:all')
+def scrape(mode=''):
+    print(mode)
     scraper = Scraper()
-    scraper.main()
+    scraper.main(mode=mode)
 
 
 if __name__ == '__main__':

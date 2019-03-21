@@ -28,12 +28,19 @@ class Scraper:
         self.headers = {'User-Agent': self.options['user_ua']}
 
 
-    def main(self, format='dict'):
+    def main(self, format='dict', mode=''):
+        accept_modes = ['all']
+        if mode and not mode in accept_modes:
+            raise Exception('Invalid Argument')
+
+        month_num = 12 if mode == 'all' else 1
+        month_dates = self.get_month_dates(month_num)
+
         if not self.ses:
             self.set_session()
 
         self.set_accounts()
-        transactions = self.scrape_accounts()
+        transactions = self.scrape_accounts(month_dates)
         #!!!!!!!!!!!!!!!!
         from pprint import pprint
         pprint(transactions)
@@ -92,10 +99,10 @@ class Scraper:
         return elms[0]['value']
 
 
-    def get_response(self, url):
+    def get_response(self, url, cookies={}):
         if not self.ses:
             self.ses = requests.session()
-        r = self.ses.get(url)
+        r = self.ses.get(url, cookies=cookies)
         encoding = r.encoding if r.encoding != 'ISO-8859-1' else None
         return BeautifulSoup(r.content, 'html.parser', from_encoding=encoding)
 
@@ -150,13 +157,19 @@ class Scraper:
         return accounts
 
 
-    def scrape_accounts(self):
+    def scrape_accounts(self, month_dates):
         for code, name in self.accounts.items():
-            target_url = self.get_url('accounts/show/' + code)
-            soup = self.get_response(target_url)
-            elms = soup.find_all('tr', class_='transaction_list')
-            self.scrape_transactions(elms, code)
-            time.sleep(self.options['crawl_sleep_sec'])
+            for month_date in month_dates:
+                self.scrape_account(code, month_date)
+
+
+    def scrape_account(self, code, month_date):
+        target_url = self.get_url('accounts/show/' + code)
+        cookies = dict(cf_last_fetch_from_date=month_date)
+        soup = self.get_response(target_url, cookies=cookies)
+        elms = soup.find_all('tr', class_='transaction_list')
+        self.scrape_transactions(elms, code)
+        time.sleep(self.options['crawl_sleep_sec'])
 
 
     def scrape_transactions(self, elms, account_code):
@@ -232,3 +245,16 @@ class Scraper:
                 child_id = child.id
 
         return {'parent':parent_id, 'child':child_id}
+
+
+    @staticmethod
+    def get_month_dates(month_num):
+        dates = []
+        today = datetime.today()
+        date = datetime(today.year, today.month, 1)
+        for i in range(month_num):
+            dates.append(date.strftime('%Y/%m/%d'))
+            lastmonth = date + timedelta(days=-1)
+            date = datetime(lastmonth.year, lastmonth.month, 1)
+
+        return dates
