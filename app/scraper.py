@@ -12,7 +12,6 @@ from app.models import Account, Transaction, Category
 
 class Scraper:
     options = {}
-    accounts = {}
     headers = {}
     ses = None
     base_dir = os.path.dirname(os.path.abspath(__file__)) + '/../'
@@ -39,8 +38,8 @@ class Scraper:
         if not self.ses:
             self.set_session()
 
-        self.set_accounts()
-        transactions = self.scrape_accounts(month_dates)
+        accounts = self.get_accounts()
+        transactions = self.scrape_accounts(accounts, month_dates)
         #!!!!!!!!!!!!!!!!
         from pprint import pprint
         pprint(transactions)
@@ -107,64 +106,70 @@ class Scraper:
         return BeautifulSoup(r.content, 'html.parser', from_encoding=encoding)
 
 
-    def set_accounts(self):
+    def get_accounts(self):
         target_url = self.get_url('accounts')
         soup = self.get_response(target_url)
         tables = soup.find_all(id='account-table')
 
         elms = tables[0].select('a')
-        act_dict = self.scrape_account_links(elms, '/accounts/show_manual/')
-
+        accounts_manual = self.scrape_account_links(elms, '/accounts/show_manual/')
         elms = tables[1].select('a')
-        act_dict_auto = self.scrape_account_links(elms, '/accounts/show/')
+        accounts = self.scrape_account_links(elms, '/accounts/show/')
+        accounts.extend(accounts_manual)
 
-        act_dict.update(act_dict_auto)
-        self.update_accounts(act_dict)
-        self.accounts = act_dict
+        self.update_accounts(accounts)
+        return accounts
 
 
-    def update_accounts(self, act_dict):
-        accounts = Account.query.all()
-        if accounts:
-            for account in accounts:
-                code = account.code
-                try:
-                    name = act_dict[code]
-                    if name != account.name:
-                        account.name = name
-                        accounts[code] = name
-                        db.session.add(account)
-                        db.session.commit()
-                except KeyError:
-                    account.delete()
+    def update_accounts(self, accounts):
+        model_accounts = Account.query.all()
+        if model_accounts:
+            for model_account in model_accounts:
+                code = model_account.code
+                account = next(item for item in accounts \
+                                                if item['code'] == code)
+                if not account:
+                    model_account.delete()
                     db.session.commit()
+                else:
+                    if model_account.name != account['name']:
+                        model_account.name = account['name']
+                        db.session.add(model_account)
+                        db.session.commit()
         else:
-            for code, name in act_dict.items():
-                account = Account(code=code, name=name)
+            for account in accounts.items():
+                model_account = Account(
+                    code=account['code'],
+                    name=account['name']
+                )
                 db.session.add(account)
                 db.session.commit()
 
 
     def scrape_account_links(self, elms, uri):
-        accounts = {}
+        accounts = []
         for elm in elms:
             match = re.match(r'' + uri + '(.+)', elm['href'])
             if not match:
                 continue
             code = match.group(1)
             name = elm.text.strip().replace('\u3000', ' ').replace(',', '')
-            accounts[code] = name
+            is_manual = True if uri == '/accounts/show_manual/' else False
+            accounts.append({'code':code, 'name':name, 'is_manual':is_manual})
         return accounts
 
 
-    def scrape_accounts(self, month_dates):
-        for code, name in self.accounts.items():
+    def scrape_accounts(self, accounts, month_dates):
+        for account in accounts:
             for month_date in month_dates:
-                self.scrape_account(code, month_date)
+                self.scrape_account(account, month_date)
 
 
-    def scrape_account(self, code, month_date):
-        target_url = self.get_url('accounts/show/' + code)
+    def scrape_account(self, account, month_date):
+        code = account['code']
+        is_manual = account['is_manual']
+        uri = 'accounts/show_manual/' if is_manual else 'accounts/show/'
+        target_url = self.get_url(uri + code)
         cookies = dict(cf_last_fetch_from_date=month_date)
         soup = self.get_response(target_url, cookies=cookies)
         elms = soup.find_all('tr', class_='transaction_list')
