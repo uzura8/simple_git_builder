@@ -1,10 +1,35 @@
-//import util from '../util'
+import util from '../util'
 
 export default {
-  sortedItems: state => {
-    //const keyItems = state.item.listSortKey.split('-')
-    //return [...state.item.list].sort(util.compareValues(keyItems[0], keyItems[1]))
+  sortedTransactions: state => categoryId => {
+    if (categoryId) {
+      return [...state.transaction.list].filter(transaction =>{
+        return transaction.category_id == categoryId
+      })
+    }
     return [...state.transaction.list]
+  },
+
+  singleDimCategories: state => {
+    const cates = []
+    state.category.list.forEach(function(parentItem) {
+      cates.push({
+        id: parentItem.id,
+        name: parentItem.name,
+        pathName: parentItem.name,
+      })
+      if (!util.isEmpty(parentItem.children)) {
+        parentItem.children.forEach(function(item) {
+          let pathName = `${parentItem.name} > ${item.name}`
+          cates.push({
+            id: item.id,
+            name: name,
+            pathName: pathName,
+          })
+        })
+      }
+    })
+    return cates
   },
 
   //getItemCommentByItemId: state => itemId => {

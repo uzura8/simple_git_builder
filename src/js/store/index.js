@@ -11,6 +11,9 @@ const state = {
     list: [],
     //listSortKey: 'desc',
   },
+  category: {
+    list: [],
+  },
 }
 
 export default new Vuex.Store({

@@ -4,7 +4,7 @@ import datetime
 from flask import jsonify, request
 from . import bp
 from app import db, InvalidArgumentException
-from app.models import Account, Transaction
+from app.models import Account, Transaction, Category
 
 
 @bp.before_request
@@ -26,6 +26,13 @@ def transactions():
     )).order_by(Transaction.date.desc()).all()
     body = [item.to_dict() for item in items]
     return jsonify(body), 200
+
+
+@bp.route('/categories', methods=['GET'])
+def categories():
+    categories = Category.get_categories(is_json=True)
+    return jsonify(categories), 200
+
 
 def validate_month(month_str):
     if not month_str:

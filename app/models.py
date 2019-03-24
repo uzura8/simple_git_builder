@@ -154,6 +154,23 @@ class Category(db.Model, TimestampMixin, BaseNestedSets):
         except NoResultFound:
             return None
 
+    @classmethod
+    def get_categories(self, name='root', is_json=False):
+        categories = self.query.all()
+        for item in categories:
+            if item.name != name:
+                continue
+            if not is_json:
+                return item.drilldown_tree()
+            return item.drilldown_tree(json=True, json_fields=self.cat_to_json)
+
+    @staticmethod
+    def cat_to_json(item):
+        return {
+            'id': item.id,
+            'name': item.name
+        }
+
 
 def setup_fixurtes():
     if Category.query.count() == 0:

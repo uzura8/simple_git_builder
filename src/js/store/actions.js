@@ -1,11 +1,19 @@
 import * as types from './mutation-types'
-import { Transaction } from '../api'
+import { Transaction, Category } from '../api'
 
 export default {
   fetchTransactions: ({ commit }, payload) => {
     return Transaction.fetch(payload.month)
       .then(({ lists }) => {
         commit(types.FETCH_TRANSACTIONS_LIST, lists)
+      })
+      .catch(err => { throw err })
+  },
+
+  fetchCategories: ({ commit }) => {
+    return Category.fetch()
+      .then(({ lists }) => {
+        commit(types.FETCH_CATEGORIES_LIST, lists)
       })
       .catch(err => { throw err })
   },
