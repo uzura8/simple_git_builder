@@ -27,9 +27,14 @@ moment.locale('ja');
 Vue.filter('dateFormat', function (date, format='LLL') {
   return moment(date).format(format);
 });
+
 Vue.filter('numFormat', function (num) {
   return String(num).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
 });
+Vue.filter('substr', function (text, num) {
+  return util.substr(text, num, '...')
+});
+
 
 export {
   Vue,

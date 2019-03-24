@@ -96,7 +96,7 @@
           <td>{{item.date | dateFormat('YYYY/MM/DD(ddd)')}}</td>
           <td>{{item.name}}</td>
           <td>{{item.amount | numFormat()}}</td>
-          <td>{{item.account_name}}</td>
+          <td>{{item.account_name | substr(12)}}</td>
           <td v-text="getCategoryName(item.category_id)"></td>
         </tr>
       </tbody>
