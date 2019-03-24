@@ -15,14 +15,14 @@
       <div class="dropdown-menu" id="dropdown-menu" role="menu">
         <div class="dropdown-content">
           <router-link
-            :to="{path:'/transactions', query:{ month:month }}"
+            :to="getRouterTo({category:''})"
             class="dropdown-item"
             :class="{ 'is-active': isEmpty(category) }">
             Select Category
           </router-link>
           <router-link
             v-for="cate in categories" :key="cate.id"
-            :to="{path:'/transactions', query:{ month:month, category:cate.id }}"
+            :to="getRouterTo({category:cate.id})"
             class="dropdown-item"
             :class="{ 'is-active': !isEmpty(category) && category.id == cate.id }"
             v-text="cate.pathName"></router-link>
@@ -34,12 +34,12 @@
     <nav class="pagination is-centered" role="navigation" aria-label="pagination">
       <router-link
         class="pagination-previous"
-        :to="{path:'/transactions', query:{ month: getMonth(1), category:categoryId }}">
+        :to="getRouterTo({month: getMonth(1)})">
         <b-icon pack="fas" icon="chevron-left"></b-icon>
       </router-link>
       <router-link
         class="pagination-next"
-        :to="{path:'/transactions', query:{ month: getMonth(-1), category:categoryId }}">
+        :to="getRouterTo({month: getMonth(-1)})">
         <b-icon pack="fas" icon="chevron-right"></b-icon>
       </router-link>
       <div class="pagination-list">
@@ -60,7 +60,7 @@
             <div class="dropdown-content">
               <router-link
                 v-for="item in months" :key="item"
-                :to="{path:'/transactions', query:{ month: item, category:categoryId }}"
+                :to="getRouterTo({month:item})"
                 class="dropdown-item"
                 :class="{ 'is-active': month == item }"
                 v-text="item"></router-link>
@@ -72,10 +72,23 @@
     <table class="table">
       <thead>
         <tr>
-          <th>date</th>
+          <th>
+            <router-link :to="getRouterTo({sort:sortKey == 'date-desc' ? 'date' : 'date-desc'})">
+              date
+              <b-icon v-if="sortKey == 'date'" pack="fas" icon="caret-down"></b-icon>
+              <b-icon v-if="sortKey == 'date-desc'" pack="fas" icon="caret-up"></b-icon>
+            </router-link>
+          </th>
           <th>content</th>
-          <th>amount</th>
+          <th>
+            <router-link :to="getRouterTo({sort:sortKey == 'amount-desc' ? 'amount' : 'amount-desc'})">
+              amount
+              <b-icon v-if="sortKey == 'amount'" pack="fas" icon="caret-down"></b-icon>
+              <b-icon v-if="sortKey == 'amount-desc'" pack="fas" icon="caret-up"></b-icon>
+            </router-link>
+          </th>
           <th>account</th>
+          <th>category</th>
         </tr>
       </thead>
       <tbody>
@@ -84,6 +97,7 @@
           <td>{{item.name}}</td>
           <td>{{item.amount | numFormat()}}</td>
           <td>{{item.account_name}}</td>
+          <td v-text="getCategoryName(item.category_id)"></td>
         </tr>
       </tbody>
     </table>
@@ -93,6 +107,7 @@
 
 <script>
 import { moment } from '../bootstrap';
+import util from '../util';
 
 export default {
   data(){
@@ -115,6 +130,11 @@ export default {
     month () {
       return this.months[this.monthIndex]
     },
+    sortKey () {
+      const acceptKeys = ['date', 'date-desc', 'amount', 'amount-desc']
+      const sortKey = this.$route.query.sort
+      return util.inArray(sortKey, acceptKeys) ? sortKey : 'date-desc';
+    },
     categoryId () {
       const categoryId = parseInt(this.$route.query.category)
       return !Number.isNaN(categoryId) ? categoryId : 0
@@ -126,7 +146,7 @@ export default {
       })
     },
     transactions () {
-      return this.$store.getters.sortedTransactions(this.categoryId)
+      return this.$store.getters.sortedTransactions(this.categoryId, this.sortKey)
     },
     categories () {
       return this.$store.getters.singleDimCategories
@@ -149,6 +169,16 @@ export default {
         .then(() => {
         })
     },
+    getRouterTo: function(updateQuery = {}) {
+      let query = {
+        month: this.month,
+        category: this.categoryId,
+        sort: this.sortKey,
+      }
+      if (!util.isEmpty(updateQuery)) Object.assign(query, updateQuery);
+      let params = { path:'/transactions', query:query }
+      return params
+    },
     setMonths: function() {
       for (let i = 0, n = 12; i < n; i++) {
         this.months.push(moment().add('months', -1 * i).endOf('month').format('YYYY-MM'))
@@ -158,6 +188,12 @@ export default {
       let index = this.monthIndex + increment
       if (index < 0) index = this.months.length - 1
       return this.months[index]
+    },
+    getCategoryName: function(categoryId) {
+      const category = this.categories.find(item => {
+        return item.id === categoryId
+      })
+      return category.name
     },
   }
 }

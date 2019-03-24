@@ -1,13 +1,16 @@
 import util from '../util'
 
 export default {
-  sortedTransactions: state => categoryId => {
+  sortedTransactions: state => (categoryId, sortKey) => {
+    let list = [...state.transaction.list]
     if (categoryId) {
-      return [...state.transaction.list].filter(transaction =>{
+      list = list.filter(transaction =>{
         return transaction.category_id == categoryId
       })
     }
-    return [...state.transaction.list]
+    const keyItems = sortKey.split('-')
+    if (keyItems.length === 1) keyItems.push('asc')
+    return list.sort(util.compareValues(keyItems[0], keyItems[1]))
   },
 
   singleDimCategories: state => {
