@@ -12,6 +12,7 @@
   "author": "Shingo Yamada",
   "license": "MTI",
   "dependencies": {
+    "@babel/polyfill": "^7.4.0",
     "axios": "^0.18.0",
     "buefy": "^0.7.3",
     "es6-promise": "^4.2.6",
@@ -23,7 +24,6 @@
   "devDependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.3.4",
-    "@babel/polyfill": "^7.2.5",
     "@babel/preset-env": "^7.3.4",
     "autoprefixer": "^9.5.0",
     "babel-loader": "^8.0.5",

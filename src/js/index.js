@@ -1,3 +1,5 @@
+import "@babel/polyfill";
+
 import {Vue, VueRouter} from './bootstrap';
 import './common';
 
