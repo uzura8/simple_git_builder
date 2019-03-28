@@ -93,7 +93,7 @@
       </thead>
       <tbody>
         <tr v-for="item in transactions" :key="item.id">
-          <td>{{item.date | dateFormat('YYYY/MM/DD(ddd)')}}</td>
+          <td>{{item.date | dateFormat('MM/DD(ddd)')}}</td>
           <td>{{item.name}}</td>
           <td>{{item.amount | numFormat()}}</td>
           <td>{{item.account_name | substr(12)}}</td>

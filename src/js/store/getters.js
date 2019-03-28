@@ -1,8 +1,13 @@
 import util from '../util'
+import { moment } from '../bootstrap';
 
 export default {
   sortedTransactions: state => (categoryId, sortKey) => {
-    let list = [...state.transaction.list]
+    let list = []
+    state.transaction.list.forEach(function(item) {
+      item['date_int'] = parseInt(moment(item.date).format('YYYYMMDD'))
+      list.push(item)
+    })
     if (categoryId) {
       list = list.filter(transaction =>{
         return transaction.category_id == categoryId
@@ -10,7 +15,10 @@ export default {
     }
     const keyItems = sortKey.split('-')
     if (keyItems.length === 1) keyItems.push('asc')
-    return list.sort(util.compareValues(keyItems[0], keyItems[1]))
+    let sort = keyItems[0]
+    let order = keyItems[1]
+    if (sort === 'date') sort = 'date_int'
+    return list.sort(util.compareValues(sort, order))
   },
 
   singleDimCategories: state => {
