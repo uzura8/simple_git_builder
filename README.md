@@ -10,4 +10,3 @@ cp adapter.wsgi.sample adapter.wsgi
 vim adapter.wsgi
 echo "CREATE DATABASE DB-name DEFAULT CHARACTER SET utf8" | mysql -u root -p
 python3 manage.py setup_db
-npm install

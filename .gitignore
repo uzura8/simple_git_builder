@@ -34,4 +34,4 @@ adapter.wsgi
 
 package-lock.json
 /node_modules/*
-/app/statics/*/*
+/app/statics/*/*.map
