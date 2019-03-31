@@ -140,7 +140,7 @@ class Transaction(db.Model, TimestampMixin):
 class Category(db.Model, TimestampMixin, BaseNestedSets):
     __tablename__ = 'category'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(256), index=True, unique=True)
+    name = db.Column(db.String(128), index=True, unique=True)
     transactions = db.relationship('Transaction', backref='transaction', lazy='dynamic')
 
     def __repr__(self):

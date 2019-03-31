@@ -137,12 +137,12 @@ class Scraper:
                         db.session.add(model_account)
                         db.session.commit()
         else:
-            for account in accounts.items():
+            for account in accounts:
                 model_account = Account(
                     code=account['code'],
                     name=account['name']
                 )
-                db.session.add(account)
+                db.session.add(model_account)
                 db.session.commit()
 
 
