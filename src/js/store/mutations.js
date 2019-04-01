@@ -6,6 +6,10 @@ export default {
     state.common.isLoading = isLoading
   },
 
+  [types.SET_COMMON_HEADER_MENU_OPEN] (state, isOpen) {
+    state.common.isHeaderMenuOpen = isOpen
+  },
+
   [types.FETCH_TRANSACTIONS_LIST] (state, payload) {
     state.transaction.list = payload
   },

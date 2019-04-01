@@ -9,6 +9,7 @@ Vue.use(Vuex)
 const state = {
   common: {
     isLoading: false,
+    isHeaderMenuOpen: false,
   },
   transaction: {
     list: [],

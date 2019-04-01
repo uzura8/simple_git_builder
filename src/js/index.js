@@ -34,10 +34,24 @@ const router = new VueRouter({
   }
 });
 
+router.beforeEach((to, from, next) => {
+  store.dispatch('setHeaderMenuOpen', false)
+  next();
+});
+
 new Vue({
   el: '#app',
   data: {
-    isHeaderMenuOpen: false,
+  },
+  computed: {
+    isHeaderMenuOpen: function () {
+      return store.state.common.isHeaderMenuOpen
+    },
+  },
+  methods: {
+    toggleHeaderMenuOpen: function () {
+      store.dispatch('setHeaderMenuOpen', !this.isHeaderMenuOpen)
+    },
   },
   store,
   router,

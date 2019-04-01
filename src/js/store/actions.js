@@ -2,6 +2,10 @@ import * as types from './mutation-types'
 import { Transaction, Category } from '../api'
 
 export default {
+  setHeaderMenuOpen: ({ commit }, isOpen) => {
+    commit(types.SET_COMMON_HEADER_MENU_OPEN, isOpen)
+  },
+
   fetchTransactions: ({ commit }, payload) => {
     commit(types.SET_COMMON_LOADING, true)
     return Transaction.fetch(payload.month)
