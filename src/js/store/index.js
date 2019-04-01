@@ -7,9 +7,11 @@ import mutations from './mutations'
 Vue.use(Vuex)
 
 const state = {
+  common: {
+    isLoading: false,
+  },
   transaction: {
     list: [],
-    //listSortKey: 'desc',
   },
   category: {
     list: [],

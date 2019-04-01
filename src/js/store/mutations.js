@@ -2,6 +2,10 @@ import * as types from './mutation-types'
 import { util } from '../shared';
 
 export default {
+  [types.SET_COMMON_LOADING] (state, isLoading) {
+    state.common.isLoading = isLoading
+  },
+
   [types.FETCH_TRANSACTIONS_LIST] (state, payload) {
     state.transaction.list = payload
   },

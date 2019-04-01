@@ -1,5 +1,5 @@
 <template>
-<div>
+<section>
   <h1 class="title">
     Transactions
     <div class="dropdown is-pulled-right is-right" :class="{ 'is-active': isActiveSelectCate }">
@@ -30,7 +30,7 @@
       </div>
     </div>
   </h1>
-  <div v-if="transactions">
+  <section>
     <nav class="pagination is-centered" role="navigation" aria-label="pagination">
       <router-link
         class="pagination-previous"
@@ -69,40 +69,43 @@
         </div>
       </div>
     </nav>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>
-            <router-link :to="getRouterTo({sort:sortKey == 'date-desc' ? 'date' : 'date-desc'})">
-              date
-              <b-icon v-if="sortKey == 'date'" pack="fas" icon="caret-down"></b-icon>
-              <b-icon v-if="sortKey == 'date-desc'" pack="fas" icon="caret-up"></b-icon>
-            </router-link>
-          </th>
-          <th>content</th>
-          <th>
-            <router-link :to="getRouterTo({sort:sortKey == 'amount-desc' ? 'amount' : 'amount-desc'})">
-              amount
-              <b-icon v-if="sortKey == 'amount'" pack="fas" icon="caret-down"></b-icon>
-              <b-icon v-if="sortKey == 'amount-desc'" pack="fas" icon="caret-up"></b-icon>
-            </router-link>
-          </th>
-          <th>account</th>
-          <th>category</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in transactions" :key="item.id">
-          <td>{{item.date | dateFormat('MM/DD(ddd)')}}</td>
-          <td>{{item.name}}</td>
-          <td>{{item.amount | numFormat()}}</td>
-          <td>{{item.account_name | substr(12)}}</td>
-          <td v-text="getCategoryName(item.category_id)"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+    <section>
+      <b-loading :active.sync="isLoading" :is-full-page="false" :canCancel="true"></b-loading>
+      <table class="table" v-if="transactions">
+        <thead>
+          <tr>
+            <th>
+              <router-link :to="getRouterTo({sort:sortKey == 'date-desc' ? 'date' : 'date-desc'})">
+                date
+                <b-icon v-if="sortKey == 'date'" pack="fas" icon="caret-down"></b-icon>
+                <b-icon v-if="sortKey == 'date-desc'" pack="fas" icon="caret-up"></b-icon>
+              </router-link>
+            </th>
+            <th>content</th>
+            <th>
+              <router-link :to="getRouterTo({sort:sortKey == 'amount-desc' ? 'amount' : 'amount-desc'})">
+                amount
+                <b-icon v-if="sortKey == 'amount'" pack="fas" icon="caret-down"></b-icon>
+                <b-icon v-if="sortKey == 'amount-desc'" pack="fas" icon="caret-up"></b-icon>
+              </router-link>
+            </th>
+            <th>account</th>
+            <th>category</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in transactions" :key="item.id">
+            <td>{{item.date | dateFormat('MM/DD(ddd)')}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.amount | numFormat()}}</td>
+            <td>{{item.account_name | substr(12)}}</td>
+            <td v-text="getCategoryName(item.category_id)"></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </section>
+</section>
 </template>
 
 <script>
@@ -147,6 +150,9 @@ export default {
     },
     transactions () {
       return this.$store.getters.sortedTransactions(this.categoryId, this.sortKey)
+    },
+    isLoading () {
+      return this.$store.state.common.isLoading
     },
     categories () {
       return this.$store.getters.singleDimCategories
