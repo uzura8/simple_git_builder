@@ -69,7 +69,7 @@
         </div>
       </div>
     </nav>
-    <section>
+    <section class="table-responsive">
       <b-loading :active.sync="isLoading" :is-full-page="false" :canCancel="true"></b-loading>
       <table class="table" v-if="transactions">
         <thead>
