@@ -111,9 +111,15 @@ class Scraper:
         soup = self.get_response(target_url)
         tables = soup.find_all(id='account-table')
 
-        elms = tables[0].select('a')
-        accounts_manual = self.scrape_account_links(elms, '/accounts/show_manual/')
-        elms = tables[1].select('a')
+        if len(tables) == 2:
+            elms = tables[0].select('a')
+            accounts_manual = self.scrape_account_links(elms, '/accounts/show_manual/')
+            table_index = 1
+        else:
+            accounts_manual = []
+            table_index = 0
+
+        elms = tables[table_index].select('a')
         accounts = self.scrape_account_links(elms, '/accounts/show/')
         accounts.extend(accounts_manual)
 
