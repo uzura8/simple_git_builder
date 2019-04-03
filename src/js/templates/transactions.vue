@@ -99,7 +99,7 @@
             <td>{{item.name}}</td>
             <td>{{item.amount | numFormat()}}</td>
             <td>{{item.account_name | substr(12)}}</td>
-            <td><category-doropdown :categoryId="item.category_id" :isRight="true" :transactionId="item.id" /></td>
+            <td><category-dropdown :categoryId="item.category_id" :isRight="true" :transactionId="item.id" /></td>
           </tr>
         </tbody>
       </table>

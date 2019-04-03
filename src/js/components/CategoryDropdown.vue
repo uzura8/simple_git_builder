@@ -1,21 +1,4 @@
 <template>
-<!--
-<b-dropdown v-model="selectedKey" :class="{ 'is-right':isRight, 'is-pulled-right':isPulledRight }">
-  <button class="button is-small" type="button" slot="trigger">
-    <template>
-      <span>{{ sortLabel }}</span>
-    </template>
-    <b-icon icon="caret-down" pack="fas"></b-icon>
-  </button>
-  <b-dropdown-item v-for="sortItem in sortList" :key="sortItem.key" :value="getSortItem(sortItem.key)">
-    <div class="media">
-      <div class="media-content">
-        <h3 v-text="getSortItem(sortItem.key, 'label')"></h3>
-      </div>
-    </div>
-  </b-dropdown-item>
-</b-dropdown>
--->
 <div class="dropdown"
   :class="{ 'is-active': isActive, 'is-right':isRight, 'is-pulled-right':isPulledRight }">
   <div class="dropdown-trigger">

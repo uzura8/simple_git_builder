@@ -5,8 +5,8 @@ import './common';
 
 import store from './store'
 
-import CategoryDoropdown from './components/CategoryDropdown';
-Vue.component('CategoryDoropdown', CategoryDoropdown);
+import CategoryDropdown from './components/CategoryDropdown';
+Vue.component('CategoryDropdown', CategoryDropdown);
 
 import Top from './templates/top';
 import About from './templates/about';
