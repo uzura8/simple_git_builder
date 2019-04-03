@@ -11,5 +11,17 @@ export default {
           reject(new Error(err.response.data.message || err.message))
         })
     })
-  }
+  },
+
+  updateCategoryId: (transactionId, categoryId) => {
+    return new Promise((resolve, reject) => {
+      const params = new URLSearchParams();
+      params.append('category_id', categoryId);
+      client.post(`transactions/${transactionId}`, params)
+        .then(() => resolve())
+        .catch(err => {
+          reject(new Error(err.response.data.message || err.message))
+        })
+    })
+  },
 }

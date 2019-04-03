@@ -99,7 +99,7 @@
             <td>{{item.name}}</td>
             <td>{{item.amount | numFormat()}}</td>
             <td>{{item.account_name | substr(12)}}</td>
-            <td v-text="getCategoryName(item.category_id)"></td>
+            <td><category-doropdown :categoryId="item.category_id" :isRight="true" :transactionId="item.id" /></td>
           </tr>
         </tbody>
       </table>
@@ -194,12 +194,6 @@ export default {
       let index = this.monthIndex + increment
       if (index < 0) index = this.months.length - 1
       return this.months[index]
-    },
-    getCategoryName: function(categoryId) {
-      const category = this.categories.find(item => {
-        return item.id === categoryId
-      })
-      return category.name
     },
   }
 }

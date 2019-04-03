@@ -24,7 +24,7 @@ def db_create():
 @manager.command
 def db_fixture():
     '''Import default data to DB'''
-    from app.models import setup_fixurtes
+    from app.models.category import setup_fixurtes
     setup_fixurtes()
     print('Imported default data to DB')
 

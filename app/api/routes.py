@@ -28,6 +28,23 @@ def transactions():
     return jsonify(body), 200
 
 
+@bp.route('/transactions/<int:trans_id>', methods=['POST'])
+def update_transaction_category(trans_id=0, cate_id=0):
+    if not trans_id:
+        raise InvalidArgumentException
+    trans = Transaction.get_one_by_id(trans_id)
+    if not trans:
+        raise InvalidArgumentException
+
+    cate_id = request.form.get('category_id', type=int)
+    cate = Category.get_one_by_id(cate_id)
+    if not cate:
+        raise InvalidArgumentException
+    trans.category_id = cate_id
+    db.session.commit()
+    return 'OK', 200
+
+
 @bp.route('/categories', methods=['GET'])
 def categories():
     categories = Category.get_categories(is_json=True)

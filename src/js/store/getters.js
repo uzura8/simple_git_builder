@@ -34,7 +34,7 @@ export default {
           let pathName = `${parentItem.name} > ${item.name}`
           cates.push({
             id: item.id,
-            name: name,
+            name: item.name,
             pathName: pathName,
           })
         })
@@ -42,8 +42,4 @@ export default {
     })
     return cates
   },
-
-  //getItemCommentByItemId: state => itemId => {
-  //  return state.member.itemComments.find(comment => comment.item_id === itemId)
-  //},
 }
