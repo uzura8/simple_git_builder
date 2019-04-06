@@ -17,11 +17,13 @@ class Transaction(Base):
     amount = db.Column('amount', db.Integer, nullable=False)
     date = db.Column('date', db.Date, nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    is_disabled = db.Column(db.Boolean(), default=False)
     account = db.relation('Account', order_by='Account.code',
                            uselist=False, backref='transaction')
 
 
     def to_dict(self):
+        is_disabled = True if self.is_disabled == 1 else False
         data = {
             'id': self.id,
             'account_code': self.account_code,
@@ -30,6 +32,7 @@ class Transaction(Base):
             'date': self.date,
             'category_id': self.category_id,
             'created_at': self.created_at,
+            'is_disabled': is_disabled,
             'account_name': self.account.name,
         }
         return data

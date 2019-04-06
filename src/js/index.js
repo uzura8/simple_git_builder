@@ -5,6 +5,8 @@ import './common';
 
 import store from './store'
 
+import TransactionActiveCheckbox from './components/TransactionActiveCheckbox';
+Vue.component('TransactionActiveCheckbox', TransactionActiveCheckbox);
 import CategoryDropdown from './components/CategoryDropdown';
 Vue.component('CategoryDropdown', CategoryDropdown);
 

@@ -1,4 +1,5 @@
 import client from './client'
+import util from '../util';
 
 export default {
   fetch: (month) => {
@@ -13,10 +14,16 @@ export default {
     })
   },
 
-  updateCategoryId: (transactionId, categoryId) => {
+  update: (transactionId, values) => {
     return new Promise((resolve, reject) => {
+      const accept_keys = ['category_id', 'is_disabled']
       const params = new URLSearchParams();
-      params.append('category_id', categoryId);
+      for (let key in values) {
+        if (!util.inArray(key, accept_keys)) continue
+        if (!values.hasOwnProperty(key)) continue
+        let value = values[key];
+        params.append(key, value);
+      }
       client.post(`transactions/${transactionId}`, params)
         .then(() => resolve())
         .catch(err => {

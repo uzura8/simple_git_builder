@@ -1,5 +1,5 @@
 import * as types from './mutation-types'
-import { util } from '../shared';
+import util from '../util';
 
 export default {
   [types.SET_COMMON_LOADING] (state, isLoading) {
@@ -16,10 +16,19 @@ export default {
 
   [types.UPDATE_TRANSACTION] (state, payload) {
     const transactionId = payload.transactionId
+    const values = payload.values
     for (let i = 0, n = state.transaction.list.length; i < n; i++) {
       const transaction = state.transaction.list[i]
       if (transaction.id !== transactionId) continue
-      state.transaction.list[i].category_id = payload.categoryId
+
+      const accept_keys = ['category_id', 'is_disabled']
+      for (let key in values) {
+        if (!util.inArray(key, accept_keys)) continue
+        if (!values.hasOwnProperty(key)) continue
+
+        let value = values[key];
+        state.transaction.list[i][key] = value
+      }
       break
     }
   },

@@ -74,6 +74,7 @@
       <table class="table" v-if="transactions">
         <thead>
           <tr>
+            <th>-</th>
             <th>
               <router-link :to="getRouterTo({sort:sortKey == 'date-desc' ? 'date' : 'date-desc'})">
                 date
@@ -94,12 +95,18 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in transactions" :key="item.id">
+          <tr v-for="item in transactions" :key="item.id"
+              :class="{ 'has-background-grey-lighter': item.is_disabled}">
+            <td><transaction-active-checkbox :transaction="item" /></td>
             <td>{{item.date | dateFormat('MM/DD(ddd)')}}</td>
             <td>{{item.name}}</td>
             <td>{{item.amount | numFormat()}}</td>
             <td>{{item.account_name | substr(12)}}</td>
-            <td><category-dropdown :categoryId="item.category_id" :isRight="true" :transactionId="item.id" /></td>
+            <td><category-dropdown
+                  :categoryId="item.category_id"
+                  :isRight="true"
+                  :transactionId="item.id"
+                  :btnSize="'small'" /></td>
           </tr>
         </tbody>
       </table>

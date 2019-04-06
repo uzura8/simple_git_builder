@@ -36,12 +36,26 @@ def update_transaction_category(trans_id=0, cate_id=0):
     if not trans:
         raise InvalidArgumentException
 
+    is_updated = False
+
     cate_id = request.form.get('category_id', type=int)
-    cate = Category.get_one_by_id(cate_id)
-    if not cate:
-        raise InvalidArgumentException
-    trans.category_id = cate_id
-    db.session.commit()
+    if cate_id:
+        cate = Category.get_one_by_id(cate_id)
+        if not cate:
+            raise InvalidArgumentException
+        trans.category_id = cate_id
+        is_updated = True
+
+    is_disabled = request.form.get('is_disabled', type=int, default=None)
+    if is_disabled is not None:
+        if is_disabled not in [0, 1]:
+            raise InvalidArgumentException
+        trans.is_disabled = is_disabled
+        is_updated = True
+
+    if is_updated:
+        db.session.commit()
+
     return 'OK', 200
 
 

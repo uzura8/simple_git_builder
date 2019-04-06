@@ -2,10 +2,15 @@
 <div class="dropdown"
   :class="{ 'is-active': isActive, 'is-right':isRight, 'is-pulled-right':isPulledRight }">
   <div class="dropdown-trigger">
-    <button class="button" aria-haspopup="true" aria-controls="dropdown-menu" @click="isActive = !isActive">
+    <button
+      class="button"
+      aria-haspopup="true"
+      aria-controls="dropdown-menu"
+      :class="btnSizeClass"
+      @click="isActive = !isActive">
       <span v-if="!isEmpty(category)">{{ category.name }}</span>
       <span v-else>Select Category</span>
-      <span class="icon is-small">
+      <span class="icon">
         <i class="fas fa-angle-down" aria-hidden="true"></i>
       </span>
     </button>
@@ -40,6 +45,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    btnSize: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
@@ -54,6 +63,12 @@ export default {
     },
     categories () {
       return this.$store.getters.singleDimCategories
+    },
+    btnSizeClass () {
+      const accepts = ['small', 'medium', 'large']
+      if (this.isEmpty(this.btnSize)) return ''
+      if (!this.inArray(this.btnSize, accepts)) return ''
+      return `is-${this.btnSize}`
     },
   },
   watch: {
@@ -70,9 +85,11 @@ export default {
       }
       const params = {
         transactionId: this.transactionId,
-        categoryId: categoryId
+        values: {
+          category_id: categoryId
+        }
       }
-      this.$store.dispatch('updateTransactionCategoryId', params)
+      this.$store.dispatch('updateTransaction', params)
         .catch(err => Promise.reject(err))
         .then(() => {
           this.isActive = false

@@ -27,8 +27,8 @@ export default {
       .catch(err => { throw err })
   },
 
-  updateTransactionCategoryId: ({ commit }, payload) => {
-    return Transaction.updateCategoryId(payload.transactionId, payload.categoryId)
+  updateTransaction: ({ commit }, payload) => {
+    return Transaction.update(payload.transactionId, payload.values)
       .then(() => {
         commit(types.UPDATE_TRANSACTION, payload)
       })
