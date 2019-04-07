@@ -5,6 +5,7 @@ from flask import jsonify, request
 from . import bp
 from app import db, InvalidArgumentException
 from app.models import Account, Transaction, Category
+from app.common.date import validate_date
 
 
 @bp.before_request
@@ -37,6 +38,25 @@ def update_transaction_category(trans_id=0, cate_id=0):
         raise InvalidArgumentException
 
     is_updated = False
+
+    date = request.form.get('date', type=str, default=None)
+    if date is not None:
+        if not validate_date(date):
+            raise InvalidArgumentException
+        trans.date = date
+        is_updated = True
+
+    name = request.form.get('name', type=str, default=None)
+    if name is not None:
+        if not name or len(name) > 512:
+            raise InvalidArgumentException
+        trans.name = name
+        is_updated = True
+
+    amount = request.form.get('amount', type=int, default=None)
+    if amount is not None:
+        trans.amount = amount
+        is_updated = True
 
     cate_id = request.form.get('category_id', type=int)
     if cate_id:

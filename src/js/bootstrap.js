@@ -11,7 +11,8 @@ Vue.use(VueRouter);
 import Buefy from 'buefy';
 Vue.use(Buefy);
 
-import {site, util} from './shared';
+import util from './util';
+import site from './site';
 Vue.mixin({
   methods: {
     siteUri: site.uri,
@@ -35,6 +36,18 @@ Vue.filter('substr', function (text, num) {
   return util.substr(text, num, '...')
 });
 
+import flatPickr from 'vue-flatpickr-component';
+Vue.component('flatPickr', flatPickr);
+import TransactionEditModal from './components/TransactionEditModal';
+Vue.component('TransactionEditModal', TransactionEditModal);
+import TransactionActiveCheckbox from './components/TransactionActiveCheckbox';
+Vue.component('TransactionActiveCheckbox', TransactionActiveCheckbox);
+import InputCategory from './components/InputCategory';
+Vue.component('InputCategory', InputCategory);
+import UpdateCategory from './components/UpdateCategory';
+Vue.component('UpdateCategory', UpdateCategory);
+import InputDate from './components/InputDate';
+Vue.component('InputDate', InputDate);
 
 export {
   Vue,

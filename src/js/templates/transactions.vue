@@ -1,33 +1,38 @@
 <template>
 <section>
-  <h1 class="title">
-    Transactions
-    <div class="dropdown is-pulled-right is-right" :class="{ 'is-active': isActiveSelectCate }">
-      <div class="dropdown-trigger">
-        <button class="button" aria-haspopup="true" aria-controls="dropdown-menu" @click="isActiveSelectCate = !isActiveSelectCate">
-          <span v-if="!isEmpty(category)">{{ category.name }}</span>
-          <span v-else>Select Category</span>
-          <span class="icon is-small">
-            <i class="fas fa-angle-down" aria-hidden="true"></i>
-          </span>
-        </button>
-      </div>
-      <div class="dropdown-menu" id="dropdown-menu" role="menu">
-        <div class="dropdown-content">
-          <router-link
-            :to="getRouterTo({category:''})"
-            class="dropdown-item"
-            :class="{ 'is-active': isEmpty(category) }">
-            Select Category
-          </router-link>
-          <router-link
-            v-for="cate in categories" :key="cate.id"
-            :to="getRouterTo({category:cate.id})"
-            class="dropdown-item"
-            :class="{ 'is-active': !isEmpty(category) && category.id == cate.id }"
-            v-text="cate.pathName"></router-link>
+  <h1 class="title columns is-gapless is-clearfix u-mt0">
+    <div class="column">
+      Transactions
+    </div>
+    <div class="column">
+      <div class="dropdown is-pulled-right is-right u-ml5" :class="{ 'is-active': isActiveSelectCate }">
+        <div class="dropdown-trigger">
+          <button class="button" aria-haspopup="true" aria-controls="dropdown-menu" @click="isActiveSelectCate = !isActiveSelectCate">
+            <span v-if="!isEmpty(category)">{{ category.name }}</span>
+            <span v-else>Select Category</span>
+            <span class="icon is-small">
+              <i class="fas fa-angle-down" aria-hidden="true"></i>
+            </span>
+          </button>
+        </div>
+        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+          <div class="dropdown-content">
+            <router-link
+              :to="getRouterTo({category:''})"
+              class="dropdown-item"
+              :class="{ 'is-active': isEmpty(category) }">
+              Select Category
+            </router-link>
+            <router-link
+              v-for="cate in categories" :key="cate.id"
+              :to="getRouterTo({category:cate.id})"
+              class="dropdown-item"
+              :class="{ 'is-active': !isEmpty(category) && category.id == cate.id }"
+              v-text="cate.pathName"></router-link>
+          </div>
         </div>
       </div>
+      <transaction-edit-modal />
     </div>
   </h1>
   <section>
@@ -97,16 +102,28 @@
         <tbody>
           <tr v-for="item in transactions" :key="item.id"
               :class="{ 'has-background-grey-lighter': item.is_disabled}">
-            <td><transaction-active-checkbox :transaction="item" /></td>
+            <td>
+              <div class="columns is-gapless u-mt0">
+                <div class="column">
+                  <transaction-active-checkbox :transaction="item" />
+                </div>
+                <div class="column">
+                  <transaction-edit-modal
+                    :transactionId="item.id"
+                    :dispButtonLabel="false"
+                    :buttonSize="'is-small'" />
+                </div>
+              </div>
+            </td>
             <td>{{item.date | dateFormat('MM/DD(ddd)')}}</td>
             <td>{{item.name}}</td>
             <td>{{item.amount | numFormat()}}</td>
-            <td>{{item.account_name | substr(12)}}</td>
-            <td><category-dropdown
+            <td><update-category
                   :categoryId="item.category_id"
                   :isRight="true"
                   :transactionId="item.id"
                   :btnSize="'small'" /></td>
+            <td>{{item.account_name | substr(12)}}</td>
           </tr>
         </tbody>
       </table>

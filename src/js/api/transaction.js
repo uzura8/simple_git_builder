@@ -16,7 +16,7 @@ export default {
 
   update: (transactionId, values) => {
     return new Promise((resolve, reject) => {
-      const accept_keys = ['category_id', 'is_disabled']
+      const accept_keys = ['name', 'amount', 'date', 'category_id', 'is_disabled']
       const params = new URLSearchParams();
       for (let key in values) {
         if (!util.inArray(key, accept_keys)) continue

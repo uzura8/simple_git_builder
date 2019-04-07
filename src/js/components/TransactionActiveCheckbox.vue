@@ -1,5 +1,5 @@
 <template>
-<b-checkbox v-model="isActive"></b-checkbox>
+<b-checkbox v-model="isActive" type="is-info" />
 </template>
 
 <script>

@@ -21,6 +21,12 @@ export default {
     return list.sort(util.compareValues(sort, order))
   },
 
+  transaction: state => (transactionId) => {
+    return state.transaction.list.find(item => {
+      return item.id === transactionId
+    })
+  },
+
   singleDimCategories: state => {
     const cates = []
     state.category.list.forEach(function(parentItem) {
