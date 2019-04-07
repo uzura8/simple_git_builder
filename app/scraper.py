@@ -128,7 +128,7 @@ class Scraper:
 
 
     def update_accounts(self, accounts):
-        model_accounts = Account.query.all()
+        model_accounts = Account.query.filter(Account.code != 'manual').all()
         if model_accounts:
             for model_account in model_accounts:
                 code = model_account.code
@@ -185,14 +185,17 @@ class Scraper:
 
     def scrape_transactions(self, elms, account_code):
         for elm in elms:
-            trs = self.scrape_transaction(elm)
-            if not trs:
+            result = self.scrape_transaction(elm)
+            if not result:
                 continue
+
+            trs = result[0]
+            service_id = result[1]
             trs['account_code'] = account_code
             category_ids = self.get_category_ids(trs['categories'])
             trs['category_id'] = category_ids['parent']
             del trs['categories']
-            Transaction.create(trs)
+            Transaction.create(trs, service_id=service_id)
 
 
     def scrape_transaction(self, elm):
@@ -205,7 +208,7 @@ class Scraper:
         transaction['amount'] = int(amount)
 
         items = elm['id'].split('-')
-        transaction['id'] = items[2]
+        service_id = items[2]
 
         name_elm = elm.find('td', class_='content')
         transaction['name'] = name_elm.text.strip().replace('\u3000', ' ')
@@ -222,7 +225,7 @@ class Scraper:
         transaction['categories']['child'] = target_elm.text.strip() \
                                                 if target_elm else ''
 
-        return transaction
+        return transaction, service_id
 
 
     def get_category_ids(self, names):
