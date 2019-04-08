@@ -105,7 +105,7 @@
             <td>
               <div class="columns is-gapless u-mt0">
                 <div class="column">
-                  <transaction-active-checkbox :transaction="item" />
+                  <transaction-active-checkbox :transaction="item" :class="'u-mt3'" />
                 </div>
                 <div class="column">
                   <transaction-edit-modal
