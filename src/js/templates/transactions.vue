@@ -100,31 +100,10 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in transactions" :key="item.id"
-              :class="{ 'has-background-grey-lighter': item.is_disabled}">
-            <td>
-              <div class="columns is-gapless u-mt0">
-                <div class="column">
-                  <transaction-active-checkbox :transaction="item" class="u-mt3" />
-                </div>
-                <div class="column">
-                  <transaction-edit-modal
-                    :transaction="item"
-                    :dispButtonLabel="false"
-                    :buttonSize="'is-small'" />
-                </div>
-              </div>
-            </td>
-            <td>{{item.date | dateFormat('MM/DD(ddd)')}}</td>
-            <td>{{item.name}}</td>
-            <td>{{item.amount | numFormat()}}</td>
-            <td><update-category
-                  :categoryId="item.category_id"
-                  :isRight="true"
-                  :transactionId="item.id"
-                  :btnSize="'small'" /></td>
-            <td>{{item.account_name | substr(12)}}</td>
-          </tr>
+          <transaction-row
+            v-for="item in transactions"
+            :key="item.id"
+            :transaction="item" />
         </tbody>
       </table>
     </section>

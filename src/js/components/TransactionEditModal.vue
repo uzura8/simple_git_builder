@@ -69,12 +69,12 @@
 
 export default {
   props: {
-    //transactionId: {
-    //  type: Number,
-    //},
-    transaction: {
-      type: Object,
-      default: {},
+    transactionId: {
+      type: Number,
+    },
+    updateCategoryId: {
+      type: Number,
+      default: 0,
     },
     buttonSize: {
       type: String,
@@ -101,9 +101,9 @@ export default {
     }
   },
   computed: {
-    //transaction () {
-    //  return this.$store.getters.transaction(this.transactionId)
-    //},
+    transaction () {
+      return this.$store.getters.transaction(this.transactionId)
+    },
     isNew () {
       return this.isEmpty(this.transaction)
     },
@@ -117,11 +117,11 @@ export default {
       return values
     },
   },
-  //watch: {
-  //  transaction () {
-  //    this.category_id = this.transaction.category_id
-  //  },
-  //},
+  watch: {
+    updateCategoryId (val) {
+      this.category_id = val
+    },
+  },
   created() {
     if (!this.isNew) {
       this.setValues()

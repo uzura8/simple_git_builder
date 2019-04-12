@@ -75,10 +75,6 @@ export default {
       }
     },
   },
-  watch: {
-    //value (val) {
-    //},
-  },
   created() {
     this.updatedValue = this.value
     this.$emit('input', this.updatedValue)

@@ -41,6 +41,8 @@ Vue.filter('substr', function (text, num) {
 
 import flatPickr from 'vue-flatpickr-component'
 Vue.component('flatPickr', flatPickr)
+import TransactionRow from './components/TransactionRow'
+Vue.component('TransactionRow', TransactionRow)
 import TransactionEditModal from './components/TransactionEditModal'
 Vue.component('TransactionEditModal', TransactionEditModal)
 import TransactionActiveCheckbox from './components/TransactionActiveCheckbox'

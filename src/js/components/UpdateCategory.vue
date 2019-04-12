@@ -72,8 +72,6 @@ export default {
     },
   },
   watch: {
-    //selectedKey () {
-    //},
   },
   created() {
   },
@@ -92,6 +90,7 @@ export default {
       this.$store.dispatch('updateTransaction', params)
         .catch(err => Promise.reject(err))
         .then(() => {
+          this.$emit('input', categoryId)
           this.isActive = false
         })
     },
