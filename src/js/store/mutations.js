@@ -14,6 +14,10 @@ export default {
     state.transaction.list = payload
   },
 
+  [types.CREATE_TRANSACTION] (state, payload) {
+    state.transaction.list.push(payload)
+  },
+
   [types.UPDATE_TRANSACTION] (state, payload) {
     const transactionId = payload.transactionId
     const values = payload.values

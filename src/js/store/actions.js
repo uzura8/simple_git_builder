@@ -27,6 +27,14 @@ export default {
       .catch(err => { throw err })
   },
 
+  createTransaction: ({ commit }, payload) => {
+    return Transaction.create(payload)
+      .then((item) => {
+        commit(types.CREATE_TRANSACTION, item)
+      })
+      .catch(err => { throw err })
+  },
+
   updateTransaction: ({ commit }, payload) => {
     return Transaction.update(payload.transactionId, payload.values)
       .then(() => {

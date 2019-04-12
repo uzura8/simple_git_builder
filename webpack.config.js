@@ -101,13 +101,6 @@ module.exports = [
               }
             },
             {
-              loader: 'sass-loader',
-              options: {
-                outputStyle: 'compressed',
-                sourceMap: true
-              }
-            },
-            {
               loader: 'postcss-loader',// Setting for PostCSS
               options: {
                 plugins: (loader) => [
@@ -120,7 +113,14 @@ module.exports = [
                 ],
                 sourceMap: true
               }
-            }
+            },
+            {
+              loader: 'sass-loader',
+              options: {
+                outputStyle: 'compressed',
+                sourceMap: true
+              }
+            },
           ]
         }
       ]

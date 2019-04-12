@@ -7,15 +7,11 @@
 </template>
 
 <script>
-import 'flatpickr/dist/flatpickr.css';
+import 'flatpickr/dist/flatpickr.css'
+import { moment } from '../bootstrap'
 
 export default {
-  props: {
-    value: {
-      type: String,
-      default: '',
-    },
-  },
+  props: ['value'],
   data () {
     return {
       updatedValue: '',
@@ -39,7 +35,10 @@ export default {
     }
   },
   created() {
-    if (!this.value) this.value = new Date()
+    if (!this.value) {
+      this.updatedValue = moment().format('YYYY-MM-DD')
+      this.$emit('input', this.updatedValue)
+    }
   },
 }
 </script>

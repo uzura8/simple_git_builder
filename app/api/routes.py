@@ -13,19 +13,53 @@ def before_request():
     pass
 
 
-@bp.route('/transactions', methods=['GET'])
+@bp.route('/transactions', methods=['GET', 'POST'])
 def transactions():
-    year, month = validate_month(request.args.get('month'))
-    _, lastday = calendar.monthrange(year, month)
-    items = []
-    items = Transaction.query.outerjoin(
-        Account,
-        Transaction.account_code == Account.code
-    ).filter(db.and_(
-        Transaction.date >= datetime.date(year, month, 1),
-        Transaction.date <= datetime.date(year, month, lastday),
-    )).order_by(Transaction.date.desc()).all()
-    body = [item.to_dict() for item in items]
+    if request.method == 'POST':
+        values = {}
+        date = request.form.get('date', type=str, default=None)
+        if not date or not validate_date(date):
+            raise InvalidArgumentException
+        values['date'] = date
+
+        name = request.form.get('name', type=str, default=None)
+        if not name  or len(name) > 512:
+            raise InvalidArgumentException
+        values['name'] = name
+
+        amount = int(request.form.get('amount', type=int, default=None))
+        values['amount'] = amount
+
+        cate_id = int(request.form.get('category_id', type=int))
+        if cate_id:
+            cate = Category.get_one_by_id(cate_id)
+            if not cate:
+                raise InvalidArgumentException
+            values['category_id'] = cate_id
+        else:
+            raise InvalidArgumentException
+
+        values['account_code'] = 'manual'
+
+        transaction = Transaction.create(values)
+        if transaction is None:
+            raise Exception
+
+        body = transaction.to_dict()
+
+    else:
+        year, month = validate_month(request.args.get('month'))
+        _, lastday = calendar.monthrange(year, month)
+        items = []
+        items = Transaction.query.outerjoin(
+            Account,
+            Transaction.account_code == Account.code
+        ).filter(db.and_(
+            Transaction.date >= datetime.date(year, month, 1),
+            Transaction.date <= datetime.date(year, month, lastday),
+        )).order_by(Transaction.date.desc()).all()
+        body = [item.to_dict() for item in items]
+
     return jsonify(body), 200
 
 
