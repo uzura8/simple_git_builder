@@ -15,6 +15,7 @@ Vue.use(Buefy)
 //Vue.use(VeeValidate)
 
 import util from './util'
+import listener from './listener'
 import site from './site'
 Vue.mixin({
   methods: {
@@ -22,7 +23,19 @@ Vue.mixin({
     siteConfig: site.config,
     isEmpty: util.isEmpty,
     inArray: util.inArray,
-  }
+    listen: listener.listen,
+    destroyed: listener.destroyed,
+    getTransactionsRouterTo: function(routerQuery, updateQuery = {}) {
+      let query = {
+        month: routerQuery.month,
+        category: routerQuery.categoryId,
+        sort: routerQuery.sortKey,
+      }
+      if (!this.isEmpty(updateQuery)) Object.assign(query, updateQuery);
+      let params = { path:'/transactions', query:query }
+      return params
+    },
+  },
 });
 
 import moment from 'moment'
@@ -41,6 +54,8 @@ Vue.filter('substr', function (text, num) {
 
 import flatPickr from 'vue-flatpickr-component'
 Vue.component('flatPickr', flatPickr)
+import TransactionCategoryFilter from './components/TransactionCategoryFilter'
+Vue.component('TransactionCategoryFilter', TransactionCategoryFilter)
 import TransactionRow from './components/TransactionRow'
 Vue.component('TransactionRow', TransactionRow)
 import TransactionEditModal from './components/TransactionEditModal'
