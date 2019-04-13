@@ -56,6 +56,8 @@ import flatPickr from 'vue-flatpickr-component'
 Vue.component('flatPickr', flatPickr)
 import TransactionCategoryFilter from './components/TransactionCategoryFilter'
 Vue.component('TransactionCategoryFilter', TransactionCategoryFilter)
+import TransactionMonthNav from './components/TransactionMonthNav'
+Vue.component('TransactionMonthNav', TransactionMonthNav)
 import TransactionRow from './components/TransactionRow'
 Vue.component('TransactionRow', TransactionRow)
 import TransactionEditModal from './components/TransactionEditModal'

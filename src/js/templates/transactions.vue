@@ -13,44 +13,7 @@
     </div>
   </h1>
   <section>
-    <nav class="pagination is-centered" role="navigation" aria-label="pagination">
-      <router-link
-        class="pagination-previous"
-        :to="getTransactionsRouterTo($route.query, {month: getMonth(1)})">
-        <b-icon pack="fas" icon="chevron-left"></b-icon>
-      </router-link>
-      <router-link
-        class="pagination-next"
-        :to="getTransactionsRouterTo($route.query, {month: getMonth(-1)})">
-        <b-icon pack="fas" icon="chevron-right"></b-icon>
-      </router-link>
-      <div class="pagination-list">
-        <div class="dropdown" :class="{ 'is-active': isActiveSelectMonth }">
-          <div class="dropdown-trigger">
-            <button
-              class="button"
-              aria-haspopup="true"
-              aria-controls="dropdown-menu"
-              @click="isActiveSelectMonth = !isActiveSelectMonth">
-              <span>{{ month }}</span>
-              <span class="icon is-small">
-                <i class="fas fa-angle-down" aria-hidden="true"></i>
-              </span>
-            </button>
-          </div>
-          <div class="dropdown-menu" id="dropdown-menu" role="menu">
-            <div class="dropdown-content">
-              <router-link
-                v-for="item in months" :key="item"
-                :to="getTransactionsRouterTo($route.query, {month:item})"
-                class="dropdown-item"
-                :class="{ 'is-active': month == item }"
-                v-text="item"></router-link>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
+    <TransactionMonthNav v-model="month" />
     <section class="table-responsive">
       <b-loading :active.sync="isLoading" :is-full-page="false" :canCancel="true"></b-loading>
       <table class="table" v-if="transactions">
@@ -95,23 +58,11 @@ import util from '../util'
 export default {
   data(){
     return {
-      months: [],
+      month: '',
       selectedCateId: 0,
-      isActiveSelectMonth: false,
     }
   },
   computed: {
-    monthIndex () {
-      let queryMonth = this.$route.query.month;
-      if (this.isEmpty(queryMonth)) queryMonth = moment().format('YYYY-MM')
-      const index = this.months.indexOf(queryMonth)
-      this.loadTransactions(this.months[index])
-      this.isActiveSelectMonth = false
-      return index
-    },
-    month () {
-      return this.months[this.monthIndex]
-    },
     sortKey () {
       const acceptKeys = ['date', 'date-desc', 'amount', 'amount-desc']
       const sortKey = this.$route.query.sort
@@ -131,8 +82,20 @@ export default {
       return this.$store.getters.singleDimCategories
     }
   },
+  watch: {
+    month (val) {
+      const params = this.getTransactionsRouterTo(this.$route.query, { 'month':val })
+      this.$router.push(params)
+    },
+    '$route' (to, from) {
+      this.loadTransactions(to.query.month)
+    },
+  },
   created() {
-    this.setMonths()
+    if (this.isEmpty(this.month)) {
+      this.month = this.$route.query.month ?
+        this.$route.query.month : moment().format('YYYY-MM')
+    }
     this.loadCategories()
   },
   methods: {
@@ -147,16 +110,6 @@ export default {
         .catch(err => Promise.reject(err))
         .then(() => {
         })
-    },
-    setMonths: function() {
-      for (let i = 0, n = 12; i < n; i++) {
-        this.months.push(moment().add('months', -1 * i).endOf('month').format('YYYY-MM'))
-      }
-    },
-    getMonth: function(increment = 0) {
-      let index = this.monthIndex + increment
-      if (index < 0) index = this.months.length - 1
-      return this.months[index]
     },
   }
 }
