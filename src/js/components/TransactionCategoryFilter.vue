@@ -17,18 +17,16 @@
   </div>
   <div class="dropdown-menu" id="dropdown-menu" role="menu">
     <div class="dropdown-content">
-      <router-link
-        :to="getTransactionsRouterTo($route.query, {category:''})"
+      <a @click="setValue(0)"
         class="dropdown-item"
         :class="{ 'is-active': isEmpty(category) }">
         Select Category
-      </router-link>
-      <router-link
-        v-for="cate in categories" :key="cate.id"
-        :to="getTransactionsRouterTo($route.query, {category:cate.id})"
+      </a>
+      <a v-for="cate in categories" :key="cate.id"
+        @click="setValue(cate.id)"
         class="dropdown-item"
         :class="{ 'is-active': !isEmpty(category) && category.id == cate.id }"
-        v-text="cate.pathName"></router-link>
+        v-text="cate.pathName"></a>
     </div>
   </div>
 </div>
@@ -37,7 +35,7 @@
 <script>
 export default {
   props: {
-    categoryId: {
+    value: {
       type: Number,
       default: 0,
     },
@@ -64,13 +62,13 @@ export default {
       return this.$store.getters.singleDimCategories
     },
     category () {
-      this.isActive = false
       return this.categories.find(item => {
-        return item.id === this.categoryId
+        return item.id === this.value
       })
     },
   },
   created() {
+    this.loadCategories()
     this.listen(window, 'click', function(e){
       if (!this.$el.contains(e.target)) {
         this.isActive = false
@@ -78,6 +76,16 @@ export default {
     }.bind(this));
   },
   methods: {
+    loadCategories: function() {
+      this.$store.dispatch('fetchCategories')
+        .catch(err => Promise.reject(err))
+        .then(() => {
+        })
+    },
+    setValue: function(categoryId) {
+      this.isActive = false
+      this.$emit('input', categoryId)
+    },
   },
 }
 </script>

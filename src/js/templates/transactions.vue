@@ -6,7 +6,7 @@
     </div>
     <div class="column">
       <TransactionCategoryFilter
-        :categoryId="categoryId"
+        v-model="categoryId"
         :isRight="true"
         :isPulledRight="true" />
       <transaction-edit-modal />
@@ -59,7 +59,7 @@ export default {
   data(){
     return {
       month: '',
-      selectedCateId: 0,
+      categoryId: 0,
     }
   },
   computed: {
@@ -68,35 +68,29 @@ export default {
       const sortKey = this.$route.query.sort
       return util.inArray(sortKey, acceptKeys) ? sortKey : 'date-desc'
     },
-    categoryId () {
-      const categoryId = parseInt(this.$route.query.category)
-      return !Number.isNaN(categoryId) ? categoryId : 0
-    },
     transactions () {
       return this.$store.getters.sortedTransactions(this.categoryId, this.sortKey)
     },
     isLoading () {
       return this.$store.state.common.isLoading
     },
-    categories () {
-      return this.$store.getters.singleDimCategories
-    }
   },
   watch: {
     month (val) {
       const params = this.getTransactionsRouterTo(this.$route.query, { 'month':val })
       this.$router.push(params)
     },
+    categoryId (val) {
+      const params = this.getTransactionsRouterTo(this.$route.query, { 'category':val })
+      this.$router.push(params)
+    },
     '$route' (to, from) {
-      this.loadTransactions(to.query.month)
+      this.loadTransactions(to.query)
     },
   },
   created() {
-    if (this.isEmpty(this.month)) {
-      this.month = this.$route.query.month ?
-        this.$route.query.month : moment().format('YYYY-MM')
-    }
-    this.loadCategories()
+    this.month = this.validateMonth()
+    this.categoryId = this.validateCategoryId()
   },
   methods: {
     loadTransactions: function(month) {
@@ -105,11 +99,16 @@ export default {
         .then(() => {
         })
     },
-    loadCategories: function() {
-      this.$store.dispatch('fetchCategories')
-        .catch(err => Promise.reject(err))
-        .then(() => {
-        })
+    validateMonth: function() {
+      if (!this.isEmpty(this.$route.query.month)
+        && this.$route.query.month.match(/\d{4}\-\d{2}/) != null) {
+        return this.$route.query.month
+      }
+      return moment().format('YYYY-MM')
+    },
+    validateCategoryId: function() {
+      const categoryId = parseInt(this.$route.query.category)
+      return !Number.isNaN(categoryId) ? categoryId : 0
     },
   }
 }

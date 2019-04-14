@@ -41,10 +41,6 @@ import { moment } from '../bootstrap'
 
 export default {
   props: {
-    //categoryId: {
-    //  type: Number,
-    //  default: 0,
-    //},
     value: {
       type: String,
       default: '',
@@ -86,7 +82,6 @@ export default {
   },
   created() {
     this.setMonths()
-
     this.listen(window, 'click', function(e){
       if (!this.$el.contains(e.target)) {
         this.isActiveSelectMonth = false
@@ -110,6 +105,7 @@ export default {
     moveMonth: function(increment = 0) {
       let index = this.monthIndex + increment
       if (index < 0) index = this.months.length - 1
+      if (index > this.months.length - 1) index = 0
       this.$emit('input', this.months[index])
     },
   },

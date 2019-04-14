@@ -26,11 +26,10 @@ Vue.mixin({
     listen: listener.listen,
     destroyed: listener.destroyed,
     getTransactionsRouterTo: function(routerQuery, updateQuery = {}) {
-      let query = {
-        month: routerQuery.month,
-        category: routerQuery.categoryId,
-        sort: routerQuery.sortKey,
-      }
+      let query = {}
+      if (!this.isEmpty(routerQuery.month)) query.month = routerQuery.month
+      if (!this.isEmpty(routerQuery.category)) query.category = routerQuery.category
+      if (!this.isEmpty(routerQuery.sort)) query.sort = routerQuery.sort
       if (!this.isEmpty(updateQuery)) Object.assign(query, updateQuery);
       let params = { path:'/transactions', query:query }
       return params
