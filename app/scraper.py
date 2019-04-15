@@ -28,22 +28,24 @@ class Scraper:
 
 
     def main(self, format='dict', mode=''):
-        accept_modes = ['all']
+        if not mode:
+            mode = 'month'
+
+        accept_modes = ['month', 'all_month', 'cate', 'all']
         if mode and not mode in accept_modes:
             raise Exception('Invalid Argument')
-
-        month_num = 12 if mode == 'all' else 1
-        month_dates = self.get_month_dates(month_num)
 
         if not self.ses:
             self.set_session()
 
-        accounts = self.get_accounts()
-        transactions = self.scrape_accounts(accounts, month_dates)
-        #!!!!!!!!!!!!!!!!
-        from pprint import pprint
-        pprint(transactions)
-        #!!!!!!!!!!!!!!!!
+        if mode in ['cate', 'all']:
+            self.scrape_large_cates()
+
+        if mode in ['month', 'all_month', 'all']:
+            accounts = self.get_accounts()
+            month_num = 12 if mode == 'all_month' else 1
+            month_dates = self.get_month_dates(month_num)
+            self.scrape_accounts(accounts, month_dates)
 
 
     def set_session(self):
@@ -226,6 +228,22 @@ class Scraper:
                                                 if target_elm else ''
 
         return transaction, service_id
+
+
+    def scrape_large_cates(self):
+        target_url = self.get_url('large_category_spending_types/edit')
+        soup = self.get_response(target_url)
+        elms = soup.find_all('tr', class_='large_category')
+        for elm in elms:
+            target_elm = elm.find('th')
+            cate_name = target_elm.text.strip()
+            cate_id = Category.get_id_by_name(cate_name)
+            if cate_id:
+                continue
+
+            cate = Category(name=cate_name, parent_id=1)
+            db.session.add(cate)
+            db.session.commit()
 
 
     def get_category_ids(self, names):

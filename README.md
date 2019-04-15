@@ -10,6 +10,7 @@ cp adapter.wsgi.sample adapter.wsgi
 vim adapter.wsgi
 echo "CREATE DATABASE DB-name DEFAULT CHARACTER SET utf8" | mysql -u root -p
 python3 manage.py setup_db
+python3 manage.py scrape --mode=all
 sudo vim /etc/httpd/conf.d/virtual.conf
 ```
 LoadModule wsgi_module /PATH-TO-SITE_PACKAGES/site-packages/mod_wsgi/server/mod_wsgi-py************.so
