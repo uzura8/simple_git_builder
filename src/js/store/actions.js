@@ -8,7 +8,7 @@ export default {
 
   fetchTransactions: ({ commit }, payload) => {
     commit(types.SET_COMMON_LOADING, true)
-    return Transaction.fetch(payload.month)
+    return Transaction.fetch(payload)
       .then(({ lists }) => {
         commit(types.FETCH_TRANSACTIONS_LIST, lists)
         commit(types.SET_COMMON_LOADING, false)

@@ -91,10 +91,16 @@ export default {
   created() {
     this.month = this.validateMonth()
     this.categoryId = this.validateCategoryId()
+    let params = {
+      month: this.month,
+      sortKey: this.sortKey,
+    }
+    if (this.categoryId) params.category = this.categoryId
+    this.loadTransactions(params)
   },
   methods: {
-    loadTransactions: function(month) {
-      this.$store.dispatch('fetchTransactions', { month:month })
+    loadTransactions: function(params) {
+      this.$store.dispatch('fetchTransactions', params)
         .catch(err => Promise.reject(err))
         .then(() => {
         })

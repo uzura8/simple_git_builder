@@ -2,9 +2,9 @@ import client from './client'
 import util from '../util';
 
 export default {
-  fetch: (month) => {
+  fetch: (params) => {
     const uri = 'transactions';
-    const options = { params: { month: month } };
+    const options = { params: params };
     return new Promise((resolve, reject) => {
       client.get(uri, options)
         .then(res => resolve({ lists: res.data }))
