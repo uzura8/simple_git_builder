@@ -81,21 +81,15 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/scss/style.scss");
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
-/******/ ({
-
-/***/ "./src/scss/style.scss":
-/*!*****************************!*\
-  !*** ./src/scss/style.scss ***!
-  \*****************************/
-/*! no static exports found */
+/******/ ([
+/* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
 
 /***/ })
-
-/******/ });
+/******/ ]);
 /*# sourceMappingURL=style.css.map*/

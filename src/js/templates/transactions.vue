@@ -101,7 +101,14 @@ export default {
   methods: {
     loadTransactions: function(params) {
       this.$store.dispatch('fetchTransactions', params)
-        .catch(err => Promise.reject(err))
+        .catch(err => {
+          this.$toast.open({
+            message: err.message,
+            type: 'is-danger',
+            duration: 5000,
+            position: 'is-bottom',
+          })
+        })
         .then(() => {
         })
     },
