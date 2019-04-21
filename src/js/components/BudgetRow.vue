@@ -1,6 +1,7 @@
 <template>
 <tr>
   <td>{{budget.category_name}}</td>
+  <td>{{amountByMonth | numFormat()}}</td>
   <td v-if="isEditable">
     <b-field grouped>
         <b-input
@@ -48,6 +49,9 @@ export default {
   },
 
   computed: {
+    amountByMonth () {
+      return this.amount / 12
+    },
   },
 
   watch: {

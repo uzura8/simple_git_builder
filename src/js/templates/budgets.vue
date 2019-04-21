@@ -7,20 +7,28 @@
       <b-loading :active.sync="isLoading" :is-full-page="false" :canCancel="true"></b-loading>
       <section class="u-mt30">
         <p v-if="!budgets.length">No data</p>
-        <table class="table u-minw100" v-else>
-          <thead>
-            <tr>
-              <th>category</th>
-              <th>amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            <budget-row
-              v-for="item in budgets"
-              :key="item.category_id"
-              :budget="item" />
-          </tbody>
-        </table>
+        <section v-else>
+          <table class="table u-minw100">
+            <thead>
+              <tr>
+                <th>category</th>
+                <th>month</th>
+                <th>year</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="has-background-white-ter">
+                <th>total</th>
+                <td class="has-text-weight-semibold">{{ amountTotalByMonth | numFormat()}}</td>
+                <td class="has-text-weight-semibold">{{ amountTotal | numFormat()}}</td>
+              </tr>
+              <budget-row
+                v-for="item in budgets"
+                :key="item.category_id"
+                :budget="item" />
+            </tbody>
+          </table>
+        </section>
       </section>
     </section>
   </section>
@@ -41,6 +49,12 @@ export default {
   computed: {
     budgets () {
       return this.$store.state.budget.list
+    },
+    amountTotal () {
+      return this.$store.getters.budgetsAmountTotal
+    },
+    amountTotalByMonth () {
+      return this.amountTotal / 12
     },
     isLoading () {
       return this.$store.state.common.isLoading

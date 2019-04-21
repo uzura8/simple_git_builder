@@ -48,4 +48,12 @@ export default {
     })
     return cates
   },
+
+  budgetsAmountTotal: state => {
+    let amountTotal = 0
+    state.budget.list.forEach(function(item) {
+      amountTotal += item.amount
+    })
+    return amountTotal
+  },
 }
