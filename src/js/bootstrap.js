@@ -45,6 +45,7 @@ Vue.filter('dateFormat', function (date, format='LLL') {
 });
 
 Vue.filter('numFormat', function (num) {
+  num = parseInt(num)
   return String(num).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
 });
 Vue.filter('substr', function (text, num) {

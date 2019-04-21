@@ -12,16 +12,19 @@
           ref="amount"
           expanded
           v-model="amount"
-          @focus="$event.target.select()"
+          @blur="blurInput"
+          @focus="focus($event.target)"
           @keydown.enter.native="updateAmount"
           @keyup.esc.native="cancel" />
       <p class="control">
-        <button class="button is-info" @click="updateAmount">OK</button>
+        <button class="button is-info" @mousedown="updateAmount">OK</button>
       </p>
     </b-field>
   </td>
-  <td v-else
-    @click="changeEditable">{{amount | numFormat()}}</td>
+  <td v-else @click="changeEditable">
+    <span>{{amount | numFormat()}}</span>
+    <b-icon icon="edit" pack="fas" size="is-small" class="is-pulled-right has-text-grey-lighter" />
+  </td>
 </tr>
 </template>
 
@@ -37,7 +40,8 @@ export default {
   data () {
     return {
       isEditable: false,
-      onFocus: false,
+      isFocus: false,
+      isUpdated: false,
       tmp: 0,
       amount: 0,
     }
@@ -56,13 +60,14 @@ export default {
   methods: {
     changeEditable() {
       this.tmp = this.amount
-      this.isEditable = !this.isEditable
+      this.isEditable = true
       this.$nextTick(() => this.$refs.amount.focus())
     },
 
     updateAmount() {
+      this.isUpdated = true
       if (this.amount == this.tmp) {
-        this.isEditable = false
+        this.reseEditable()
         return
       }
       const params = {
@@ -74,14 +79,31 @@ export default {
       this.$store.dispatch('updateBudget', params)
         .catch(err => Promise.reject(err))
         .then(() => {
-          this.isEditable = false
+          this.reseEditable(false)
           this.tmp = 0
         })
     },
 
+    focus(eventTarget) {
+      eventTarget.select()
+      this.isFocus = true
+    },
+
+    blurInput() {
+      if (!this.isFocus) return
+      if (this.isUpdated) return
+      this.cancel()
+    },
+
     cancel() {
-      this.amount = this.tmp
+      this.reseEditable()
+    },
+
+    reseEditable(isRecoverAmount = true) {
+      if (isRecoverAmount) this.amount = this.tmp
+      this.isFocus = false
       this.isEditable = false
+      this.isUpdated = false
     },
   },
 }
