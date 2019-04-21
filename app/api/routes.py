@@ -2,9 +2,9 @@ import re
 import calendar
 import datetime
 from flask import jsonify, request
-from . import bp
+from . import bp, InvalidUsage
 from app import db, InvalidArgumentException
-from app.models import Account, Transaction, Category
+from app.models import Account, Transaction, Category, Budget
 from app.common.date import validate_date
 
 
@@ -115,13 +115,38 @@ def update_transaction_category(trans_id=0, cate_id=0):
 
 @bp.route('/categories', methods=['GET'])
 def categories():
-    categories = Category.get_categories(is_json=True)
+    categories = Category.get_all(is_json=True)
     return jsonify(categories), 200
+
+
+@bp.route('/budgets', methods=['GET'])
+def budgets():
+    items = Budget.get_all()
+    #body = [item.to_dict() for item in items]
+    return jsonify(items), 200
+
+
+@bp.route('/budgets/<int:cate_id>', methods=['POST'])
+def update_budget(cate_id=0):
+    if not cate_id:
+        raise InvalidUsage('category_id is required')
+    cate = Category.get_one_by_id(cate_id)
+    if not cate:
+        raise InvalidUsage('category_id is invalid')
+
+    amount = request.form.get('amount', type=int, default=None)
+    if amount is None:
+        raise InvalidUsage('amount is required')
+    amount = int(amount)
+
+    budget = Budget.create(cate_id=cate_id, amount=amount)
+
+    return jsonify(budget.to_dict()), 200
 
 
 def validate_month(month_str):
     if not month_str:
-        raise InvalidArgumentException
+        raise InvalidUsage('Parameter month is required')
     m = re.search(r'([0-9]{4})\-([0-9]{2})', month_str)
     if not m:
         raise InvalidArgumentException

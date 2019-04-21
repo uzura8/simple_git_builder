@@ -17,6 +17,9 @@ const state = {
   category: {
     list: [],
   },
+  budget: {
+    list: [],
+  },
 }
 
 export default new Vuex.Store({

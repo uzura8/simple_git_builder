@@ -53,6 +53,8 @@ Vue.filter('substr', function (text, num) {
 
 import flatPickr from 'vue-flatpickr-component'
 Vue.component('flatPickr', flatPickr)
+import InputDate from './components/InputDate'
+Vue.component('InputDate', InputDate)
 import TransactionCategoryFilter from './components/TransactionCategoryFilter'
 Vue.component('TransactionCategoryFilter', TransactionCategoryFilter)
 import TransactionMonthNav from './components/TransactionMonthNav'
@@ -67,8 +69,8 @@ import InputCategory from './components/InputCategory'
 Vue.component('InputCategory', InputCategory)
 import UpdateCategory from './components/UpdateCategory'
 Vue.component('UpdateCategory', UpdateCategory)
-import InputDate from './components/InputDate'
-Vue.component('InputDate', InputDate)
+import BudgetRow from './components/BudgetRow'
+Vue.component('BudgetRow', BudgetRow)
 
 export {
   Vue,

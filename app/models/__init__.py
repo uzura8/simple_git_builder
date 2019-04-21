@@ -3,6 +3,7 @@ from .site_config import SiteConfig
 from .account import Account
 from .transaction import Transaction
 from .category import Category
+from .budget import Budget
 
 __all__ = [
     Base,
@@ -10,4 +11,5 @@ __all__ = [
     Account,
     Transaction,
     Category,
+    Budget,
 ]

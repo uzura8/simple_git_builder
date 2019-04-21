@@ -43,4 +43,25 @@ export default {
     }
     state.category.list = payload[0].children
   },
+
+  [types.FETCH_BUDGET_LIST] (state, payload) {
+    state.budget.list = payload
+  },
+
+  [types.UPDATE_BUDGET] (state, payload) {
+    for (let i = 0, n = state.budget.list.length; i < n; i++) {
+      const budget = state.budget.list[i]
+      if (budget.category_id !== payload.category_id) continue
+
+      const accept_keys = ['amount', 'sort_no']
+      for (let key in payload) {
+        if (!util.inArray(key, accept_keys)) continue
+        if (!payload.hasOwnProperty(key)) continue
+
+        let value = payload[key];
+        state.budget.list[i][key] = value
+      }
+      break
+    }
+  },
 }

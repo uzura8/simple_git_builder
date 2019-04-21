@@ -8,7 +8,8 @@ class Category(Base, BaseNestedSets):
     __tablename__ = 'category'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), index=True, unique=True)
-    transactions = db.relationship('Transaction', backref='transaction', lazy='dynamic')
+    transactions = db.relationship('Transaction', backref='transaction',
+                                    lazy='dynamic')
 
     def __repr__(self):
         return '<Category {}>'.format(self.name)
@@ -22,7 +23,7 @@ class Category(Base, BaseNestedSets):
             return None
 
     @classmethod
-    def get_categories(self, name='root', is_json=False):
+    def get_all(self, name='root', is_json=False):
         categories = self.query.all()
         for item in categories:
             if item.name != name:

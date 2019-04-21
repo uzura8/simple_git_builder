@@ -1,5 +1,5 @@
 import * as types from './mutation-types'
-import { Transaction, Category } from '../api'
+import { Transaction, Category, Budget } from '../api'
 
 export default {
   setHeaderMenuOpen: ({ commit }, isOpen) => {
@@ -19,14 +19,6 @@ export default {
       })
   },
 
-  fetchCategories: ({ commit }) => {
-    return Category.fetch()
-      .then(({ lists }) => {
-        commit(types.FETCH_CATEGORIES_LIST, lists)
-      })
-      .catch(err => { throw err })
-  },
-
   createTransaction: ({ commit }, payload) => {
     return Transaction.create(payload)
       .then((item) => {
@@ -39,6 +31,35 @@ export default {
     return Transaction.update(payload.transactionId, payload.values)
       .then(() => {
         commit(types.UPDATE_TRANSACTION, payload)
+      })
+      .catch(err => { throw err })
+  },
+
+  fetchCategories: ({ commit }) => {
+    return Category.fetch()
+      .then(({ lists }) => {
+        commit(types.FETCH_CATEGORIES_LIST, lists)
+      })
+      .catch(err => { throw err })
+  },
+
+  fetchBudgets: ({ commit }, payload) => {
+    commit(types.SET_COMMON_LOADING, true)
+    return Budget.fetch(payload)
+      .then(({ lists }) => {
+        commit(types.FETCH_BUDGET_LIST, lists)
+        commit(types.SET_COMMON_LOADING, false)
+      })
+      .catch(err => {
+        commit(types.SET_COMMON_LOADING, false)
+        throw err
+      })
+  },
+
+  updateBudget: ({ commit }, payload) => {
+    return Budget.update(payload.categoryId, payload.values)
+      .then(({item}) => {
+        commit(types.UPDATE_BUDGET, item)
       })
       .catch(err => { throw err })
   },
