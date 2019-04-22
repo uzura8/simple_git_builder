@@ -70,8 +70,8 @@ import InputCategory from './components/InputCategory'
 Vue.component('InputCategory', InputCategory)
 import UpdateCategory from './components/UpdateCategory'
 Vue.component('UpdateCategory', UpdateCategory)
-import BudgetRow from './components/BudgetRow'
-Vue.component('BudgetRow', BudgetRow)
+import BudgetsSettingRow from './components/BudgetsSettingRow'
+Vue.component('BudgetsSettingRow', BudgetsSettingRow)
 
 export {
   Vue,

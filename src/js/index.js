@@ -8,7 +8,7 @@ import store from './store'
 import Top from './templates/top';
 import About from './templates/about';
 import Transactions from './templates/transactions';
-import Budgets from './templates/budgets';
+import BudgetsSetting from './templates/BudgetsSetting';
 import NotFound from './templates/notfound';
 
 const router = new VueRouter({
@@ -18,7 +18,7 @@ const router = new VueRouter({
     { path: '/', component: Top },
     { path: '/about', component: About },
     { path: '/transactions', name: 'Transactions', component: Transactions },
-    { path: '/budgets', name: 'Budgets', component: Budgets },
+    { path: '/budgets/setting', name: 'BudgetsSetting', component: BudgetsSetting },
     { path: '/notfound', component: NotFound },
     { path: '*', redirect: '/notfound' }
   ],

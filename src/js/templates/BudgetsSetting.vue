@@ -22,7 +22,7 @@
                 <td class="has-text-weight-semibold">{{ amountTotalByMonth | numFormat()}}</td>
                 <td class="has-text-weight-semibold">{{ amountTotal | numFormat()}}</td>
               </tr>
-              <budget-row
+              <budgets-setting-row
                 v-for="item in budgets"
                 :key="item.category_id"
                 :budget="item" />
