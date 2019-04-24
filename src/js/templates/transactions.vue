@@ -13,6 +13,18 @@
     </div>
   </h1>
   <section>
+    <div class="box u-sticky">
+      <article class="media">
+        <div class="media-content">
+          <ul>
+            <li>
+              <label>Total</label>
+              <span class="has-text-weight-semibold u-ml5">{{ transactionsAmountSum | numFormat }}</span>
+            </li>
+          </ul>
+        </div>
+      </article>
+    </div>
     <TransactionMonthNav v-model="month" />
     <section class="table-responsive">
       <b-loading :active.sync="isLoading" :is-full-page="false" :canCancel="true"></b-loading>
@@ -70,6 +82,9 @@ export default {
     },
     transactions () {
       return this.$store.getters.sortedTransactions(this.categoryId, this.sortKey)
+    },
+    transactionsAmountSum () {
+      return this.$store.getters.transactionsAmountSum(this.categoryId)
     },
     isLoading () {
       return this.$store.state.common.isLoading

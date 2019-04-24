@@ -2,34 +2,43 @@
 <section>
   <h1 class="title">Budget Management</h1>
   <p class="is-size-5">Set annual budget</p>
-  <section>
+  <section v-if="!budgets.length" class="u-mt30">
+    <p>No data</p>
+  </section>
+  <section v-else class="u-mt30">
+    <div class="box u-sticky">
+      <article class="media">
+        <div class="media-content">
+          <ul>
+            <li>
+              <label>month</label>
+              <span class="has-text-weight-semibold u-ml5">{{ amountTotalByMonth | numFormat()}}</span>
+            </li>
+            <li>
+              <label>year</label>
+              <span class="has-text-weight-semibold u-ml5">{{ amountTotal | numFormat()}}</span>
+            </li>
+          </ul>
+        </div>
+      </article>
+    </div>
     <section class="table-responsive">
       <b-loading :active.sync="isLoading" :is-full-page="false" :canCancel="true"></b-loading>
-      <section class="u-mt30">
-        <p v-if="!budgets.length">No data</p>
-        <section v-else>
-          <table class="table u-minw100">
-            <thead>
-              <tr>
-                <th>category</th>
-                <th>month</th>
-                <th>year</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="has-background-white-ter">
-                <th>total</th>
-                <td class="has-text-weight-semibold">{{ amountTotalByMonth | numFormat()}}</td>
-                <td class="has-text-weight-semibold">{{ amountTotal | numFormat()}}</td>
-              </tr>
-              <budgets-setting-row
-                v-for="item in budgets"
-                :key="item.category_id"
-                :budget="item" />
-            </tbody>
-          </table>
-        </section>
-      </section>
+      <table class="table u-minw100">
+        <thead>
+          <tr>
+            <th>category</th>
+            <th>month</th>
+            <th>year</th>
+          </tr>
+        </thead>
+        <tbody>
+          <budgets-setting-row
+            v-for="item in budgets"
+            :key="item.category_id"
+            :budget="item" />
+        </tbody>
+      </table>
     </section>
   </section>
 </section>

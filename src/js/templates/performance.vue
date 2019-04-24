@@ -2,6 +2,22 @@
 <section>
   <h1 class="title">Performances</h1>
   <section>
+    <div class="box u-sticky">
+      <article class="media">
+        <div class="media-content">
+          <ul>
+            <li>
+              <label>Budget Total</label>
+              <span class="has-text-weight-semibold u-ml5">{{ performancesSums.budget | numFormat }}</span>
+            </li>
+            <li>
+              <label>Performance Total</label>
+              <span class="has-text-weight-semibold u-ml5">{{ performancesSums.sum | numFormat }}</span>
+            </li>
+          </ul>
+        </div>
+      </article>
+    </div>
     <TransactionMonthNav v-model="month" />
     <section class="table-responsive">
       <b-loading :active.sync="isLoading" :is-full-page="false" :canCancel="true"></b-loading>
@@ -43,6 +59,10 @@ export default {
   computed: {
     performances () {
       return this.$store.state.performance.list
+    },
+
+    performancesSums () {
+      return this.$store.getters.performancesSums()
     },
 
     isLoading () {

@@ -27,6 +27,15 @@ export default {
     })
   },
 
+  transactionsAmountSum: state => (categoryId = 0) => {
+    let sum = 0
+    state.transaction.list.forEach(function(item) {
+      if (categoryId && item.category_id !=categoryId) return
+      sum += parseInt(item.amount)
+    })
+    return sum
+  },
+
   singleDimCategories: state => {
     const cates = []
     state.category.list.forEach(function(parentItem) {
@@ -52,8 +61,18 @@ export default {
   budgetsAmountTotal: state => {
     let amountTotal = 0
     state.budget.list.forEach(function(item) {
-      amountTotal += item.amount
+      amountTotal += parseInt(item.amount)
     })
     return amountTotal
+  },
+
+  performancesSums: state => () => {
+    let sum = 0
+    let budget = 0
+    state.performance.list.forEach(function(item) {
+      sum += parseInt(item.sum)
+      budget += parseInt(item.budget)
+    })
+    return { sum:sum, budget:budget }
   },
 }
