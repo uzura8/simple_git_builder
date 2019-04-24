@@ -6,6 +6,14 @@ def is_array(var):
     return isinstance(var, (list, tuple, dict))
 
 
+def search_dicts(key, val, targets):
+    for item in targets:
+        if item[key] == val:
+            return item
+
+    return None
+
+
 def var_dump(obj):
     pprint(dump(obj))
 

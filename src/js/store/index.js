@@ -11,6 +11,9 @@ const state = {
     isLoading: false,
     isHeaderMenuOpen: false,
   },
+  performance: {
+    list: [],
+  },
   transaction: {
     list: [],
   },

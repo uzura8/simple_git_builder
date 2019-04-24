@@ -10,6 +10,10 @@ export default {
     state.common.isHeaderMenuOpen = isOpen
   },
 
+  [types.FETCH_PERFORMANCE_LIST] (state, payload) {
+    state.performance.list = payload
+  },
+
   [types.FETCH_TRANSACTIONS_LIST] (state, payload) {
     state.transaction.list = payload
   },

@@ -1,9 +1,22 @@
 import * as types from './mutation-types'
-import { Transaction, Category, Budget } from '../api'
+import { Performance, Transaction, Category, Budget } from '../api'
 
 export default {
   setHeaderMenuOpen: ({ commit }, isOpen) => {
     commit(types.SET_COMMON_HEADER_MENU_OPEN, isOpen)
+  },
+
+  fetchPerformances: ({ commit }, payload) => {
+    commit(types.SET_COMMON_LOADING, true)
+    return Performance.fetch(payload)
+      .then(({ lists }) => {
+        commit(types.FETCH_PERFORMANCE_LIST, lists)
+        commit(types.SET_COMMON_LOADING, false)
+      })
+      .catch(err => {
+        commit(types.SET_COMMON_LOADING, false)
+        throw err
+      })
   },
 
   fetchTransactions: ({ commit }, payload) => {

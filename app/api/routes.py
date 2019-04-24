@@ -1,10 +1,11 @@
 import re
 import calendar
 import datetime
+import simplejson as json
 from flask import jsonify, request
 from . import bp, InvalidUsage
 from app import db, InvalidArgumentException
-from app.models import Account, Transaction, Category, Budget
+from app.models import Account, Transaction, Category, Budget, Performance
 from app.common.date import validate_date
 
 
@@ -142,6 +143,14 @@ def update_budget(cate_id=0):
     budget = Budget.create(cate_id=cate_id, amount=amount)
 
     return jsonify(budget.to_dict()), 200
+
+
+@bp.route('/performance', methods=['GET'])
+def performance():
+    year, month = validate_month(request.args.get('month'))
+    sums = Performance.get_sums_all(year, month)
+
+    return json.dumps(sums), 200
 
 
 def validate_month(month_str):

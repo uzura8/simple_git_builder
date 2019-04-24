@@ -21,7 +21,7 @@
           <tr>
             <th>-</th>
             <th>
-              <router-link :to="getTransactionsRouterTo($route.query, {sort:sortKey == 'date-desc' ? 'date' : 'date-desc'})">
+              <router-link :to="getRouterTo({sort:sortKey == 'date-desc' ? 'date' : 'date-desc'})">
                 date
                 <b-icon v-if="sortKey == 'date'" pack="fas" icon="caret-down"></b-icon>
                 <b-icon v-if="sortKey == 'date-desc'" pack="fas" icon="caret-up"></b-icon>
@@ -29,7 +29,7 @@
             </th>
             <th>content</th>
             <th>
-              <router-link :to="getTransactionsRouterTo($route.query, {sort:sortKey == 'amount-desc' ? 'amount' : 'amount-desc'})">
+              <router-link :to="getRouterTo({sort:sortKey == 'amount-desc' ? 'amount' : 'amount-desc'})">
                 amount
                 <b-icon v-if="sortKey == 'amount'" pack="fas" icon="caret-down"></b-icon>
                 <b-icon v-if="sortKey == 'amount-desc'" pack="fas" icon="caret-up"></b-icon>
@@ -77,11 +77,11 @@ export default {
   },
   watch: {
     month (val) {
-      const params = this.getTransactionsRouterTo(this.$route.query, { 'month':val })
+      const params = this.getRouterTo({ 'month':val })
       this.$router.push(params)
     },
     categoryId (val) {
-      const params = this.getTransactionsRouterTo(this.$route.query, { 'category':val })
+      const params = this.getRouterTo({ 'category':val })
       this.$router.push(params)
     },
     '$route' (to, from) {
@@ -111,6 +111,15 @@ export default {
         })
         .then(() => {
         })
+    },
+    getRouterTo: function(updateQuery = {}) {
+      let query = {}
+      if (!this.isEmpty(this.$route.query.month)) query.month = this.$route.query.month
+      if (!this.isEmpty(this.$route.query.category)) query.category = this.$route.query.category
+      if (!this.isEmpty(this.$route.query.sort)) query.sort = this.$route.query.sort
+      if (!this.isEmpty(updateQuery)) Object.assign(query, updateQuery);
+      let params = { path:'/transactions', query:query }
+      return params
     },
     validateMonth: function() {
       if (!this.isEmpty(this.$route.query.month)

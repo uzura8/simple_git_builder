@@ -7,6 +7,7 @@ import store from './store'
 
 import Top from './templates/top';
 import About from './templates/about';
+import Performance from './templates/performance';
 import Transactions from './templates/transactions';
 import BudgetsSetting from './templates/BudgetsSetting';
 import NotFound from './templates/notfound';
@@ -17,6 +18,7 @@ const router = new VueRouter({
   routes: [
     { path: '/', component: Top },
     { path: '/about', component: About },
+    { path: '/performance', name: 'Performance', component: Performance },
     { path: '/transactions', name: 'Transactions', component: Transactions },
     { path: '/budgets/setting', name: 'BudgetsSetting', component: BudgetsSetting },
     { path: '/notfound', component: NotFound },

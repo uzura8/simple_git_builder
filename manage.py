@@ -42,6 +42,7 @@ def generate_config_js(output_dir):
 @manager.command
 @manager.option('-m', '--mode', default='normal', help='mode:all')
 def scrape(mode=''):
+    '''option --mode:month, all_month, cate, all'''
     print(mode)
     scraper = Scraper()
     scraper.main(mode=mode)

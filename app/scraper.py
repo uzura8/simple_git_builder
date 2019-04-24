@@ -237,13 +237,7 @@ class Scraper:
         for elm in elms:
             target_elm = elm.find('th')
             cate_name = target_elm.text.strip()
-            cate_id = Category.get_id_by_name(cate_name)
-            if cate_id:
-                continue
-
-            cate = Category(name=cate_name, parent_id=1)
-            db.session.add(cate)
-            db.session.commit()
+            Category.save(name=cate_name, parent_id=1)
 
 
     def get_category_ids(self, names):
@@ -264,16 +258,12 @@ class Scraper:
 
         parent_id = Category.get_id_by_name(parent_name)
         if not parent_id:
-            parent = Category(name=parent_name, parent_id=1)
-            db.session.add(parent)
-            db.session.commit()
+            parent = Category.save(name=parent_name, parent_id=1)
             parent_id = parent.id
         if child_name:
             child_id = Category.get_id_by_name(child_name)
             if not child_id:
-                child = Category(name=child_name, parent_id=parent_id)
-                db.session.add(child)
-                db.session.commit()
+                child = Category.save(name=child_name, parent_id=parent_id)
                 child_id = child.id
 
         return {'parent':parent_id, 'child':child_id}

@@ -6,7 +6,6 @@
   <a class="pagination-next" @click="moveMonth(-1)">
     <b-icon pack="fas" icon="chevron-right"></b-icon>
   </a>
-  </router-link>
 
   <div class="pagination-list">
     <div class="dropdown" :class="{ 'is-active': isActiveSelectMonth }">

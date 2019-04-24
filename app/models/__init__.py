@@ -4,6 +4,7 @@ from .account import Account
 from .transaction import Transaction
 from .category import Category
 from .budget import Budget
+from .performance import Performance
 
 __all__ = [
     Base,
@@ -12,4 +13,5 @@ __all__ = [
     Transaction,
     Category,
     Budget,
+    Performance,
 ]
