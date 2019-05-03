@@ -23,6 +23,7 @@ class Budget(Base):
             'category_id': self.category_id,
             'amount': self.amount,
             'category_name': self.category.name,
+            'category_sublabel': self.category.sublabel,
         }
         return data
 
@@ -44,7 +45,8 @@ class Budget(Base):
                     self.id,
                     Category.id,
                     self.amount,
-                    Category.name.label('category_name')
+                    Category.name.label('category_name'),
+                    Category.sublabel.label('category_sublabel')
                 ).filter(Category.parent_id == 1).\
                 order_by(Category.sort_no.asc()).all()
             items = []
@@ -54,6 +56,7 @@ class Budget(Base):
                     'category_id':int(item[1] or 0),
                     'amount':int(item[2] or 0),
                     'category_name':item[3],
+                    'category_sublabel':item[4],
                 })
             return items
 

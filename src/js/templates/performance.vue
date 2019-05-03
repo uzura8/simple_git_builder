@@ -33,7 +33,7 @@
         </thead>
         <tbody>
           <tr v-for="item in performances" :key="item.id">
-            <td>{{ item.name }}</td>
+            <td v-text="getCategoryLabel(item)"></td>
             <td>{{ item.budget / 12 | numFormat }}</td>
             <td>{{ item.sum * -1 | numFormat }}</td>
             <td v-text="calcBudgetRate(item.sum, item.budget)"></td>

@@ -32,6 +32,7 @@ class Performance():
             sums.append({
                 'id':parent_cate.id,
                 'name':parent_cate.name,
+                'sublabel':parent_cate.sublabel,
                 'leaf_ids':cate_ids,
                 'sum':val[0] if val[0] is not None else 0,
                 'budget':budget['amount'] if budget is not None else 0

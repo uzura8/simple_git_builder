@@ -237,7 +237,7 @@ class Scraper:
         for elm in elms:
             target_elm = elm.find('th')
             cate_name = target_elm.text.strip()
-            Category.save(name=cate_name, parent_id=1)
+            Category.save_by_name(name=cate_name, parent_id=1)
 
 
     def get_category_ids(self, names):

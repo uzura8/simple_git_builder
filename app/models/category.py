@@ -8,12 +8,22 @@ class Category(Base, BaseNestedSets):
     __tablename__ = 'category'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), index=True, unique=True)
+    sublabel = db.Column(db.String(128), nullable=True)
     sort_no = db.Column(db.Integer, nullable=True)
     transactions = db.relationship('Transaction', backref='transaction',
                                     lazy='dynamic')
 
     def __repr__(self):
         return '<Category {}>'.format(self.name)
+
+
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'name': self.name,
+            'sublabel': self.sublabel,
+        }
+        return data
 
 
     @classmethod
@@ -48,7 +58,8 @@ class Category(Base, BaseNestedSets):
     def cat_to_json(item):
         return {
             'id': item.id,
-            'name': item.name
+            'name': item.name,
+            'sublabel': item.sublabel
         }
 
 
@@ -87,10 +98,13 @@ class Category(Base, BaseNestedSets):
 
 
     @classmethod
-    def save(self, name='', parent_id=0):
+    def save_by_name(self, name, parent_id=0):
+        if not name:
+            raise ValueError("Argument 'name' requires values")
+
         item = self.get_one_by_name(name)
         if item:
-            if item.name != name:
+            if name and item.name != name:
                 item.name = name
             if item.parent_id != parent_id:
                 item.parent_id = parent_id
@@ -103,6 +117,36 @@ class Category(Base, BaseNestedSets):
 
         db.session.add(item)
         db.session.commit()
+
+        return item
+
+
+    @classmethod
+    def save(self, kwargs, cate_id=0):
+        if cate_id:
+            try:
+                item = self.get_one_by_id(cate_id)
+            except KeyError:
+                return
+
+            if kwargs['sublabel']:
+                item.sublabel = kwargs['sublabel'],
+
+            db.session.add(item)
+            db.session.commit()
+
+        else:
+            try:
+                name = kwargs['name']
+            except KeyError:
+                raise ValueError('name is required')
+
+            try:
+                name = kwargs['parent_id']
+            except KeyError:
+                parent_id = 0
+
+            item = self.save_by_name(name, parent_id)
 
         return item
 

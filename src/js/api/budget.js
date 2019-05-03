@@ -16,7 +16,7 @@ export default {
 
   update: (categoryId, values) => {
     return new Promise((resolve, reject) => {
-      const accept_keys = ['amount', 'sort_no']
+      const accept_keys = ['amount']
       const params = new URLSearchParams();
       for (let key in values) {
         if (!util.inArray(key, accept_keys)) continue

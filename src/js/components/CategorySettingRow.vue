@@ -1,31 +1,26 @@
 <template>
 <tr>
-  <td>
-    <span v-text="getLabel(budget)"></span>
-  </td>
-  <td>{{amountByMonth | numFormat()}}</td>
+  <td>{{category.name}}</td>
   <td v-if="isEditable">
     <b-field grouped>
       <b-input
-        placeholder="Please input amount"
-        type="number"
-        icon="yen-sign"
-        icon-pack="fas"
-        name="amount"
-        ref="amount"
+        placeholder="Please input sublabel"
+        type="text"
+        name="sublabel"
+        ref="sublabel"
         expanded
-        v-model="amount"
+        v-model="sublabel"
         @blur="blurInput"
         @focus="focus($event.target)"
-        @keydown.enter.native="updateAmount"
+        @keydown.enter.native="updateSublabel"
         @keyup.esc.native="cancel" />
       <p class="control">
-        <button class="button is-info" @mousedown="updateAmount">OK</button>
+        <button class="button is-info" @mousedown="updateSublabel">OK</button>
       </p>
     </b-field>
   </td>
   <td v-else @click="changeEditable">
-    <span>{{amount | numFormat()}}</span>
+    <span>{{sublabel}}</span>
     <b-icon icon="edit" pack="fas" size="is-small" class="is-pulled-right has-text-grey-lighter" />
   </td>
 </tr>
@@ -34,7 +29,7 @@
 <script>
 export default {
   props: {
-    budget: {
+    category: {
       type: Object,
       default: {},
     },
@@ -46,50 +41,40 @@ export default {
       isFocus: false,
       isUpdated: false,
       tmp: 0,
-      amount: 0,
+      sublabel: '',
     }
   },
 
   computed: {
-    amountByMonth () {
-      return this.amount / 12
-    },
   },
 
   watch: {
   },
 
   created() {
-    this.amount = this.budget.amount
+    this.sublabel = this.category.sublabel
   },
 
   methods: {
-    getLabel(budget) {
-      if (!this.isEmpty(budget.category_sublabel)) {
-        return budget.category_sublabel
-      }
-      return budget.category_name
-    },
-
     changeEditable() {
-      this.tmp = this.amount
+      this.tmp = this.sublabel
       this.isEditable = true
-      this.$nextTick(() => this.$refs.amount.focus())
+      this.$nextTick(() => this.$refs.sublabel.focus())
     },
 
-    updateAmount() {
+    updateSublabel() {
       this.isUpdated = true
-      if (this.amount == this.tmp) {
+      if (this.sublabel == this.tmp) {
         this.resetEditable()
         return
       }
       const params = {
-        categoryId: this.budget.category_id,
+        categoryId: this.category.id,
         values: {
-          amount: this.amount
+          sublabel: this.sublabel
         }
       }
-      this.$store.dispatch('updateBudget', params)
+      this.$store.dispatch('updateCategory', params)
         .catch(err => Promise.reject(err))
         .then(() => {
           this.resetEditable(false)
@@ -112,8 +97,8 @@ export default {
       this.resetEditable()
     },
 
-    resetEditable(isRecoverAmount = true) {
-      if (isRecoverAmount) this.amount = this.tmp
+    resetEditable(isRecoverSublabel = true) {
+      if (isRecoverSublabel) this.sublabel = this.tmp
       this.isFocus = false
       this.isEditable = false
       this.isUpdated = false

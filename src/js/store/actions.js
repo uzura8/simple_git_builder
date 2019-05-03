@@ -56,6 +56,14 @@ export default {
       .catch(err => { throw err })
   },
 
+  updateCategory: ({ commit }, payload) => {
+    return Category.update(payload.categoryId, payload.values)
+      .then(({item}) => {
+        commit(types.UPDATE_CATEGORY, item)
+      })
+      .catch(err => { throw err })
+  },
+
   fetchBudgets: ({ commit }, payload) => {
     commit(types.SET_COMMON_LOADING, true)
     return Budget.fetch(payload)

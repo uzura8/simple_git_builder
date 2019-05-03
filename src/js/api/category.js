@@ -1,4 +1,5 @@
 import client from './client'
+import util from '../util';
 
 export default {
   fetch: () => {
@@ -11,5 +12,23 @@ export default {
           reject(new Error(err.response.data.message || err.message))
         })
     })
-  }
+  },
+
+  update: (categoryId, values) => {
+    return new Promise((resolve, reject) => {
+      const accept_keys = ['sublabel']
+      const params = new URLSearchParams();
+      for (let key in values) {
+        if (!util.inArray(key, accept_keys)) continue
+        if (!values.hasOwnProperty(key)) continue
+        let value = values[key];
+        params.append(key, value);
+      }
+      client.post(`categories/${categoryId}`, params)
+        .then(res => resolve({ item: res.data }))
+        .catch(err => {
+          reject(new Error(err.response.data.message || err.message))
+        })
+    })
+  },
 }

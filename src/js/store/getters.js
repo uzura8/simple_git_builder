@@ -39,14 +39,17 @@ export default {
   singleDimCategories: state => {
     const cates = []
     state.category.list.forEach(function(parentItem) {
+      let parentLabel = !util.isEmpty(parentItem.sublabel) ?
+        parentItem.sublabel : parentItem.name
       cates.push({
         id: parentItem.id,
-        name: parentItem.name,
-        pathName: parentItem.name,
+        name: parentLabel,
+        pathName: parentLabel,
       })
       if (!util.isEmpty(parentItem.children)) {
         parentItem.children.forEach(function(item) {
-          let pathName = `${parentItem.name} > ${item.name}`
+          let label = !util.isEmpty(item.sublabel) ? item.sublabel : item.name
+          let pathName = `${parentLabel} > ${label}`
           cates.push({
             id: item.id,
             name: item.name,

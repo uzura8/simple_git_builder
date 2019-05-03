@@ -120,6 +120,24 @@ def categories():
     return jsonify(categories), 200
 
 
+@bp.route('/categories/<int:cate_id>', methods=['POST'])
+def update_category(cate_id=0):
+    if not cate_id:
+        raise InvalidUsage('category_id is required')
+    cate = Category.get_one_by_id(cate_id)
+    if not cate:
+        raise InvalidUsage('category_id is invalid')
+
+    sublabel = request.form.get('sublabel', type=str, default='')
+    if not sublabel:
+        raise InvalidUsage('sublabel is required')
+
+    values ={'sublabel':sublabel}
+    category = Category.save(values, cate_id)
+
+    return jsonify(category.to_dict()), 200
+
+
 @bp.route('/budgets', methods=['GET'])
 def budgets():
     items = Budget.get_all()

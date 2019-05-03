@@ -10,6 +10,7 @@ import About from './templates/about';
 import Performance from './templates/performance';
 import Transactions from './templates/transactions';
 import BudgetsSetting from './templates/BudgetsSetting';
+import CategorySetting from './templates/CategorySetting';
 import NotFound from './templates/notfound';
 
 const router = new VueRouter({
@@ -20,7 +21,8 @@ const router = new VueRouter({
     { path: '/about', component: About },
     { path: '/performance', name: 'Performance', component: Performance },
     { path: '/transactions', name: 'Transactions', component: Transactions },
-    { path: '/budgets/setting', name: 'BudgetsSetting', component: BudgetsSetting },
+    { path: '/setting/budgets', name: 'BudgetsSetting', component: BudgetsSetting },
+    { path: '/setting/category', name: 'CategorySetting', component: CategorySetting },
     { path: '/notfound', component: NotFound },
     { path: '*', redirect: '/notfound' }
   ],

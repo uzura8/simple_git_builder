@@ -25,6 +25,10 @@ Vue.mixin({
     inArray: util.inArray,
     listen: listener.listen,
     destroyed: listener.destroyed,
+    getCategoryLabel: function(category) {
+      if (!util.isEmpty(category.sublabel)) return category.sublabel
+      return category.name
+    },
   },
 });
 
@@ -61,6 +65,8 @@ import InputCategory from './components/InputCategory'
 Vue.component('InputCategory', InputCategory)
 import UpdateCategory from './components/UpdateCategory'
 Vue.component('UpdateCategory', UpdateCategory)
+import CategorySettingRow from './components/CategorySettingRow'
+Vue.component('CategorySettingRow', CategorySettingRow)
 import BudgetsSettingRow from './components/BudgetsSettingRow'
 Vue.component('BudgetsSettingRow', BudgetsSettingRow)
 
