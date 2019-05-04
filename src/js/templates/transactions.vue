@@ -3,6 +3,11 @@
   <h1 class="title columns is-gapless is-clearfix u-mt0">
     <div class="column">
       Transactions
+      <router-link
+        class="button is-text"
+        :to="getRouterTo({month:month}, '/performance')">
+        Performance
+      </router-link>
     </div>
     <div class="column">
       <TransactionCategoryFilter
@@ -127,13 +132,13 @@ export default {
         .then(() => {
         })
     },
-    getRouterTo: function(updateQuery = {}) {
+    getRouterTo: function(updateQuery = {}, path = '/transactions') {
       let query = {}
       if (!this.isEmpty(this.$route.query.month)) query.month = this.$route.query.month
       if (!this.isEmpty(this.$route.query.category)) query.category = this.$route.query.category
       if (!this.isEmpty(this.$route.query.sort)) query.sort = this.$route.query.sort
       if (!this.isEmpty(updateQuery)) Object.assign(query, updateQuery);
-      let params = { path:'/transactions', query:query }
+      let params = { path:path, query:query }
       return params
     },
     validateMonth: function() {

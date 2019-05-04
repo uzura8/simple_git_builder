@@ -1,6 +1,13 @@
 <template>
 <section>
-  <h1 class="title">Performances</h1>
+  <h1 class="title">
+    Performances
+    <router-link
+      class="button is-text"
+      :to="getRouterTo({month:month}, '/transactions')">
+      Transactions
+    </router-link>
+  </h1>
   <section>
     <div class="box u-sticky">
       <article class="media">
@@ -33,9 +40,15 @@
         </thead>
         <tbody>
           <tr v-for="item in performances" :key="item.id">
-            <td v-text="getCategoryLabel(item)"></td>
+            <td>
+              <router-link
+                class="button is-text"
+                :to="getRouterTo({category:item.id}, '/transactions')"
+                 v-text="getCategoryLabel(item)" />
+            </td>
             <td>{{ item.budget / 12 | numFormat }}</td>
             <td>{{ item.sum * -1 | numFormat }}</td>
+            <td>{{ item.budget / 12 - item.sum * -1 | numFormat }}</td>
             <td v-text="calcBudgetRate(item.sum, item.budget)"></td>
           </tr>
         </tbody>
@@ -104,11 +117,11 @@ export default {
         })
     },
 
-    getRouterTo: function(updateQuery = {}) {
+    getRouterTo: function(updateQuery = {}, path = '/performance') {
       let query = {}
       if (!this.isEmpty(this.$route.query.month)) query.month = this.$route.query.month
       if (!this.isEmpty(updateQuery)) Object.assign(query, updateQuery);
-      let params = { path:'/performance', query:query }
+      let params = { path:path, query:query }
       return params
     },
 

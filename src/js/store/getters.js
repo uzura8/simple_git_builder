@@ -30,6 +30,7 @@ export default {
   transactionsAmountSum: state => (categoryId = 0) => {
     let sum = 0
     state.transaction.list.forEach(function(item) {
+      if (item.is_disabled) return
       if (categoryId && item.category_id !=categoryId) return
       sum += parseInt(item.amount)
     })

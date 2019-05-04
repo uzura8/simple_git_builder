@@ -24,11 +24,13 @@ class Performance():
         for parent_cate in parent_cates:
             cate_ids = Category.get_leaf_ids(parent_cate.id, True)
             budget = search_dicts('category_id', parent_cate.id, budgets)
-            val = db.session.query(db.func.sum(Transaction.amount)).filter(
-                db.and_(
+            val = db.session.query(db.func.sum(Transaction.amount)).\
+                filter(Transaction.is_disabled == False).\
+                filter(db.and_(
                     Transaction.date >= datetime.date(year, month, 1),
                     Transaction.date <= datetime.date(year, month, lastday),
-                )).filter(Transaction.category_id.in_(cate_ids)).one()
+                )).\
+                filter(Transaction.category_id.in_(cate_ids)).one()
             sums.append({
                 'id':parent_cate.id,
                 'name':parent_cate.name,
