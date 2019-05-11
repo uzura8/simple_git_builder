@@ -2,6 +2,7 @@ from .base import Base
 from .site_config import SiteConfig
 from .account import Account
 from .transaction import Transaction
+from .transaction_preset import TransactionPreset
 from .category import Category
 from .budget import Budget
 from .performance import Performance
@@ -11,6 +12,7 @@ __all__ = [
     SiteConfig,
     Account,
     Transaction,
+    TransactionPreset,
     Category,
     Budget,
     Performance,

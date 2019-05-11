@@ -25,6 +25,14 @@ class Account(Base):
             return assoc
 
 
+    def to_dict(self):
+        data = {
+            'code': self.code,
+            'name': self.name,
+        }
+        return data
+
+
 def setup_fixurtes():
     if Account.query.count() == 0:
         db.session.add(Account(code='manual', name='手入力'))

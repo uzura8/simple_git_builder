@@ -104,10 +104,7 @@ class Category(Base, BaseNestedSets):
 
         item = self.get_one_by_name(name)
         if item:
-            if name and item.name != name:
-                item.name = name
-            if item.parent_id != parent_id:
-                item.parent_id = parent_id
+            return item
         else:
             item = self(
                 name=name,

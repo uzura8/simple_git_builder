@@ -37,6 +37,18 @@ export default {
     return sum
   },
 
+  transactionPreset: state => (transactionPresetId) => {
+    return state.transactionPreset.list.find(item => {
+      return item.id === transactionPresetId
+    })
+  },
+
+  account: state => (accountCode) => {
+    return state.account.list.find(item => {
+      return item.id === accountCode
+    })
+  },
+
   singleDimCategories: state => {
     const cates = []
     state.category.list.forEach(function(parentItem) {
@@ -60,6 +72,12 @@ export default {
       }
     })
     return cates
+  },
+
+  category: state => (categoryId) => {
+    return state.category.list.find(item => {
+      return item.id === categoryId
+    })
   },
 
   budgetsAmountTotal: state => {

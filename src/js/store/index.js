@@ -17,6 +17,12 @@ const state = {
   transaction: {
     list: [],
   },
+  transactionPreset: {
+    list: [],
+  },
+  account: {
+    list: [],
+  },
   category: {
     list: [],
   },

@@ -11,8 +11,13 @@ class Base(db.Model):
 
 
     @classmethod
-    def get_one_by_id(self, id):
+    def get_one_by_pk(self, value, prop='id'):
         try:
-            return self.query.filter(self.id == id).one()
+            return self.query.filter(getattr(self, prop) == value).one()
         except NoResultFound:
             return None
+
+
+    @classmethod
+    def get_one_by_id(self, id):
+        return self.get_one_by_pk(id)

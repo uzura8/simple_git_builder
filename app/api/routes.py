@@ -5,7 +5,8 @@ import simplejson as json
 from flask import jsonify, request
 from . import bp, InvalidUsage
 from app import db, InvalidArgumentException
-from app.models import Account, Transaction, Category, Budget, Performance
+from app.models import Account, Transaction, TransactionPreset, \
+                       Category, Budget, Performance
 from app.common.date import validate_date
 
 
@@ -114,6 +115,32 @@ def update_transaction_category(trans_id=0, cate_id=0):
     return 'OK', 200
 
 
+@bp.route('/presets', methods=['GET', 'POST'])
+def transaction_presets():
+    if request.method == 'POST':
+        values = validate_presets(request.form, True)
+        preset = TransactionPreset.save(values)
+        if preset is None:
+            raise InvalidUsage('Create preset error')
+        body = preset.to_dict()
+
+    else:
+        items = TransactionPreset.query.all()
+        body = [item.to_dict() for item in items]
+
+    return jsonify(body), 200
+
+
+@bp.route('/presets/<int:preset_id>', methods=['POST'])
+def update_transaction_preset(preset_id=0):
+    values = validate_presets(request.form)
+    preset = TransactionPreset.save(values, preset_id)
+    if preset is None:
+        raise InvalidUsage('Create preset error')
+
+    return jsonify(preset.to_dict()), 200
+
+
 @bp.route('/categories', methods=['GET'])
 def categories():
     categories = Category.get_all(is_json=True)
@@ -136,6 +163,14 @@ def update_category(cate_id=0):
     category = Category.save(values, cate_id)
 
     return jsonify(category.to_dict()), 200
+
+
+@bp.route('/accounts', methods=['GET'])
+def accounts():
+    items = Account.query.all()
+    body = [item.to_dict() for item in items]
+
+    return jsonify(body), 200
 
 
 @bp.route('/budgets', methods=['GET'])
@@ -181,4 +216,41 @@ def validate_month(month_str):
     month = int(m.group(2))
     if month < 1 or month > 12:
         raise InvalidArgumentException
+
     return year, month
+
+
+def validate_presets(form, is_new = False):
+    values = {}
+
+    name = form.get('name', type=str, default=None)
+    if name is None or not len(name):
+        if is_new:
+            raise InvalidUsage('name is required')
+    else:
+        if len(name) > 512:
+            raise InvalidUsage('name is too long')
+        values['name'] = name
+
+    transaction_name = form.get('transaction_name', type=str)
+    values['transaction_name'] = transaction_name
+
+    amount = form.get('amount', type=int, default=None)
+    if amount is not None:
+        values['amount'] = int(amount)
+
+    account_code = form.get('account_code', type=str, default=None)
+    if account_code:
+        account = Account.get_one_by_pk(account_code, 'code')
+        if not account:
+            raise InvalidUsage('account_code is invalid')
+        values['account_code'] = account_code
+
+    category_id = int(form.get('category_id', type=int, default=0))
+    if category_id:
+        category = Category.get_one_by_id(category_id)
+        if not category:
+            raise InvalidUsage('category is invalid')
+        values['category_id'] = category_id
+
+    return values

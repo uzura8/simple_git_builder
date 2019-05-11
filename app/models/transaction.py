@@ -1,6 +1,4 @@
-#from datetime import datetime
 from app import db
-#from sqlalchemy_mptt.mixins import BaseNestedSets
 from app.models.base import Base
 
 

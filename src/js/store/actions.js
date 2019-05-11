@@ -1,5 +1,5 @@
 import * as types from './mutation-types'
-import { Performance, Transaction, Category, Budget } from '../api'
+import { Performance, Transaction, TransactionPreset, Account, Category, Budget } from '../api'
 
 export default {
   setHeaderMenuOpen: ({ commit }, isOpen) => {
@@ -46,6 +46,52 @@ export default {
         commit(types.UPDATE_TRANSACTION, payload)
       })
       .catch(err => { throw err })
+  },
+
+  fetchTransactionPresets: ({ commit }, payload) => {
+    commit(types.SET_COMMON_LOADING, true)
+    return TransactionPreset.fetch(payload)
+      .then(({ lists }) => {
+        commit(types.FETCH_TRANSACTION_PRESET_LIST, lists)
+        commit(types.SET_COMMON_LOADING, false)
+      })
+      .catch(err => {
+        commit(types.SET_COMMON_LOADING, false)
+        throw err
+      })
+  },
+
+  createTransactionPreset: ({ commit }, payload) => {
+    return TransactionPreset.create(payload)
+      .then((item) => {
+        commit(types.CREATE_TRANSACTION_PRESET, item)
+      })
+      .catch(err => { throw err })
+  },
+
+  updateTransactionPreset: ({ commit }, payload) => {
+    return TransactionPreset.update(payload.transactionPresetId, payload.values)
+      .then((item) => {
+        const data = {
+          transactionPresetId: payload.transactionPresetId,
+          values: item,
+        }
+        commit(types.UPDATE_TRANSACTION_PRESET, data)
+      })
+      .catch(err => { throw err })
+  },
+
+  fetchAccounts: ({ commit }, payload) => {
+    commit(types.SET_COMMON_LOADING, true)
+    return Account.fetch(payload)
+      .then(({ lists }) => {
+        commit(types.FETCH_ACCOUNT_LIST, lists)
+        commit(types.SET_COMMON_LOADING, false)
+      })
+      .catch(err => {
+        commit(types.SET_COMMON_LOADING, false)
+        throw err
+      })
   },
 
   fetchCategories: ({ commit }) => {

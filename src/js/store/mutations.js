@@ -41,6 +41,36 @@ export default {
     }
   },
 
+  [types.FETCH_TRANSACTION_PRESET_LIST] (state, payload) {
+    state.transactionPreset.list = payload
+  },
+
+  [types.CREATE_TRANSACTION_PRESET] (state, payload) {
+    state.transactionPreset.list.push(payload)
+  },
+
+  [types.UPDATE_TRANSACTION_PRESET] (state, payload) {
+    const presetId = payload.transactionPresetId
+    const values = payload.values
+    for (let i = 0, n = state.transactionPreset.list.length; i < n; i++) {
+      const transactionPreset = state.transactionPreset.list[i]
+      if (transactionPreset.id !== presetId) continue
+      const accept_keys = ['name', 'transaction_name', 'amount', 'account_code', 'category_id', 'account_name']
+      for (let key in values) {
+        if (!util.inArray(key, accept_keys)) continue
+        if (!values.hasOwnProperty(key)) continue
+
+        let value = values[key];
+        state.transactionPreset.list[i][key] = value
+      }
+      break
+    }
+  },
+
+  [types.FETCH_ACCOUNT_LIST] (state, payload) {
+    state.account.list = payload
+  },
+
   [types.FETCH_CATEGORIES_LIST] (state, payload) {
     if (util.isEmpty(payload[0]) || util.isEmpty(payload[0].children)) {
       return []
