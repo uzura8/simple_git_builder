@@ -131,14 +131,20 @@ def transaction_presets():
     return jsonify(body), 200
 
 
-@bp.route('/presets/<int:preset_id>', methods=['POST'])
+@bp.route('/presets/<int:preset_id>', methods=['POST', 'DELETE'])
 def update_transaction_preset(preset_id=0):
-    values = validate_presets(request.form)
-    preset = TransactionPreset.save(values, preset_id)
-    if preset is None:
-        raise InvalidUsage('Create preset error')
+    if request.method == 'POST':
+        values = validate_presets(request.form)
+        preset = TransactionPreset.save(values, preset_id)
+        if preset is None:
+            raise InvalidUsage('Create preset error')
 
-    return jsonify(preset.to_dict()), 200
+        return jsonify(preset.to_dict()), 200
+
+    elif request.method == 'DELETE':
+        preset = TransactionPreset.delete(preset_id)
+
+        return jsonify(preset.to_dict()), 200
 
 
 @bp.route('/categories', methods=['GET'])

@@ -92,3 +92,18 @@ class TransactionPreset(Base):
         db.session.commit()
 
         return item
+
+
+    @classmethod
+    def delete(self, self_id):
+        if not self_id:
+            raise ValueError('id is invalid')
+        try:
+            item = self.get_one_by_id(self_id)
+        except NoResultFound:
+            raise ValueError('id is invalid')
+
+        db.session.delete(item)
+        db.session.commit()
+
+        return item

@@ -67,6 +67,17 @@ export default {
     }
   },
 
+  [types.DELETE_TRANSACTION_PRESET] (state, payload) {
+    const presetId = payload.transactionPresetId
+    //const values = payload.values
+    for (let i = 0, n = state.transactionPreset.list.length; i < n; i++) {
+      const transactionPreset = state.transactionPreset.list[i]
+      if (transactionPreset.id !== presetId) continue
+      state.transactionPreset.list.splice(i, 1)
+      break
+    }
+  },
+
   [types.FETCH_ACCOUNT_LIST] (state, payload) {
     state.account.list = payload
   },

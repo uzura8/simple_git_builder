@@ -48,4 +48,14 @@ export default {
         })
     })
   },
+
+  delete: (presetId) => {
+    return new Promise((resolve, reject) => {
+      client.delete(`presets/${presetId}`)
+        .then(res => resolve(res.data))
+        .catch(err => {
+          reject(new Error(err.response.data.message || err.message))
+        })
+    })
+  },
 }

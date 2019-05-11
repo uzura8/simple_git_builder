@@ -15,7 +15,7 @@
     <span v-else>-</span>
   </td>
   <td>
-    <button class="button is-small" @click="confirmDelete">
+    <button class="button is-danger is-small" @click="confirmDelete">
       <b-icon icon="trash-alt" pack="fas" />
     </button>
   </td>
@@ -62,7 +62,18 @@ export default {
         type: 'is-danger',
         hasIcon: true,
         onConfirm: () => {
-          this.$toast.open('Deleted!')
+          this.$store.dispatch('deleteTransactionPreset', this.preset.id)
+            .catch(err => {
+              this.$toast.open({
+                message: err.message,
+                type: 'is-danger',
+                duration: 5000,
+                position: 'is-bottom',
+              })
+            })
+            .then(() => {
+              this.$toast.open('Deleted!')
+            })
         }
       })
     }
