@@ -58,7 +58,6 @@ export default {
         return item.code === this.updatedValue
       })
     },
-
     accounts () {
       return this.$store.state.account.list
     },
@@ -78,6 +77,7 @@ export default {
       }
     },
   },
+
   created() {
     this.updatedValue = this.value
     this.$emit('input', this.updatedValue)

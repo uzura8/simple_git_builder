@@ -36,7 +36,6 @@
       <table class="table" v-if="transactions">
         <thead>
           <tr>
-            <th>-</th>
             <th>
               <router-link :to="getRouterTo({sort:sortKey == 'date-desc' ? 'date' : 'date-desc'})">
                 date
@@ -52,8 +51,9 @@
                 <b-icon v-if="sortKey == 'amount-desc'" pack="fas" icon="caret-up"></b-icon>
               </router-link>
             </th>
-            <th>account</th>
             <th>category</th>
+            <th>account</th>
+            <th>-</th>
           </tr>
         </thead>
         <tbody>
@@ -79,6 +79,7 @@ export default {
       categoryId: 0,
     }
   },
+
   computed: {
     sortKey () {
       const acceptKeys = ['date', 'date-desc', 'amount', 'amount-desc']
@@ -95,6 +96,7 @@ export default {
       return this.$store.state.common.isLoading
     },
   },
+
   watch: {
     month (val) {
       const params = this.getRouterTo({ 'month':val })
@@ -108,6 +110,7 @@ export default {
       this.loadTransactions(to.query)
     },
   },
+
   created() {
     this.month = this.validateMonth()
     this.categoryId = this.validateCategoryId()
@@ -117,7 +120,9 @@ export default {
     }
     if (this.categoryId) params.category = this.categoryId
     this.loadTransactions(params)
+    this.loadAccounts()
   },
+
   methods: {
     loadTransactions: function(params) {
       this.$store.dispatch('fetchTransactions', params)
@@ -132,6 +137,7 @@ export default {
         .then(() => {
         })
     },
+
     getRouterTo: function(updateQuery = {}, path = '/transactions') {
       let query = {}
       if (!this.isEmpty(this.$route.query.month)) query.month = this.$route.query.month
@@ -141,6 +147,7 @@ export default {
       let params = { path:path, query:query }
       return params
     },
+
     validateMonth: function() {
       if (!this.isEmpty(this.$route.query.month)
         && this.$route.query.month.match(/\d{4}\-\d{2}/) != null) {
@@ -148,9 +155,17 @@ export default {
       }
       return moment().format('YYYY-MM')
     },
+
     validateCategoryId: function() {
       const categoryId = parseInt(this.$route.query.category)
       return !Number.isNaN(categoryId) ? categoryId : 0
+    },
+
+    loadAccounts: function() {
+      this.$store.dispatch('fetchAccounts')
+        .catch(err => Promise.reject(err))
+        .then(() => {
+        })
     },
   }
 }

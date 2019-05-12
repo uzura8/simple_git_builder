@@ -29,7 +29,7 @@ export default {
       const transaction = state.transaction.list[i]
       if (transaction.id !== transactionId) continue
 
-      const accept_keys = ['name', 'amount', 'date', 'category_id', 'is_disabled']
+      const accept_keys = ['name', 'amount', 'date', 'category_id', 'is_disabled', 'account_code']
       for (let key in values) {
         if (!util.inArray(key, accept_keys)) continue
         if (!values.hasOwnProperty(key)) continue

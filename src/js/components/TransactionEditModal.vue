@@ -14,6 +14,7 @@
           v-text="isNew ? 'Create Transaction' : 'Update Transaction'"></p>
       </header>
       <section class="modal-card-body">
+
         <b-field label="Date"
           :type="{'is-danger': errors.date}"
           :message="errors.date">
@@ -22,6 +23,7 @@
             required
             name="date" />
         </b-field>
+
         <b-field label="Content"
           :type="{'is-danger': errors.name}"
           :message="errors.name">
@@ -45,6 +47,7 @@
             name="amount"
             v-model="amount" />
         </b-field>
+
         <b-field label="Category"
           :type="{'is-danger': errors.category_id}"
           :message="errors.category_id">
@@ -52,6 +55,15 @@
             name="category_id"
             v-model="category_id" />
         </b-field>
+
+        <b-field label="Account"
+          :type="{'is-danger': errors.account_code}"
+          :message="errors.account_code">
+          <input-account
+            name="account_code"
+            v-model="account_code" />
+        </b-field>
+
       </section>
       <footer class="modal-card-foot">
         <button class="button" type="button" @click="isModalActive = false">Close</button>
@@ -85,6 +97,7 @@ export default {
       default: true,
     },
   },
+
   data() {
     return {
       isModalActive: false,
@@ -92,14 +105,17 @@ export default {
       date: '',
       amount: 0,
       category_id: 0,
+      account_code: 'manual',
       errors: {
         name: '',
         amount: '',
         date: '',
         category_id: '',
+        account_code: '',
       },
     }
   },
+
   computed: {
     transaction () {
       return this.$store.getters.transaction(this.transactionId)
@@ -108,25 +124,33 @@ export default {
       return this.isEmpty(this.transaction)
     },
     updatedValues () {
+      const keys = ['name', 'date', 'amount', 'account_code', 'category_id']
+      let isUpdated = false
       let values = {}
-      if (this.transaction.name != this.name) values.name = this.name
-      if (this.transaction.date != this.date) values.date = this.date
-      if (this.transaction.amount != this.amount) values.amount = this.amount
-      if (this.transaction.category_id != this.category_id) values.category_id = this.category_id
-      if (this.isEmpty(values)) return false
+      for (let i = 0, n = keys.length; i < n; i++) {
+        let key = keys[i]
+        if (this.transaction[key] != this[key]) {
+          values[key] = this[key]
+          isUpdated = true
+        }
+      }
+      if (!isUpdated) return false
       return values
     },
   },
+
   watch: {
     updateCategoryId (val) {
       this.category_id = val
     },
   },
+
   created() {
     if (!this.isNew) {
       this.setValues()
     }
   },
+
   methods: {
     save: function() {
       if (this.validateAll() == false) {
@@ -141,10 +165,18 @@ export default {
           date: this.date,
           amount: this.amount,
           category_id: this.category_id,
+          account_code: this.account_code,
         }
         if (this.isNew) {
           this.$store.dispatch('createTransaction', values)
-            .catch(err => Promise.reject(err))
+            .catch(err => {
+              this.$toast.open({
+                message: err.message,
+                type: 'is-danger',
+                duration: 5000,
+                position: 'is-bottom',
+              })
+            })
             .then(() => {
               this.isModalActive = false
               this.$toast.open({
@@ -159,7 +191,14 @@ export default {
             values: this.updatedValues,
           }
           this.$store.dispatch('updateTransaction', params)
-            .catch(err => Promise.reject(err))
+            .catch(err => {
+              this.$toast.open({
+                message: err.message,
+                type: 'is-danger',
+                duration: 5000,
+                position: 'is-bottom',
+              })
+            })
             .then(() => {
               this.isModalActive = false
               this.$toast.open({
@@ -170,24 +209,31 @@ export default {
         }
       }
     },
+
     setValues: function() {
       this.name = this.transaction.name
       this.date = this.transaction.date
       this.amount = this.transaction.amount
       this.category_id = this.transaction.category_id
+      this.account_code = this.transaction.account_code
     },
+
     resetValues: function() {
       this.name = ''
       this.date = ''
       this.amount = 0
       this.category_id = 0
+      this.account_code = ''
     },
+
     resetErros: function() {
       this.errors.name = ''
       this.errors.date = ''
       this.errors.amount = ''
       this.errors.category_id = ''
+      this.errors.account_code = ''
     },
+
     validateAll: function() {
       this.resetErros()
       let isError = false

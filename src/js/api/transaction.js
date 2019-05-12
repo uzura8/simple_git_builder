@@ -16,7 +16,7 @@ export default {
 
   create: (values) => {
     return new Promise((resolve, reject) => {
-      const required_keys = ['name', 'amount', 'date', 'category_id']
+      const required_keys = ['name', 'amount', 'date', 'category_id', 'account_code']
       const params = new URLSearchParams()
       for (let i = 0, n = required_keys.length; i < n; i++) {
         let key = required_keys[i]
@@ -34,7 +34,7 @@ export default {
 
   update: (transactionId, values) => {
     return new Promise((resolve, reject) => {
-      const accept_keys = ['name', 'amount', 'date', 'category_id', 'is_disabled']
+      const accept_keys = ['name', 'amount', 'date', 'category_id', 'account_code', 'is_disabled']
       const params = new URLSearchParams();
       for (let key in values) {
         if (!util.inArray(key, accept_keys)) continue
@@ -43,7 +43,7 @@ export default {
         params.append(key, value);
       }
       client.post(`transactions/${transactionId}`, params)
-        .then(() => resolve())
+        .then(res => resolve(res.data))
         .catch(err => {
           reject(new Error(err.response.data.message || err.message))
         })

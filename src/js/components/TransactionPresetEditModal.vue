@@ -168,7 +168,14 @@ export default {
         }
         if (this.isNew) {
           this.$store.dispatch('createTransactionPreset', values)
-            .catch(err => Promise.reject(err))
+            .catch(err => {
+              this.$toast.open({
+                message: err.message,
+                type: 'is-danger',
+                duration: 5000,
+                position: 'is-bottom',
+              })
+            })
             .then(() => {
               this.isModalActive = false
               this.$toast.open({
