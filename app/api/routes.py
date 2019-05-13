@@ -41,7 +41,14 @@ def transactions():
         else:
             raise InvalidArgumentException
 
-        values['account_code'] = 'manual'
+        account_code = request.form.get('account_code', type=str, default=None)
+        if account_code:
+            account = Account.get_one_by_pk(account_code, 'code')
+            if not account:
+                raise InvalidUsage('account_code is invalid')
+            values['account_code'] = account_code
+        else:
+            values['account_code'] = 'manual'
 
         transaction = Transaction.create(values)
         if transaction is None:
@@ -102,6 +109,13 @@ def update_transaction_category(trans_id=0, cate_id=0):
         trans.category_id = cate_id
         is_updated = True
 
+    account_code = request.form.get('account_code', type=str, default=None)
+    if account_code:
+        account = Account.get_one_by_pk(account_code, 'code')
+        if not account:
+            raise InvalidUsage('account_code is invalid')
+        trans.account_code = account_code
+
     is_disabled = request.form.get('is_disabled', type=int, default=None)
     if is_disabled is not None:
         if is_disabled not in [0, 1]:
@@ -112,7 +126,7 @@ def update_transaction_category(trans_id=0, cate_id=0):
     if is_updated:
         db.session.commit()
 
-    return 'OK', 200
+    return jsonify(trans.to_dict()), 200
 
 
 @bp.route('/presets', methods=['GET', 'POST'])

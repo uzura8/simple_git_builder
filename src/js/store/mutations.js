@@ -25,20 +25,8 @@ export default {
   [types.UPDATE_TRANSACTION] (state, payload) {
     const transactionId = payload.transactionId
     const values = payload.values
-    for (let i = 0, n = state.transaction.list.length; i < n; i++) {
-      const transaction = state.transaction.list[i]
-      if (transaction.id !== transactionId) continue
-
-      const accept_keys = ['name', 'amount', 'date', 'category_id', 'is_disabled', 'account_code']
-      for (let key in values) {
-        if (!util.inArray(key, accept_keys)) continue
-        if (!values.hasOwnProperty(key)) continue
-
-        let value = values[key];
-        state.transaction.list[i][key] = value
-      }
-      break
-    }
+    const index = state.transaction.list.findIndex(item => item.id === transactionId)
+    state.transaction.list.splice(index, 1, values)
   },
 
   [types.FETCH_TRANSACTION_PRESET_LIST] (state, payload) {
@@ -52,19 +40,8 @@ export default {
   [types.UPDATE_TRANSACTION_PRESET] (state, payload) {
     const presetId = payload.transactionPresetId
     const values = payload.values
-    for (let i = 0, n = state.transactionPreset.list.length; i < n; i++) {
-      const transactionPreset = state.transactionPreset.list[i]
-      if (transactionPreset.id !== presetId) continue
-      const accept_keys = ['name', 'transaction_name', 'amount', 'account_code', 'category_id', 'account_name']
-      for (let key in values) {
-        if (!util.inArray(key, accept_keys)) continue
-        if (!values.hasOwnProperty(key)) continue
-
-        let value = values[key];
-        state.transactionPreset.list[i][key] = value
-      }
-      break
-    }
+    const index = state.transactionPreset.list.findIndex(item => item.id === presetId)
+    state.transaction.list.splice(index, 1, values)
   },
 
   [types.DELETE_TRANSACTION_PRESET] (state, payload) {

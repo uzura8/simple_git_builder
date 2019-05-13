@@ -17,7 +17,7 @@
     v-for="account in accounts"
     :key="account.code"
     :value="account.code"
-    :class="{ 'is-active': updatedValue == account.id }"
+    :class="{ 'is-active': updatedValue && updatedValue == account.id }"
      aria-role="menuitem">
     {{ account.name }}
   </b-dropdown-item>

@@ -42,8 +42,11 @@ export default {
 
   updateTransaction: ({ commit }, payload) => {
     return Transaction.update(payload.transactionId, payload.values)
-      .then(() => {
-        commit(types.UPDATE_TRANSACTION, payload)
+      .then((item) => {
+        commit(types.UPDATE_TRANSACTION, {
+          transactionId: payload.transactionId,
+          values: item,
+        })
       })
       .catch(err => { throw err })
   },
