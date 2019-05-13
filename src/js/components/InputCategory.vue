@@ -44,12 +44,14 @@ export default {
       default: '',
     },
   },
+
   data() {
     return {
       updatedValue: 0,
       isActive: false,
     }
   },
+
   computed: {
     category () {
       return this.categories.find(item => {
@@ -75,8 +77,14 @@ export default {
       }
     },
   },
+
+  watch: {
+    value (val) {
+      this.updatedValue = this.value
+    },
+  },
+
   created() {
-    this.updatedValue = this.value
     this.$emit('input', this.updatedValue)
   },
 }

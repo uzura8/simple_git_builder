@@ -121,6 +121,7 @@ export default {
     if (this.categoryId) params.category = this.categoryId
     this.loadTransactions(params)
     this.loadAccounts()
+    this.loadPresets()
   },
 
   methods: {
@@ -164,6 +165,21 @@ export default {
     loadAccounts: function() {
       this.$store.dispatch('fetchAccounts')
         .catch(err => Promise.reject(err))
+        .then(() => {
+        })
+
+    },
+
+    loadPresets: function(params = {}) {
+      this.$store.dispatch('fetchTransactionPresets', params)
+        .catch(err => {
+          this.$toast.open({
+            message: err.message,
+            type: 'is-danger',
+            duration: 5000,
+            position: 'is-bottom',
+          })
+        })
         .then(() => {
         })
     },

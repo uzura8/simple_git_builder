@@ -5,21 +5,21 @@
   :class="{ 'is-right':isRight, 'is-pulled-right':isPulledRight }">
   <button class="button" type="button" slot="trigger" :class="btnSizeClass">
     <template v-if="updatedValue">
-      <span>{{ account.name }}</span>
+      <span>{{ preset.name }}</span>
     </template>
     <template v-else>
-      <span>Select Account</span>
+      <span>Select Preset</span>
     </template>
     <b-icon icon="caret-down" pack="fas"></b-icon>
   </button>
 
   <b-dropdown-item
-    v-for="account in accounts"
-    :key="account.code"
-    :value="account.code"
-    :class="{ 'is-active': updatedValue && updatedValue == account.id }"
+    v-for="preset in presets"
+    :key="preset.id"
+    :value="preset.id"
+    :class="{ 'is-active': updatedValue && updatedValue == preset.id }"
      aria-role="menuitem">
-    {{ account.name }}
+    {{ preset.name }}
   </b-dropdown-item>
 </b-dropdown>
 </template>
@@ -28,8 +28,8 @@
 export default {
   props: {
     value: {
-      type: String,
-      default: '',
+      type: Number,
+      default: 0,
     },
     isRight: {
       type: Boolean,
@@ -53,13 +53,11 @@ export default {
   },
 
   computed: {
-    account () {
-      return this.accounts.find(item => {
-        return item.code === this.updatedValue
-      })
+    preset () {
+      return this.$store.getters.transactionPreset(this.updatedValue)
     },
-    accounts () {
-      return this.$store.state.account.list
+    presets () {
+      return this.$store.state.transactionPreset.list
     },
     btnSizeClass () {
       const accepts = ['is-small', 'is-medium', 'is-large']
@@ -75,12 +73,6 @@ export default {
         if (this.value !== newVal) this.$emit('input', newVal)
         this.updatedValue = newVal
       }
-    },
-  },
-
-  watch: {
-    value (val) {
-      this.updatedValue = this.value
     },
   },
 

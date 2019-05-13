@@ -14,6 +14,9 @@
           v-text="isNew ? 'Create Transaction' : 'Update Transaction'"></p>
       </header>
       <section class="modal-card-body">
+        <b-field label="Preset">
+          <transaction-preset-dropdown v-model="presetId" name="presetId" />
+        </b-field>
 
         <b-field label="Date"
           :type="{'is-danger': errors.date}"
@@ -106,6 +109,7 @@ export default {
       amount: 0,
       category_id: 0,
       account_code: 'manual',
+      presetId: 0,
       errors: {
         name: '',
         amount: '',
@@ -142,6 +146,14 @@ export default {
   watch: {
     updateCategoryId (val) {
       this.category_id = val
+    },
+    presetId (val) {
+      if (!val) return
+      const preset = this.$store.getters.transactionPreset(val)
+      this.name = preset.name
+      this.amount = preset.amount
+      this.category_id = preset.category_id
+      this.account_code = preset.account_code
     },
   },
 
@@ -206,6 +218,7 @@ export default {
                 type: 'is-success'
               })
             })
+            this.resetValues()
         }
       }
     },
@@ -224,6 +237,7 @@ export default {
       this.amount = 0
       this.category_id = 0
       this.account_code = ''
+      this.presetId = 0
     },
 
     resetErros: function() {

@@ -76,6 +76,9 @@ Vue.component('TransactionPresetRow', TransactionPresetRow)
 import TransactionPresetEditModal from './components/TransactionPresetEditModal'
 Vue.component('TransactionPresetEditModal', TransactionPresetEditModal)
 
+import TransactionPresetDropdown from './components/TransactionPresetDropdown'
+Vue.component('TransactionPresetDropdown', TransactionPresetDropdown)
+
 import InputCategory from './components/InputCategory'
 Vue.component('InputCategory', InputCategory)
 
