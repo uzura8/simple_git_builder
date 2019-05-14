@@ -14,7 +14,15 @@
         v-model="categoryId"
         :isRight="true"
         :isPulledRight="true" />
-      <transaction-edit-modal />
+      <button
+        class="button is-pulled-right is-info"
+        @click="isModalActive = true">
+        <b-icon pack="fas" class="is-small" icon="plus"></b-icon>
+        <span>Create</span>
+      </button>
+      <transaction-edit-modal
+        :isModalActive="isModalActive"
+        v-on:close-modal="isModalActive = false" />
     </div>
   </h1>
   <section>
@@ -77,6 +85,7 @@ export default {
     return {
       month: '',
       categoryId: 0,
+      isModalActive: false,
     }
   },
 
@@ -182,6 +191,10 @@ export default {
         })
         .then(() => {
         })
+    },
+
+    closeModal: function() {
+      this.isModalActive = false
     },
   }
 }

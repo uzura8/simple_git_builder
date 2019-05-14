@@ -1,13 +1,6 @@
 <template>
 <span>
-  <button
-    class="button is-pulled-right"
-    :class="[buttonSize, isNew ? 'is-info' : '']"
-    @click="isModalActive = true">
-    <b-icon pack="fas" class="is-small" :icon="isNew ? 'plus' : 'edit'"></b-icon>
-    <span v-if="dispButtonLabel" v-text="isNew ? 'Create' : 'Update'"></span>
-  </button>
-  <b-modal :active.sync="isModalActive" has-modal-card>
+  <b-modal :active.sync="isActive" has-modal-card>
     <div class="modal-card" style="width: auto">
       <header class="modal-card-head">
         <p class="modal-card-title"
@@ -69,7 +62,7 @@
 
       </section>
       <footer class="modal-card-foot">
-        <button class="button" type="button" @click="isModalActive = false">Close</button>
+        <button class="button" type="button" @click="isActive = false">Close</button>
         <button
           class="button is-primary"
           v-text="isNew ? 'Create' : 'Update'"
@@ -84,6 +77,10 @@
 
 export default {
   props: {
+    isModalActive: {
+      type: Boolean,
+      default: false,
+    },
     transactionId: {
       type: Number,
     },
@@ -103,7 +100,7 @@ export default {
 
   data() {
     return {
-      isModalActive: false,
+      isActive: false,
       name: '',
       date: '',
       amount: 0,
@@ -155,6 +152,14 @@ export default {
       this.category_id = preset.category_id
       this.account_code = preset.account_code
     },
+
+    isActive (val) {
+      if (val === false) this.$emit('close-modal')
+    },
+
+    isModalActive (val) {
+      this.isActive = this.isModalActive
+    },
   },
 
   created() {
@@ -190,7 +195,7 @@ export default {
               })
             })
             .then(() => {
-              this.isModalActive = false
+              this.isActive = false
               this.$toast.open({
                 message: 'Created transaction.',
                 type: 'is-success'
@@ -212,13 +217,13 @@ export default {
               })
             })
             .then(() => {
-              this.isModalActive = false
+              this.isActive = false
               this.$toast.open({
                 message: 'Updated transaction.',
                 type: 'is-success'
               })
+              this.resetValues()
             })
-            this.resetValues()
         }
       }
     },
