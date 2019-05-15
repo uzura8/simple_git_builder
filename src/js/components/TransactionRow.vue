@@ -8,46 +8,19 @@
   </td>
   <td>{{transaction.name}}</td>
   <td>{{transaction.amount | numFormat()}}</td>
-  <td><update-category
+  <td>
+    <update-category
         :categoryId="transaction.category_id"
         v-model="updateCategoryId"
         :isRight="true"
         :transactionId="transaction.id"
-        :btnSize="'small'" /></td>
+        :btnSize="'small'" />
+  </td>
   <td>{{transaction.account_name | substr(12)}}</td>
   <td>
-    <div class="dropdown is-right" :class="{'is-active':isDropdownActive}">
-      <div class="dropdown-trigger">
-        <button
-          class="button is-small"
-          aria-haspopup="true"
-          aria-controls="dropdown-menu"
-          @click="isDropdownActive = !isDropdownActive">
-          <span>
-            <b-icon pack="fas" size="is-small" icon="edit"></b-icon>
-          </span>
-          <span class="icon is-small">
-            <i class="fas fa-angle-down" aria-hidden="true"></i>
-          </span>
-        </button>
-      </div>
-      <div class="dropdown-menu" id="dropdown-menu" role="menu">
-        <div class="dropdown-content">
-          <a class="dropdown-item" @click="isModalActive = true">
-            <b-icon pack="fas" size="is-small" icon="pencil-alt"></b-icon>
-            <span>Edit</span>
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <transaction-edit-modal
-      :isModalActive="isModalActive"
-      v-on:close-modal="isModalActive = false"
-      :transactionId="transaction.id"
-      :updateCategoryId="updateCategoryId"
-      :dispButtonLabel="false"
-      :buttonSize="'is-small'" />
+    <Transaction-row-edit-dropdown
+      :transaction="transaction"
+      :updateCategoryId="updateCategoryId"/>
   </td>
 </tr>
 </template>
@@ -63,8 +36,6 @@ export default {
 
   data () {
     return {
-      isDropdownActive: false,
-      isModalActive: false,
       updateCategoryId: 0,
     }
   },
@@ -73,9 +44,6 @@ export default {
   },
 
   watch: {
-    isModalActive (val) {
-      if (val === false) this.isDropdownActive = false
-    },
   },
 
   created() {

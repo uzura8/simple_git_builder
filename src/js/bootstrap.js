@@ -64,6 +64,9 @@ Vue.component('TransactionMonthNav', TransactionMonthNav)
 import TransactionRow from './components/TransactionRow'
 Vue.component('TransactionRow', TransactionRow)
 
+import TransactionRowEditDropdown from './components/TransactionRowEditDropdown'
+Vue.component('TransactionRowEditDropdown', TransactionRowEditDropdown)
+
 import TransactionEditModal from './components/TransactionEditModal'
 Vue.component('TransactionEditModal', TransactionEditModal)
 
