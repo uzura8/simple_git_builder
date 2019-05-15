@@ -44,6 +44,7 @@
       <table class="table" v-if="transactions">
         <thead>
           <tr>
+            <th>-</th>
             <th>
               <router-link :to="getRouterTo({sort:sortKey == 'date-desc' ? 'date' : 'date-desc'})">
                 date

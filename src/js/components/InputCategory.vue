@@ -85,7 +85,7 @@ export default {
   },
 
   created() {
-    this.$emit('input', this.updatedValue)
+    this.updatedValue = this.value
   },
 }
 </script>
