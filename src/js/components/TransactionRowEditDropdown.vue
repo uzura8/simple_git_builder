@@ -18,9 +18,13 @@
     </div>
     <div class="dropdown-menu" id="dropdown-menu" role="menu">
       <div class="dropdown-content">
-        <a class="dropdown-item" @click="isModalActive = true">
+        <a class="dropdown-item" @click="openModal(false)">
           <b-icon pack="fas" size="is-small" icon="pencil-alt"></b-icon>
           <span>Edit</span>
+        </a>
+        <a class="dropdown-item" @click="openModal(true)">
+          <b-icon pack="fas" size="is-small" icon="divide"></b-icon>
+          <span>Divide</span>
         </a>
       </div>
     </div>
@@ -30,6 +34,7 @@
     :isModalActive="isModalActive"
     @close-modal="isModalActive = false"
     :transactionId="transaction.id"
+    :isEditToDevide="isEditToDevide"
     :updateCategoryId="updateCategoryId"
     :dispButtonLabel="false"
     :buttonSize="'is-small'" />
@@ -52,6 +57,7 @@ export default {
     return {
       isActive: false,
       isModalActive: false,
+      isEditToDevide: false,
     }
   },
 
@@ -72,6 +78,10 @@ export default {
     }.bind(this));
   },
   methods: {
+    openModal: function(isEditToDevide=false) {
+      this.isEditToDevide = isEditToDevide
+      this.isModalActive = true
+    }
   }
 }
 </script>

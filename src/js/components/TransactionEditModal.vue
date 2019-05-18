@@ -4,7 +4,7 @@
     <div class="modal-card" style="width: auto">
       <header class="modal-card-head">
         <p class="modal-card-title"
-          v-text="isNew ? 'Create Transaction' : 'Update Transaction'"></p>
+          v-text="getActionLabel() + ' Transaction'"></p>
       </header>
       <section class="modal-card-body">
 
@@ -13,6 +13,7 @@
         </b-field>
 
         <b-field label="Date"
+          v-if="!isEditToDevide"
           :type="{'is-danger': errors.date}"
           :message="errors.date">
           <input-date
@@ -54,6 +55,7 @@
         </b-field>
 
         <b-field label="Account"
+          v-if="!isEditToDevide"
           :type="{'is-danger': errors.account_code}"
           :message="errors.account_code">
           <input-account
@@ -66,7 +68,7 @@
         <button class="button" type="button" @click="isActive = false">Close</button>
         <button
           class="button is-primary"
-          v-text="isNew ? 'Create' : 'Update'"
+          v-text="getActionLabel()"
           @click="save()"></button>
       </footer>
     </div>
@@ -75,10 +77,15 @@
 </template>
 
 <script>
+import { moment } from '../bootstrap'
 
 export default {
   props: {
     isModalActive: {
+      type: Boolean,
+      default: false,
+    },
+    isEditToDevide: {
       type: Boolean,
       default: false,
     },
@@ -123,7 +130,7 @@ export default {
       return this.$store.getters.transaction(this.transactionId)
     },
     isNew () {
-      return this.isEmpty(this.transaction)
+      return this.isEmpty(this.transactionId) || this.isEditToDevide
     },
     updatedValues () {
       const keys = ['name', 'date', 'amount', 'account_code', 'category_id']
@@ -156,7 +163,12 @@ export default {
     },
 
     isActive (val) {
-      if (val === false) this.$emit('close-modal')
+      if (val === true) {
+        if (!this.isNew) this.setValues()
+      } else {
+        this.resetValues()
+        this.$emit('close-modal')
+      }
     },
 
     isModalActive (val) {
@@ -165,67 +177,93 @@ export default {
   },
 
   created() {
-    if (!this.isNew) {
-      this.setValues()
-    }
   },
 
   methods: {
     save: function() {
+      if (this.isEditToDevide) {
+        this.date = moment(this.transaction.date).format('YYYY-MM-DD');
+      }
       if (this.validateAll() == false) {
         this.$toast.open({
           message: 'Form is not valid! Please check the fields.',
           type: 'is-danger',
           position: 'is-bottom'
         })
-      } else {
-        const values = {
-          name: this.name,
-          date: this.date,
-          amount: this.amount,
-          category_id: this.category_id,
-          account_code: this.account_code,
+        return
+      }
+
+      const values = {
+        name: this.name,
+        date: this.date,
+        amount: this.amount,
+        category_id: this.category_id,
+        account_code: this.account_code,
+      }
+      if (this.isEditToDevide) {
+        this.$store.dispatch('createTransaction', values)
+          .then(() => {
+            const params = {
+              transactionId: this.transaction.id,
+              values: {amount: this.transaction.amount - this.amount},
+            }
+            this.$store.dispatch('updateTransaction', params)
+          })
+          .then(() => {
+            this.isActive = false
+            this.$toast.open({
+              message: 'Divide transaction.',
+              type: 'is-success'
+            })
+            this.resetValues()
+          })
+          .catch(err => {
+            this.$toast.open({
+              message: err.message,
+              type: 'is-danger',
+              duration: 5000,
+              position: 'is-bottom',
+            })
+          })
+      } else if (this.isNew) {
+        this.$store.dispatch('createTransaction', values)
+          .catch(err => {
+            this.$toast.open({
+              message: err.message,
+              type: 'is-danger',
+              duration: 5000,
+              position: 'is-bottom',
+            })
+          })
+          .then(() => {
+            this.isActive = false
+            this.$toast.open({
+              message: 'Created transaction.',
+              type: 'is-success'
+            })
+            this.resetValues()
+          })
+      } else if (this.updatedValues) {
+        const params = {
+          transactionId: this.transaction.id,
+          values: this.updatedValues,
         }
-        if (this.isNew) {
-          this.$store.dispatch('createTransaction', values)
-            .catch(err => {
-              this.$toast.open({
-                message: err.message,
-                type: 'is-danger',
-                duration: 5000,
-                position: 'is-bottom',
-              })
+        this.$store.dispatch('updateTransaction', params)
+          .catch(err => {
+            this.$toast.open({
+              message: err.message,
+              type: 'is-danger',
+              duration: 5000,
+              position: 'is-bottom',
             })
-            .then(() => {
-              this.isActive = false
-              this.$toast.open({
-                message: 'Created transaction.',
-                type: 'is-success'
-              })
-              this.resetValues()
+          })
+          .then(() => {
+            this.isActive = false
+            this.$toast.open({
+              message: 'Updated transaction.',
+              type: 'is-success'
             })
-        } else if (this.updatedValues) {
-          const params = {
-            transactionId: this.transaction.id,
-            values: this.updatedValues,
-          }
-          this.$store.dispatch('updateTransaction', params)
-            .catch(err => {
-              this.$toast.open({
-                message: err.message,
-                type: 'is-danger',
-                duration: 5000,
-                position: 'is-bottom',
-              })
-            })
-            .then(() => {
-              this.isActive = false
-              this.$toast.open({
-                message: 'Updated transaction.',
-                type: 'is-success'
-              })
-            })
-        }
+          })
       }
     },
 
@@ -244,6 +282,7 @@ export default {
       this.category_id = 0
       this.account_code = 'manual'
       this.presetId = 0
+      this.resetErros()
     },
 
     resetErros: function() {
@@ -270,6 +309,12 @@ export default {
         isError = true
       }
       return !isError
+    },
+
+    getActionLabel: function() {
+      if (this.isEditToDevide) return 'Devide'
+      if (this.isNew) return 'Create'
+      return 'Edit'
     },
   }
 }
