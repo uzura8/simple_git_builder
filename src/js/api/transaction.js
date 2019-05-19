@@ -20,8 +20,8 @@ export default {
       const params = new URLSearchParams()
       for (let i = 0, n = required_keys.length; i < n; i++) {
         let key = required_keys[i]
-        if (values[key] == null) return
-        if (!values.hasOwnProperty(key)) return
+        if (values[key] === null) throw new Error(`No value '${key}'`);
+        if (!values.hasOwnProperty(key)) throw new Error(`No value '${key}'`);
         params.append(key, values[key]);
       }
       client.post('transactions', params)

@@ -182,7 +182,8 @@ export default {
   methods: {
     save: function() {
       if (this.isEditToDevide) {
-        this.date = moment(this.transaction.date).format('YYYY-MM-DD');
+        this.date = moment(this.transaction.date).format('YYYY-MM-DD')
+        if (!this.account_code) this.account_code = this.transaction.account_code
       }
       if (this.validateAll() == false) {
         this.$toast.open({
@@ -209,14 +210,6 @@ export default {
             }
             this.$store.dispatch('updateTransaction', params)
           })
-          .then(() => {
-            this.isActive = false
-            this.$toast.open({
-              message: 'Divide transaction.',
-              type: 'is-success'
-            })
-            this.resetValues()
-          })
           .catch(err => {
             this.$toast.open({
               message: err.message,
@@ -224,6 +217,14 @@ export default {
               duration: 5000,
               position: 'is-bottom',
             })
+          })
+          .then(() => {
+            this.isActive = false
+            this.$toast.open({
+              message: 'Divide transaction.',
+              type: 'is-success'
+            })
+            this.resetValues()
           })
       } else if (this.isNew) {
         this.$store.dispatch('createTransaction', values)
