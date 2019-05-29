@@ -258,12 +258,12 @@ class Scraper:
 
         parent_id = Category.get_id_by_name(parent_name)
         if not parent_id:
-            parent = Category.save(name=parent_name, parent_id=1)
+            parent = Category.save_by_name(parent_name, parent_id=1)
             parent_id = parent.id
         if child_name:
             child_id = Category.get_id_by_name(child_name)
             if not child_id:
-                child = Category.save(name=child_name, parent_id=parent_id)
+                child = Category.save_by_name(child_name, parent_id=parent_id)
                 child_id = child.id
 
         return {'parent':parent_id, 'child':child_id}
