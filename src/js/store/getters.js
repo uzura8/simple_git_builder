@@ -49,7 +49,7 @@ export default {
     })
   },
 
-  singleDimCategories: state => {
+  singleDimCategories: state => (isParentOnly = true) => {
     const cates = []
     state.category.list.forEach(function(parentItem) {
       let parentLabel = !util.isEmpty(parentItem.sublabel) ?
@@ -59,17 +59,18 @@ export default {
         name: parentLabel,
         pathName: parentLabel,
       })
-      if (!util.isEmpty(parentItem.children)) {
-        parentItem.children.forEach(function(item) {
-          let label = !util.isEmpty(item.sublabel) ? item.sublabel : item.name
-          let pathName = `${parentLabel} > ${label}`
-          cates.push({
-            id: item.id,
-            name: item.name,
-            pathName: pathName,
-          })
+
+      if (isParentOnly) return
+      if (util.isEmpty(parentItem.children)) return
+      parentItem.children.forEach(function(item) {
+        let label = !util.isEmpty(item.sublabel) ? item.sublabel : item.name
+        let pathName = `${parentLabel} > ${label}`
+        cates.push({
+          id: item.id,
+          name: item.name,
+          pathName: pathName,
         })
-      }
+      })
     })
     return cates
   },

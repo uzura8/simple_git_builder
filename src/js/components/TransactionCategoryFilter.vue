@@ -59,7 +59,7 @@ export default {
   },
   computed: {
     categories () {
-      return this.$store.getters.singleDimCategories
+      return this.$store.getters.singleDimCategories()
     },
     category () {
       return this.categories.find(item => {

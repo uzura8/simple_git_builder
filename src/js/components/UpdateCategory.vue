@@ -62,7 +62,7 @@ export default {
       })
     },
     categories () {
-      return this.$store.getters.singleDimCategories
+      return this.$store.getters.singleDimCategories()
     },
     btnSizeClass () {
       const accepts = ['small', 'medium', 'large']
