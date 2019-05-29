@@ -9,7 +9,7 @@
       aria-controls="dropdown-menu"
       @click="isActive = !isActive">
       <span v-if="!isEmpty(category)">{{ category.name }}</span>
-      <span v-else>Select Category</span>
+      <span v-else>Category</span>
       <span class="icon is-small">
         <i class="fas fa-angle-down" aria-hidden="true"></i>
       </span>

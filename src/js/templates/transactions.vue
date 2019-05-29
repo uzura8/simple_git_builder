@@ -10,10 +10,6 @@
       </router-link>
     </div>
     <div class="column">
-      <TransactionCategoryFilter
-        v-model="categoryId"
-        :isRight="true"
-        :isPulledRight="true" />
       <button
         class="button is-pulled-right is-info"
         @click="isModalActive = true">
@@ -38,7 +34,14 @@
         </div>
       </article>
     </div>
+
+    <TransactionCategoryFilter
+      v-model="categoryId"
+      :isRight="true"
+      :isPulledRight="true" />
+
     <TransactionMonthNav v-model="month" />
+
     <section class="table-responsive">
       <b-loading :active.sync="isLoading" :is-full-page="false" :canCancel="true"></b-loading>
       <table class="table" v-if="transactions">
