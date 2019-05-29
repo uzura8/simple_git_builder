@@ -26,6 +26,10 @@
           <b-icon pack="fas" size="is-small" icon="divide"></b-icon>
           <span>Divide</span>
         </a>
+        <a class="dropdown-item" @click="confirmDelete">
+          <b-icon pack="fas" size="is-small" icon="trash-alt"></b-icon>
+          <span>Delete</span>
+        </a>
       </div>
     </div>
   </div>
@@ -77,10 +81,35 @@ export default {
       }
     }.bind(this));
   },
+
   methods: {
     openModal: function(isEditToDevide=false) {
       this.isEditToDevide = isEditToDevide
       this.isModalActive = true
+    },
+
+    confirmDelete() {
+      this.$dialog.confirm({
+        title: 'Deleting transaction',
+        message: 'Are you sure you want to <b>delete</b> this transaction? This action cannot be undone.',
+        confirmText: 'Delete Transaction',
+        type: 'is-danger',
+        hasIcon: true,
+        onConfirm: () => {
+          this.$store.dispatch('deleteTransaction', this.transaction.id)
+            .catch(err => {
+              this.$toast.open({
+                message: err.message,
+                type: 'is-danger',
+                duration: 5000,
+                position: 'is-bottom',
+              })
+            })
+            .then(() => {
+              this.$toast.open('Deleted!')
+            })
+        }
+      })
     }
   }
 }

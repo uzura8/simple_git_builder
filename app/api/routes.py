@@ -21,12 +21,12 @@ def transactions():
         values = {}
         date = request.form.get('date', type=str, default=None)
         if not date or not validate_date(date):
-            raise InvalidArgumentException
+            raise InvalidUsage('Reauested param date is invalid')
         values['date'] = date
 
         name = request.form.get('name', type=str, default=None)
         if not name  or len(name) > 512:
-            raise InvalidArgumentException
+            raise InvalidUsage('Reauested param name is invalid')
         values['name'] = name
 
         amount = int(request.form.get('amount', type=int, default=None))
@@ -36,23 +36,23 @@ def transactions():
         if cate_id:
             cate = Category.get_one_by_id(cate_id)
             if not cate:
-                raise InvalidArgumentException
+                raise InvalidUsage('Reauested param category_id is invalid')
             values['category_id'] = cate_id
         else:
-            raise InvalidArgumentException
+            raise InvalidUsage('Reauested param category_id is required')
 
         account_code = request.form.get('account_code', type=str, default=None)
         if account_code:
             account = Account.get_one_by_pk(account_code, 'code')
             if not account:
-                raise InvalidUsage('account_code is invalid')
+                raise InvalidUsage('Reauested param account_code is invalid')
             values['account_code'] = account_code
         else:
             values['account_code'] = 'manual'
 
         transaction = Transaction.create(values)
         if transaction is None:
-            raise Exception
+            raise InvalidUsage('Database save error')
 
         body = transaction.to_dict()
 
@@ -72,61 +72,67 @@ def transactions():
     return jsonify(body), 200
 
 
-@bp.route('/transactions/<int:trans_id>', methods=['POST'])
+@bp.route('/transactions/<int:trans_id>', methods=['POST', 'DELETE'])
 def update_transaction_category(trans_id=0, cate_id=0):
     if not trans_id:
-        raise InvalidArgumentException
+        raise InvalidUsage('Not Found', 404)
     trans = Transaction.get_one_by_id(trans_id)
     if not trans:
-        raise InvalidArgumentException
+        raise InvalidUsage('Not Found', 404)
 
-    is_updated = False
+    if request.method == 'POST':
+        is_updated = False
 
-    date = request.form.get('date', type=str, default=None)
-    if date is not None:
-        if not validate_date(date):
-            raise InvalidArgumentException
-        trans.date = date
-        is_updated = True
+        date = request.form.get('date', type=str, default=None)
+        if date is not None:
+            if not validate_date(date):
+                raise InvalidUsage('Reauested param date is invalid')
+            trans.date = date
+            is_updated = True
 
-    name = request.form.get('name', type=str, default=None)
-    if name is not None:
-        if not name or len(name) > 512:
-            raise InvalidArgumentException
-        trans.name = name
-        is_updated = True
+        name = request.form.get('name', type=str, default=None)
+        if name is not None:
+            if not name or len(name) > 512:
+                raise InvalidUsage('Reauested param name is invalid')
+            trans.name = name
+            is_updated = True
 
-    amount = request.form.get('amount', type=int, default=None)
-    if amount is not None:
-        trans.amount = amount
-        is_updated = True
+        amount = request.form.get('amount', type=int, default=None)
+        if amount is not None:
+            trans.amount = amount
+            is_updated = True
 
-    cate_id = request.form.get('category_id', type=int)
-    if cate_id:
-        cate = Category.get_one_by_id(cate_id)
-        if not cate:
-            raise InvalidArgumentException
-        trans.category_id = cate_id
-        is_updated = True
+        cate_id = request.form.get('category_id', type=int)
+        if cate_id:
+            cate = Category.get_one_by_id(cate_id)
+            if not cate:
+                raise InvalidUsage('Reauested param category_id is invalid')
+            trans.category_id = cate_id
+            is_updated = True
 
-    account_code = request.form.get('account_code', type=str, default=None)
-    if account_code:
-        account = Account.get_one_by_pk(account_code, 'code')
-        if not account:
-            raise InvalidUsage('account_code is invalid')
-        trans.account_code = account_code
+        account_code = request.form.get('account_code', type=str, default=None)
+        if account_code:
+            account = Account.get_one_by_pk(account_code, 'code')
+            if not account:
+                raise InvalidUsage('account_code is invalid')
+            trans.account_code = account_code
 
-    is_disabled = request.form.get('is_disabled', type=int, default=None)
-    if is_disabled is not None:
-        if is_disabled not in [0, 1]:
-            raise InvalidArgumentException
-        trans.is_disabled = is_disabled
-        is_updated = True
+        is_disabled = request.form.get('is_disabled', type=int, default=None)
+        if is_disabled is not None:
+            if is_disabled not in [0, 1]:
+                raise InvalidUsage('Reauested is_disabled date is invalid')
+            trans.is_disabled = is_disabled
+            is_updated = True
 
-    if is_updated:
-        db.session.commit()
+        if is_updated:
+            db.session.commit()
 
-    return jsonify(trans.to_dict()), 200
+        return jsonify(trans.to_dict()), 200
+
+    elif request.method == 'DELETE':
+        trans = Transaction.delete(trans_id)
+
+        return jsonify(trans), 200
 
 
 @bp.route('/presets', methods=['GET', 'POST'])
@@ -158,7 +164,7 @@ def update_transaction_preset(preset_id=0):
     elif request.method == 'DELETE':
         preset = TransactionPreset.delete(preset_id)
 
-        return jsonify(preset.to_dict()), 200
+        return jsonify(preset), 200
 
 
 @bp.route('/categories', methods=['GET'])

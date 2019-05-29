@@ -49,4 +49,14 @@ export default {
         })
     })
   },
+
+  delete: (id) => {
+    return new Promise((resolve, reject) => {
+      client.delete(`transactions/${id}`)
+        .then(res => resolve(res.data))
+        .catch(err => {
+          reject(new Error(err.response.data.message || err.message))
+        })
+    })
+  },
 }

@@ -29,6 +29,16 @@ export default {
     state.transaction.list.splice(index, 1, values)
   },
 
+  [types.DELETE_TRANSACTION] (state, payload) {
+    const id = payload.transactionId
+    for (let i = 0, n = state.transaction.list.length; i < n; i++) {
+      const transaction = state.transaction.list[i]
+      if (transaction.id !== id) continue
+      state.transaction.list.splice(i, 1)
+      break
+    }
+  },
+
   [types.FETCH_TRANSACTION_PRESET_LIST] (state, payload) {
     state.transactionPreset.list = payload
   },

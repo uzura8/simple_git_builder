@@ -51,6 +51,18 @@ export default {
       .catch(err => { throw err })
   },
 
+  deleteTransaction: ({ commit }, presetId) => {
+    return Transaction.delete(presetId)
+      .then((item) => {
+        const data = {
+          transactionId: presetId,
+          values: item,
+        }
+        commit(types.DELETE_TRANSACTION, data)
+      })
+      .catch(err => { throw err })
+  },
+
   fetchTransactionPresets: ({ commit }, payload) => {
     commit(types.SET_COMMON_LOADING, true)
     return TransactionPreset.fetch(payload)
