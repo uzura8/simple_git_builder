@@ -160,7 +160,10 @@ export default {
     presetId (val) {
       if (!val) return
       const preset = this.$store.getters.transactionPreset(val)
-      this.name = preset.name
+      this.name = preset.transaction_name
+      if (!this.name && this.transactionId) {
+        this.name = this.transaction.name
+      }
       this.amount = preset.amount
       this.category_id = preset.category_id
       this.account_code = preset.account_code

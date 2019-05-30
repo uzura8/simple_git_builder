@@ -1,4 +1,3 @@
-
 <template>
 <div>
   <div class="dropdown is-right" :class="{'is-active':isActive}">

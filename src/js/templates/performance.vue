@@ -14,10 +14,6 @@
         <div class="media-content">
           <ul>
             <li>
-              <label>Budget Total</label>
-              <span class="has-text-weight-semibold u-ml5">{{ performancesSums.budget | numFormat }}</span>
-            </li>
-            <li>
               <label>Budget Total per Month</label>
               <span class="has-text-weight-semibold u-ml5">{{ performancesSums.budget /12 | numFormat }}</span>
             </li>
