@@ -68,6 +68,7 @@
         <button class="button" type="button" @click="isActive = false">Close</button>
         <button
           class="button is-primary"
+          :class="{ 'is-loading': isLoading }"
           v-text="getActionLabel()"
           @click="save()"></button>
       </footer>
@@ -129,6 +130,9 @@ export default {
     transaction () {
       return this.$store.getters.transaction(this.transactionId)
     },
+    isLoading () {
+      return this.$store.state.common.isLoading
+    },
     isNew () {
       return this.isEmpty(this.transactionId) || this.isEditToDevide
     },
@@ -181,6 +185,7 @@ export default {
 
   methods: {
     save: function() {
+      this.$store.dispatch('setIsLoading', true)
       if (this.isEditToDevide) {
         this.date = moment(this.transaction.date).format('YYYY-MM-DD')
         if (!this.account_code) this.account_code = this.transaction.account_code
@@ -191,6 +196,7 @@ export default {
           type: 'is-danger',
           position: 'is-bottom'
         })
+        this.$store.dispatch('setIsLoading', false)
         return
       }
 
@@ -209,8 +215,10 @@ export default {
               values: {amount: this.transaction.amount - this.amount},
             }
             this.$store.dispatch('updateTransaction', params)
+            this.$store.dispatch('setIsLoading', false)
           })
           .catch(err => {
+            this.$store.dispatch('setIsLoading', false)
             this.$toast.open({
               message: err.message,
               type: 'is-danger',
@@ -219,6 +227,7 @@ export default {
             })
           })
           .then(() => {
+            this.$store.dispatch('setIsLoading', false)
             this.isActive = false
             this.$toast.open({
               message: 'Divide transaction.',
@@ -229,6 +238,7 @@ export default {
       } else if (this.isNew) {
         this.$store.dispatch('createTransaction', values)
           .catch(err => {
+            this.$store.dispatch('setIsLoading', false)
             this.$toast.open({
               message: err.message,
               type: 'is-danger',
@@ -237,6 +247,7 @@ export default {
             })
           })
           .then(() => {
+            this.$store.dispatch('setIsLoading', false)
             this.isActive = false
             this.$toast.open({
               message: 'Created transaction.',
@@ -251,6 +262,7 @@ export default {
         }
         this.$store.dispatch('updateTransaction', params)
           .catch(err => {
+            this.$store.dispatch('setIsLoading', false)
             this.$toast.open({
               message: err.message,
               type: 'is-danger',
@@ -259,6 +271,7 @@ export default {
             })
           })
           .then(() => {
+            this.$store.dispatch('setIsLoading', false)
             this.isActive = false
             this.$toast.open({
               message: 'Updated transaction.',

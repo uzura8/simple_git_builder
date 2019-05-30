@@ -69,6 +69,7 @@
         <button class="button" type="button" @click="isModalActive = false">Close</button>
         <button
           class="button is-primary"
+          :class="{ 'is-loading': isLoading }"
           v-text="isNew ? 'Create' : 'Update'"
           @click="save()"></button>
       </footer>
@@ -120,6 +121,9 @@ export default {
     preset () {
       return this.$store.getters.transactionPreset(this.presetId)
     },
+    isLoading () {
+      return this.$store.state.common.isLoading
+    },
     isNew () {
       return this.isEmpty(this.preset)
     },
@@ -152,7 +156,9 @@ export default {
 
   methods: {
     save: function() {
+      this.$store.dispatch('setIsLoading', true)
       if (this.validateAll() == false) {
+        this.$store.dispatch('setIsLoading', false)
         this.$toast.open({
           message: 'Form is not valid! Please check the fields.',
           type: 'is-danger',
@@ -169,6 +175,7 @@ export default {
         if (this.isNew) {
           this.$store.dispatch('createTransactionPreset', values)
             .catch(err => {
+              this.$store.dispatch('setIsLoading', false)
               this.$toast.open({
                 message: err.message,
                 type: 'is-danger',
@@ -177,6 +184,7 @@ export default {
               })
             })
             .then(() => {
+              this.$store.dispatch('setIsLoading', false)
               this.isModalActive = false
               this.$toast.open({
                 message: 'Created preset.',
@@ -191,6 +199,7 @@ export default {
           }
           this.$store.dispatch('updateTransactionPreset', params)
             .catch(err => {
+              this.$store.dispatch('setIsLoading', false)
               this.$toast.open({
                 message: err.message,
                 type: 'is-danger',
@@ -199,6 +208,7 @@ export default {
               })
             })
             .then(() => {
+              this.$store.dispatch('setIsLoading', false)
               this.isModalActive = false
               this.$toast.open({
                 message: 'Updated preset.',
@@ -206,6 +216,7 @@ export default {
               })
             })
         } else {
+          this.$store.dispatch('setIsLoading', false)
           this.isModalActive = false
         }
       }

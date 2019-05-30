@@ -15,7 +15,9 @@
     <span v-else>-</span>
   </td>
   <td>
-    <button class="button is-danger is-small" @click="confirmDelete">
+    <button
+      class="button is-danger is-small"
+      @click="confirmDelete">
       <b-icon icon="trash-alt" pack="fas" />
     </button>
   </td>

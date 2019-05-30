@@ -6,6 +6,10 @@ export default {
     commit(types.SET_COMMON_HEADER_MENU_OPEN, isOpen)
   },
 
+  setIsLoading: ({ commit }, isLoading) => {
+    commit(types.SET_COMMON_LOADING, isLoading)
+  },
+
   fetchPerformances: ({ commit }, payload) => {
     commit(types.SET_COMMON_LOADING, true)
     return Performance.fetch(payload)

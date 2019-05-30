@@ -19,7 +19,7 @@
     <div class="dropdown-content">
       <a v-for="cate in categories" :key="cate.id"
         class="dropdown-item u-clickable"
-        :class="{ 'is-active': !isEmpty(category) && categoryId == cate.id }"
+        :class="{ 'is-active': !isEmpty(category) && categoryId == cate.id, 'is-loading': isLoading }"
         @click="updateCategory(cate.id)">{{ cate.pathName }}</a>
     </div>
   </div>
@@ -64,6 +64,9 @@ export default {
     categories () {
       return this.$store.getters.singleDimCategories()
     },
+    isLoading () {
+      return this.$store.state.common.isLoading
+    },
     btnSizeClass () {
       const accepts = ['small', 'medium', 'large']
       if (this.isEmpty(this.btnSize)) return ''
@@ -82,8 +85,10 @@ export default {
   },
   methods: {
     updateCategory: function(categoryId) {
+      this.$store.dispatch('setIsLoading', true)
       if (this.category.id == categoryId) {
         this.isActive = false
+        this.$store.dispatch('setIsLoading', false)
         return false
       }
       const params = {
@@ -93,9 +98,18 @@ export default {
         }
       }
       this.$store.dispatch('updateTransaction', params)
-        .catch(err => Promise.reject(err))
+          .catch(err => {
+            this.$store.dispatch('setIsLoading', false)
+            this.$toast.open({
+              message: err.message,
+              type: 'is-danger',
+              duration: 5000,
+              position: 'is-bottom',
+            })
+          })
         .then(() => {
           this.$emit('input', categoryId)
+          this.$store.dispatch('setIsLoading', false)
           this.isActive = false
         })
     },
