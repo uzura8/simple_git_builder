@@ -37,9 +37,11 @@
           <tr>
             <th>Category</th>
             <th>Budget</th>
-            <th>Performance</th>
+            <th>Perf</th>
             <th>Diff</th>
             <th>%</th>
+            <th>Budget Day</th>
+            <th>Perf Day</th>
           </tr>
         </thead>
         <tbody>
@@ -54,6 +56,8 @@
             <td>{{ item.sum * -1 | numFormat }}</td>
             <td>{{ item.budget / 12 - item.sum * -1 | numFormat }}</td>
             <td v-text="calcBudgetRate(item.sum, item.budget)"></td>
+            <td>{{ item.budget / 12 / 31 | numFormat }}</td>
+            <td>{{ item.sum * -1 / 31 | numFormat }}</td>
           </tr>
         </tbody>
       </table>
