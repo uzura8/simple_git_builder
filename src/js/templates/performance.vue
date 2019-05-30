@@ -56,8 +56,8 @@
             <td>{{ item.sum * -1 | numFormat }}</td>
             <td>{{ item.budget / 12 - item.sum * -1 | numFormat }}</td>
             <td v-text="calcBudgetRate(item.sum, item.budget)"></td>
-            <td>{{ item.budget / 12 / 31 | numFormat }}</td>
-            <td>{{ item.sum * -1 / 31 | numFormat }}</td>
+            <td>{{ item.budget / 12 / daysInMonth | numFormat }}</td>
+            <td>{{ item.sum * -1 / progressDays | numFormat }}</td>
           </tr>
         </tbody>
       </table>
@@ -88,6 +88,19 @@ export default {
 
     isLoading () {
       return this.$store.state.common.isLoading
+    },
+
+    daysInMonth () {
+      const month_end_dt = moment(this.month).endOf('month')
+      return month_end_dt.daysInMonth()
+    },
+
+    progressDays () {
+      const month_end_dt = moment(this.month).endOf('month')
+      if (month_end_dt.isAfter()) {
+        return moment().date()
+      }
+      return month_end_dt.daysInMonth()
     },
   },
 
