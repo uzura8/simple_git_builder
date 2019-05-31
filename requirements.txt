@@ -10,8 +10,10 @@ itsdangerous==1.1.0
 Jinja2==2.10
 MarkupSafe==1.1.1
 PyMySQL==0.9.3
+python-dateutil==2.8.0
 requests==2.21.0
 simplejson==3.16.0
+six==1.12.0
 soupsieve==1.9
 SQLAlchemy==1.2.16
 sqlalchemy-mptt==0.2.4

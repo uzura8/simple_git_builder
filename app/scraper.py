@@ -2,6 +2,7 @@ import os
 import re
 import time
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 import requests
 import pickle
 from flask import current_app
@@ -44,7 +45,7 @@ class Scraper:
         if mode in ['month', 'all_month', 'all']:
             accounts = self.get_accounts()
             month_num = 12 if mode == 'all_month' else 1
-            month_dates = self.get_month_dates(month_num)
+            month_dates = self.get_month_dates(month_num, self.options['calc_start_day'])
             self.scrape_accounts(accounts, month_dates)
 
 
@@ -270,10 +271,13 @@ class Scraper:
 
 
     @staticmethod
-    def get_month_dates(month_num):
-        dates = []
+    def get_month_dates(month_num, start_day):
         today = datetime.today()
-        date = datetime(today.year, today.month, 1)
+        is_past_start = start_day > 1 and today.day > start_day
+        base_dt = today + relativedelta(months=1) if is_past_start else today
+
+        dates = []
+        date = datetime(base_dt.year, base_dt.month, 1)
         for i in range(month_num):
             dates.append(date.strftime('%Y/%m/%d'))
             lastmonth = date + timedelta(days=-1)
