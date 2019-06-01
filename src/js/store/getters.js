@@ -101,10 +101,11 @@ export default {
     return amountTotal
   },
 
-  performancesSums: state => () => {
+  performancesSums: state => (disabledIds = []) => {
     let sum = 0
     let budget = 0
-    state.performance.list.forEach(function(item) {
+    state.performance.list.forEach(item => {
+      if (util.inArray(item.id, disabledIds)) return
       sum += parseInt(item.sum)
       budget += parseInt(item.budget)
     })

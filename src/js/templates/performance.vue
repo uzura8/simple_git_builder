@@ -31,6 +31,7 @@
       <table class="table" v-if="performances">
         <thead>
           <tr>
+            <th>-</th>
             <th>Category</th>
             <th>Budget</th>
             <th>Perf</th>
@@ -41,7 +42,12 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in performances" :key="item.id">
+          <tr v-for="item in performances"
+            :key="item.id"
+            :class="{ 'has-background-grey-lighter': inArray(item.id, disabledCategoryIds) }">
+            <td>
+              <b-checkbox v-model="disabledCategoryObj[item.id]" />
+            </td>
             <td>
               <router-link
                 class="button is-text"
@@ -70,6 +76,7 @@ export default {
   data(){
     return {
       month: '',
+      disabledCategoryObj: {},
     }
   },
 
@@ -79,7 +86,13 @@ export default {
     },
 
     performancesSums () {
-      return this.$store.getters.performancesSums()
+      return this.$store.getters.performancesSums(this.disabledCategoryIds)
+    },
+
+    disabledCategoryIds () {
+      return Object.keys(this.disabledCategoryObj)
+        .filter(key => this.disabledCategoryObj[key] === true)
+        .map(e => parseInt(e))
     },
 
     isLoading () {
