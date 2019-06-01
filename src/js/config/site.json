@@ -1,4 +1,5 @@
 {
   "BASE_URL": "/",
-  "SITE_NAME": "Sample Site"
+  "SITE_NAME": "Sample Site",
+  "IS_PARENT_CATEGORY_ONLY": true
 }

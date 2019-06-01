@@ -18,6 +18,7 @@
   <div class="dropdown-menu" id="dropdown-menu" role="menu">
     <div class="dropdown-content">
       <a v-for="cate in categories" :key="cate.id"
+        v-if="!isParentCateOnly || isParentCateOnly && (cate.isParent || categoryId == cate.id)"
         class="dropdown-item u-clickable"
         :class="{ 'is-active': !isEmpty(category) && categoryId == cate.id, 'is-loading': isLoading }"
         @click="updateCategory(cate.id)">{{ cate.pathName }}</a>
@@ -56,6 +57,9 @@ export default {
     }
   },
   computed: {
+    isParentCateOnly () {
+      return this.siteConfig('IS_PARENT_CATEGORY_ONLY')
+    },
     category () {
       return this.categories.find(item => {
         return item.id === this.categoryId

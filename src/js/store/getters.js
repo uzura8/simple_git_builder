@@ -3,14 +3,24 @@ import { moment } from '../bootstrap';
 
 export default {
   sortedTransactions: state => (categoryId, sortKey) => {
+
     let list = []
     state.transaction.list.forEach(function(item) {
       item['date_int'] = parseInt(moment(item.date).format('YYYYMMDD'))
       list.push(item)
     })
     if (categoryId) {
-      list = list.filter(transaction =>{
-        return transaction.category_id == categoryId
+      let cateIds = [categoryId]
+      const cate = state.category.list.find(item => {
+        return item.id === categoryId
+      })
+      if (cate != null && !util.isEmpty(cate.children)) {
+        cate.children.forEach(function(child) {
+          cateIds.push(child.id)
+        })
+      }
+      list = list.filter(trans => {
+        return util.inArray(trans.category_id, cateIds)
       })
     }
     const keyItems = sortKey.split('-')
@@ -49,7 +59,7 @@ export default {
     })
   },
 
-  singleDimCategories: state => (isParentOnly = true) => {
+  singleDimCategories: state => (isParentOnly = false) => {
     const cates = []
     state.category.list.forEach(function(parentItem) {
       let parentLabel = !util.isEmpty(parentItem.sublabel) ?
@@ -58,6 +68,7 @@ export default {
         id: parentItem.id,
         name: parentLabel,
         pathName: parentLabel,
+        isParent: true,
       })
 
       if (isParentOnly) return
@@ -69,6 +80,7 @@ export default {
           id: item.id,
           name: item.name,
           pathName: pathName,
+          isParent: false,
         })
       })
     })
