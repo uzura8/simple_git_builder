@@ -19,7 +19,7 @@
             </li>
             <li>
               <label>Performance per Month</label>
-              <span class="has-text-weight-semibold u-ml5">{{ performancesSums.sum | numFormat }}</span>
+              <span class="has-text-weight-semibold u-ml5">{{ performancesSums.sum * -1 | numFormat }}</span>
             </li>
             <li>
               <label>Budget Total</label>
@@ -27,8 +27,8 @@
             </li>
             <li>
               <label>Performance Total</label>
-              <span class="has-text-weight-semibold u-ml5">{{ performancesSums.sum_year | numFormat }}</span>
-              <span class="u-ml5">({{ Math.floor(performancesSums.sum_year / performancesSums.budget * 100 * 10) / 10 }} %)</span>
+              <span class="has-text-weight-semibold u-ml5">{{ performancesSums.sum_year * -1 | numFormat }}</span>
+              <span class="u-ml5">({{ Math.floor(performancesSums.sum_year * -1 / performancesSums.budget * 100 * 10) / 10 }} %)</span>
             </li>
             <li>
               <label>Past Month %</label>
