@@ -9,17 +9,30 @@
     </router-link>
   </h1>
   <section>
-    <div class="box u-sticky">
+    <div class="box">
       <article class="media">
         <div class="media-content">
           <ul>
             <li>
-              <label>Budget Total per Month</label>
+              <label>Budget per Month</label>
               <span class="has-text-weight-semibold u-ml5">{{ performancesSums.budget /12 | numFormat }}</span>
             </li>
             <li>
-              <label>Performance Total</label>
+              <label>Performance per Month</label>
               <span class="has-text-weight-semibold u-ml5">{{ performancesSums.sum | numFormat }}</span>
+            </li>
+            <li>
+              <label>Budget Total</label>
+              <span class="has-text-weight-semibold u-ml5">{{ performancesSums.budget | numFormat }}</span>
+            </li>
+            <li>
+              <label>Performance Total</label>
+              <span class="has-text-weight-semibold u-ml5">{{ performancesSums.sum_year | numFormat }}</span>
+              <span class="u-ml5">({{ Math.floor(performancesSums.sum_year / performancesSums.budget * 100 * 10) / 10 }} %)</span>
+            </li>
+            <li>
+              <label>Past Month %</label>
+              <span class="has-text-weight-semibold u-ml5">{{ Math.floor(monthNum / 12 * 100 * 10) / 10 }}</span>
             </li>
           </ul>
         </div>
@@ -39,6 +52,9 @@
             <th>%</th>
             <th>Budget Day</th>
             <th>Perf Day</th>
+            <th>Budget Year</th>
+            <th>Perf Year</th>
+            <th>%</th>
           </tr>
         </thead>
         <tbody>
@@ -60,6 +76,9 @@
             <td v-text="calcBudgetRate(item.sum, item.budget)"></td>
             <td>{{ item.budget / 12 / daysInMonth | numFormat }}</td>
             <td>{{ item.sum * -1 / progressDays | numFormat }}</td>
+            <td>{{ item.budget | numFormat }}</td>
+            <td>{{ item.sum_year * -1 | numFormat }}</td>
+            <td v-text="calcBudgetRate(item.sum_year, item.budget, true)"></td>
           </tr>
         </tbody>
       </table>
@@ -111,6 +130,11 @@ export default {
       }
       return month_end_dt.daysInMonth()
     },
+
+    monthNum () {
+      const items = this.month.split('-')
+      return Number(items[1])
+    },
   },
 
   watch: {
@@ -155,9 +179,10 @@ export default {
       return params
     },
 
-    calcBudgetRate: function(amount, budget) {
+    calcBudgetRate: function(amount, budget, isYear = false) {
       if (!budget) return ''
-      return Math.floor(amount * -1 / (budget / 12) * 100 * 10) / 10
+      const month = isYear ? 1 : 12
+      return Math.floor(amount * -1 / (budget / month) * 100 * 10) / 10
     },
 
     validateMonth: function() {

@@ -103,12 +103,14 @@ export default {
 
   performancesSums: state => (disabledIds = []) => {
     let sum = 0
+    let sum_year = 0
     let budget = 0
     state.performance.list.forEach(item => {
       if (util.inArray(item.id, disabledIds)) return
       sum += parseInt(item.sum)
+      sum_year += parseInt(item.sum_year)
       budget += parseInt(item.budget)
     })
-    return { sum:sum, budget:budget }
+    return { sum:sum, sum_year:sum_year, budget:budget }
   },
 }
