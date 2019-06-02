@@ -94,6 +94,9 @@ Vue.component('UpdateCategory', UpdateCategory)
 import CategorySettingRow from './components/CategorySettingRow'
 Vue.component('CategorySettingRow', CategorySettingRow)
 
+import CategorySettingIsMonthlyCheckbox from './components/CategorySettingIsMonthlyCheckbox'
+Vue.component('CategorySettingIsMonthlyCheckbox', CategorySettingIsMonthlyCheckbox)
+
 import BudgetsSettingRow from './components/BudgetsSettingRow'
 Vue.component('BudgetsSettingRow', BudgetsSettingRow)
 

@@ -2,6 +2,7 @@
 <tr :class="{ 'has-background-grey-lighter': transaction.is_disabled}">
   <td>
     <transaction-active-checkbox :transaction="transaction" class="u-mt3" />
+  </td>
   <td>
     <span class="is-hidden-mobile">{{transaction.date | dateFormat('MM/DD(ddd)')}}</span>
     <span class="is-hidden-tablet">{{transaction.date | dateFormat('DD(ddd)')}}</span>

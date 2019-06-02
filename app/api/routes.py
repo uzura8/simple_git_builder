@@ -181,13 +181,24 @@ def update_category(cate_id=0):
     if not cate:
         raise InvalidUsage('category_id is invalid')
 
+    is_update = False
+    values = {}
     sublabel = request.form.get('sublabel', type=str, default='')
-    if not sublabel:
-        raise InvalidUsage('sublabel is required')
+    if sublabel:
+        values['sublabel'] = sublabel
+        is_update = True
 
-    values ={'sublabel':sublabel}
+    is_monthly = request.form.get('is_monthly', type=int, default=0)
+    if is_monthly is not None:
+        if is_monthly not in [0, 1]:
+            raise InvalidUsage('Reauested is_monthly is invalid')
+        values['is_monthly'] = is_monthly
+        is_update = True
+
+    if not is_update:
+        raise InvalidUsage('No values')
+
     category = Category.save(values, cate_id)
-
     return jsonify(category.to_dict()), 200
 
 

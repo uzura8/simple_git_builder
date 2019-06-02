@@ -12,6 +12,7 @@
           <tr>
             <th>name</th>
             <th>sublabel</th>
+            <th>monthly</th>
           </tr>
         </thead>
         <tbody>
@@ -48,9 +49,6 @@ export default {
   },
 
   watch: {
-    //'$route' (to, from) {
-    //  this.loadTransactions(to.query)
-    //},
   },
 
   created() {

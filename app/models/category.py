@@ -10,6 +10,7 @@ class Category(Base, BaseNestedSets):
     name = db.Column(db.String(128), index=True, unique=True)
     sublabel = db.Column(db.String(128), nullable=True)
     sort_no = db.Column(db.Integer, nullable=True)
+    is_monthly = db.Column(db.Boolean(), default=False)
     transactions = db.relationship('Transaction', backref='transaction',
                                     lazy='dynamic')
 
@@ -22,6 +23,7 @@ class Category(Base, BaseNestedSets):
             'id': self.id,
             'name': self.name,
             'sublabel': self.sublabel,
+            'is_monthly': self.is_monthly,
         }
         return data
 
@@ -59,7 +61,8 @@ class Category(Base, BaseNestedSets):
         return {
             'id': item.id,
             'name': item.name,
-            'sublabel': item.sublabel
+            'sublabel': item.sublabel,
+            'is_monthly': item.is_monthly,
         }
 
 
@@ -126,11 +129,25 @@ class Category(Base, BaseNestedSets):
             except KeyError:
                 return
 
-            if kwargs['sublabel']:
-                item.sublabel = kwargs['sublabel'],
+            is_updated = False
+            try:
+                if kwargs['sublabel']:
+                    item.sublabel = kwargs['sublabel'],
+                    is_updated = True
+            except KeyError:
+                pass
 
-            db.session.add(item)
-            db.session.commit()
+            try:
+                if kwargs['is_monthly'] is not None:
+                    item.is_monthly = bool(kwargs['is_monthly'])
+                    is_updated = True
+            except KeyError:
+                pass
+
+
+            if is_updated:
+                db.session.add(item)
+                db.session.commit()
 
         else:
             try:

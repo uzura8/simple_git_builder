@@ -135,7 +135,7 @@ export default {
 
   updateCategory: ({ commit }, payload) => {
     return Category.update(payload.categoryId, payload.values)
-      .then(({item}) => {
+      .then(({item: item}) => {
         commit(types.UPDATE_CATEGORY, item)
       })
       .catch(err => { throw err })

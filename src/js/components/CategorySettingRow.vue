@@ -23,6 +23,9 @@
     <span>{{sublabel}}</span>
     <b-icon icon="edit" pack="fas" size="is-small" class="is-pulled-right has-text-grey-lighter" />
   </td>
+  <td class="has-text-centered">
+    <category-setting-is-monthly-checkbox :category="category" class="u-mt3" />
+  </td>
 </tr>
 </template>
 

@@ -76,21 +76,9 @@ export default {
     state.category.list = payload[0].children
   },
 
-  [types.UPDATE_CATEGORY] (state, payload) {
-    for (let i = 0, n = state.category.list.length; i < n; i++) {
-      const category = state.category.list[i]
-      if (category.id !== payload.category_id) continue
-
-      const accept_keys = ['sublabel']
-      for (let key in payload) {
-        if (!util.inArray(key, accept_keys)) continue
-        if (!payload.hasOwnProperty(key)) continue
-
-        let value = payload[key];
-        state.category.list[i][key] = value
-      }
-      break
-    }
+  [types.UPDATE_CATEGORY] (state, category) {
+    const index = state.category.list.findIndex(item => item.id === category.id)
+    state.category.list.splice(index, 1, category)
   },
 
   [types.FETCH_BUDGET_LIST] (state, payload) {
