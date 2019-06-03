@@ -42,6 +42,7 @@ class Performance():
                 'id':parent_cate.id,
                 'name':parent_cate.name,
                 'sublabel':parent_cate.sublabel,
+                'is_monthly':parent_cate.is_monthly,
                 'leaf_ids':cate_ids,
                 'sum':val[0] if val[0] is not None else 0,
                 'sum_year':val_year[0] if val_year[0] is not None else 0,
