@@ -11,22 +11,7 @@ const state = {
     isLoading: false,
     isHeaderMenuOpen: false,
   },
-  performance: {
-    list: [],
-  },
   transaction: {
-    list: [],
-  },
-  transactionPreset: {
-    list: [],
-  },
-  account: {
-    list: [],
-  },
-  category: {
-    list: [],
-  },
-  budget: {
     list: [],
   },
 }

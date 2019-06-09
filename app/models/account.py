@@ -33,7 +33,7 @@ class Account(Base):
         return data
 
 
-def setup_fixurtes():
-    if Account.query.count() == 0:
-        db.session.add(Account(code='manual', name='手入力'))
-        db.session.commit()
+#def setup_fixurtes():
+#    if Account.query.count() == 0:
+#        db.session.add(Account(code='manual', name='手入力'))
+#        db.session.commit()
