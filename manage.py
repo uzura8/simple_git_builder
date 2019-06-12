@@ -1,6 +1,6 @@
 from flask_script import Manager
 from app import create_app, db
-from app.scraper import Scraper
+from app.importer import Importer
 
 app = create_app()
 manager = Manager(app)
@@ -24,10 +24,8 @@ def db_create():
 @manager.command
 def db_fixture():
     '''Import default data to DB'''
-    from app.models.account import setup_fixurtes as setup_fixture_account
-    from app.models.category import setup_fixurtes as setup_fixture_category
-    setup_fixture_account()
-    setup_fixture_category()
+    from app.models.brand import setup_fixurtes as setup_fixture_brand
+    setup_fixture_brand()
     print('Imported default data to DB')
 
 
@@ -40,12 +38,12 @@ def generate_config_js(output_dir):
 
 
 @manager.command
-@manager.option('-m', '--mode', default='normal', help='mode:all')
-def scrape(mode=''):
-    '''option --mode:month, all_month, cate, all'''
-    print(mode)
-    scraper = Scraper()
-    scraper.main(mode=mode)
+@manager.option('-m', '--mode', default='all', help='mode:all')
+def import_data(brand, mode=''):
+    '''option --mode:month, all_month, all'''
+    importer = Importer()
+    importer.main(brand, mode=mode)
+    del importer
 
 
 if __name__ == '__main__':

@@ -3,14 +3,14 @@ from app import db
 from app.models.base import Base
 
 
-class Account(Base):
+class Brand(Base):
     """
-    account model
+    brand model
     """
-    __tablename__ = 'account'
-    code = db.Column('code', db.String(50), nullable=False, primary_key = True)
+    __tablename__ = 'brand'
+    code = db.Column('code', db.String(50), nullable=False, primary_key=True)
     name = db.Column('name', db.String(256), nullable=False)
-    #transaction = db.relationship('Transaction')
+    currency = db.Column('currency', db.String(20), nullable=False)
 
     @classmethod
     def get_dict(self):
@@ -29,11 +29,12 @@ class Account(Base):
         data = {
             'code': self.code,
             'name': self.name,
+            'currency': self.currency,
         }
         return data
 
 
-#def setup_fixurtes():
-#    if Account.query.count() == 0:
-#        db.session.add(Account(code='manual', name='手入力'))
-#        db.session.commit()
+def setup_fixurtes():
+    if Brand.query.count() == 0:
+        db.session.add(Brand(code='jp_topix', name='TOPIX', currency='yen'))
+        db.session.commit()

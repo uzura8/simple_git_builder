@@ -25,3 +25,17 @@ SCRAPE_OPTIONS = {
     'user_pass': '',
     'user_ua': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:65.0) Gecko/20100101 Firefox/65.0'
 }
+
+IMPORTER_OPTIONS = {
+    'jp_topix': {
+        'input_file': 'var/topix.txt',
+        'linked_funds': {
+            '29312154': {
+                'code': '29312154',
+                'name': 'ニッセイＴＯＰＩＸインデックスファンド ',
+                'rate': 6.673,
+                'currency': 'yen',
+            }
+        },
+    }
+}

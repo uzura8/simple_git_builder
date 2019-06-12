@@ -1,6 +1,5 @@
 import os
 import importlib
-#import configparser
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.exceptions import HTTPException
@@ -43,6 +42,7 @@ def create_app():
 
     return app
 
+import app.models
 
 class InvalidArgumentException(HTTPException):
     code = 400
