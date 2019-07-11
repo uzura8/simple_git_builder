@@ -37,14 +37,5 @@ def generate_config_js(output_dir):
     put_json_from_dict(output_dir, config_js())
 
 
-@manager.command
-@manager.option('-m', '--mode', default='all', help='mode:all')
-def import_data(brand, mode=''):
-    '''option --mode:month, all_month, all'''
-    importer = Importer()
-    importer.main(brand, mode=mode)
-    del importer
-
-
 if __name__ == '__main__':
     manager.run()
