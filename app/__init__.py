@@ -2,9 +2,11 @@ import os
 import importlib
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail
 from werkzeug.exceptions import HTTPException
 
 db = SQLAlchemy()
+mail = Mail()
 
 
 def create_app():
@@ -33,7 +35,9 @@ def create_app():
     app.config.from_object('config.{}.{}Config'.format(env, env.capitalize()))
     app.config.from_pyfile('config.py') #from instance dir
     app.config['ENV'] = env
+
     db.init_app(app)
+    mail.init_app(app)
 
     modules = ('site', 'api')
     for module_name in modules:

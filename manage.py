@@ -38,10 +38,10 @@ def generate_config_js(output_dir):
 
 
 @manager.command
-@manager.option('-m', '--mode', default='all', help='mode:all')
-def sendmail(email_to, subject='', body=''):
+@manager.option('-h', '--html', default=0, help='use html format')
+def sendmail(email_to, subject, body, html=0):
     '''args: to_email, subject, body'''
-    send_email(subject, app.config['FBD_ADMIN_MAIL'], email_to, body)
+    send_email(subject, app.config['FBD_ADMIN_MAIL'], email_to, text_body=body)
 
 
 if __name__ == '__main__':
