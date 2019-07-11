@@ -1,6 +1,6 @@
 from flask_script import Manager
 from app import create_app, db
-from app.importer import Importer
+from app.email import send_email
 
 app = create_app()
 manager = Manager(app)
@@ -35,6 +35,13 @@ def generate_config_js(output_dir):
     from app.common.site.util import config_js
     from app.common.file import put_json_from_dict
     put_json_from_dict(output_dir, config_js())
+
+
+@manager.command
+@manager.option('-m', '--mode', default='all', help='mode:all')
+def sendmail(email_to, subject='', body=''):
+    '''args: to_email, subject, body'''
+    send_email(subject, app.config['FBD_ADMIN_MAIL'], email_to, body)
 
 
 if __name__ == '__main__':
