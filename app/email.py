@@ -1,4 +1,4 @@
-from threading import Thread
+#from threading import Thread
 from flask import current_app, render_template
 from flask_mail import Message
 from app import mail
@@ -16,10 +16,10 @@ def send_email(subject, sender, recipients, text_body='', html_body=''):
     if len(html_body) > 0:
         msg.html = html_body
 
-    #mail.send(msg)
-    Thread(target=send_async_email, args=(current_app, msg)).start()
-    if (current_app.config['IS_LOGGING_MAIL']):
-        debug_email(subject, sender, recipients, text_body)
+    mail.send(msg)
+    #Thread(target=send_async_email, args=(current_app, msg)).start()
+    #if (current_app.config['IS_LOGGING_MAIL']):
+    #    debug_email(subject, sender, recipients, text_body)
 
 def send_sample_email(email_to):
     send_email('[{}] Sample mail'.format(current_app.config['FBD_SITE_NAME']),
