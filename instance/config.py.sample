@@ -10,12 +10,18 @@ IS_DEBUG_LOGGING = False
 FBD_ADMIN_MAIL = 'admin@example.com'
 ## Set if use error report mail
 #IS_SEND_ERROR_REPORT_MAIL = True
+#
+## If use outer mail server.
 #MAIL_SERVER = 'smtp.googlemail.com'
 #MAIL_PORT = 587
-#MAIL_USE_TLS = 1
+#MAIL_USE_TLS = False
+#MAIL_USE_SSL = False
 #MAIL_USERNAME = 'example@gmail.com'
 #MAIL_PASSWORD = 'password'
 #
+## If use local MTA.
+#MAIL_SERVER = 'localhost'
+#MAIL_PORT = 25
 
 SCRAPE_OPTIONS = {
     'base_url': 'https://example.com',
