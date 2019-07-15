@@ -9,6 +9,11 @@ def send_async_email(app, msg):
         mail.send(msg)
 
 def send_email(subject, sender, recipients, text_body='', html_body=''):
+    if (current_app.config['IS_LOGGING_MAIL']):
+        body = html_body if len(html_body) > 0 else text_body
+        debug_email(subject, sender, recipients, body)
+        return
+
     msg = Message(subject, sender=sender, recipients=recipients)
 
     if len(text_body) > 0:
