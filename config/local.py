@@ -5,7 +5,7 @@ class LocalConfig(BaseConfig):
     DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_ECHO = True
-    #IS_LOGGING_MAIL = True
+    IS_LOGGING_MAIL = True
 
     ## Request params
     #PARAMS_LIST_DEFAULT = {

@@ -42,4 +42,4 @@ def debug_email(subject, sender, recipients, body):
     data += '---------------\n'
     data += body
     data += '\n-----------------------------\n'
-    put_to_file('logs/mail.log', data)
+    put_to_file('var/logs/mail.log', data)
