@@ -1,12 +1,10 @@
-beautifulsoup4
-blinker
-certifi
-chardet
-Click
+dnspython
 Flask
+Flask-Cors
 Flask-Mail
 Flask-Script
 Flask-SQLAlchemy
+Flask-WTF
 idna
 itsdangerous
 Jinja2
@@ -20,3 +18,4 @@ soupsieve
 SQLAlchemy
 urllib3
 Werkzeug
+WTForms
