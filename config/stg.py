@@ -5,3 +5,5 @@ class StgConfig(BaseConfig):
     DEBUG = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = False
+
+    #CORS_RESOURCES = {r'/api/*': {'origins': '*'}}

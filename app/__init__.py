@@ -3,6 +3,7 @@ import importlib
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
+from flask_cors import CORS
 from werkzeug.exceptions import HTTPException
 
 db = SQLAlchemy()
@@ -38,6 +39,9 @@ def create_app():
 
     db.init_app(app)
     mail.init_app(app)
+    cors = CORS(app,
+            resources=app.config['CORS_RESOURCES'],
+            support_credentials=True)
 
     modules = ('site', 'api')
     for module_name in modules:

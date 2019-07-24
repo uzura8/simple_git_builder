@@ -17,6 +17,8 @@ class BaseConfig(object):
     # Flaskbird
     FBD_SITE_NAME = 'Sample Site'
     FBD_ADMIN_MAIL = 'admin@example.com'
+    FBD_ADMIN_COMPANY_NAME = 'Sample Site Administrator'
+    FBD_ADMIN_COMPANY_SITE_URL = 'https://www.example.com/'
     IS_DEBUG_LOGGING = False
     #IS_SEND_ERROR_REPORT_MAIL = False
     ## Modules
@@ -54,3 +56,13 @@ class BaseConfig(object):
     #    }
     #}
 
+    CORS_RESOURCES = {}
+
+    ## contact form
+    CONTACT_EMAIL_IS_CHECK_DNS = True
+    CONTACT_SUBJECT = 'お問い合わせを受け付けました'
+    CONTACT_TYPE_CHOICES = [
+        ('1', 'サイトについて'),
+        ('2', '不具合について'),
+        ('3', 'その他')
+    ]

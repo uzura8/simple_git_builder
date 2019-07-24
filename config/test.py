@@ -5,3 +5,5 @@ class TestConfig(BaseConfig):
     DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_ECHO = True
+
+    #CORS_RESOURCES = {r'/api/*': {'origins': '*'}}

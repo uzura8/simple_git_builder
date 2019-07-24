@@ -1,6 +1,9 @@
-from flask import jsonify, request
-from . import bp, InvalidUsage
-from app.common.date import validate_date
+from flask import current_app, jsonify, request
+from flask_cors import cross_origin
+from . import bp
+from app.forms import Contact as ContactForm
+from app.models import Contact
+from app.email import send_contact_email
 
 
 @bp.before_request
@@ -8,28 +11,31 @@ def before_request():
     pass
 
 
-#@bp.route('/example', methods=['GET', 'POST'])
-#def example():
-#    if request.method == 'POST':
-#        values = {}
-#        date = request.form.get('date', type=str, default=None)
-#        if not date or not validate_date(date):
-#            raise InvalidUsage('Reauested param date is invalid')
-#        values['date'] = date
-#
-#        name = request.form.get('name', type=str, default=None)
-#        if not name  or len(name) > 512:
-#            raise InvalidUsage('Reauested param name is invalid')
-#        values['name'] = name
-#
-#        example = Example.create(values)
-#        if example is None:
-#            raise InvalidUsage('Database save error')
-#
-#        body = example.to_dict()
-#
-#    else:
-#        pass
-#        #body = [item.to_dict() for item in items]
-#
-#    return jsonify(body), 200
+@bp.route('/contact', methods=['GET', 'POST'])
+@cross_origin(supports_credentials=True)
+def contact():
+    if request.method == 'POST':
+        form = ContactForm()
+        form.contact_type.choices = current_app.config['CONTACT_TYPE_CHOICES']
+        if form.validate_on_submit():
+            vals = form.get_dict()
+            vals['subject'] = current_app.config['CONTACT_SUBJECT']
+            contact = Contact.create(vals)
+            body = contact.to_dict()
+
+            types = form.contact_type.choices
+            body['contact_type_label'] = [ label for val, label in types\
+                                    if int(val) == body['contact_type'] ][0]
+            body['created_at_formatted'] = body['created_at'].\
+                                                strftime('%Y/%m/%d %H:%M')
+
+            send_contact_email(body['email'], body['subject'], body)
+
+        else:
+            body = {'errors':form.errors}
+            return jsonify(body), 400
+    else:
+        body = {'hoge':'fuga'}
+
+    return jsonify(body), 200
+

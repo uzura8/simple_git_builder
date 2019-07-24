@@ -12,3 +12,6 @@ class LocalConfig(BaseConfig):
     #    'per_page': 3,
     #    'per_page_max': 10,
     #}
+
+    CORS_RESOURCES = {r'/api/*': {'origins': '*'}}
+

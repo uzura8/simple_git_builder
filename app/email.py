@@ -22,9 +22,23 @@ def send_email(subject, sender, recipients, text_body='', html_body=''):
         msg.html = html_body
 
     mail.send(msg)
-    #Thread(target=send_async_email, args=(current_app, msg)).start()
-    #if (current_app.config['IS_LOGGING_MAIL']):
-    #    debug_email(subject, sender, recipients, text_body)
+
+
+def send_contact_email(email_to, subject, inputs):
+    admin_email = current_app.config['FBD_ADMIN_MAIL']
+    send_email(
+        subject,
+        sender=admin_email,
+        recipients=[email_to, admin_email],
+        text_body=render_template(
+            'email/contact.txt',
+            email_to=email_to,
+            inputs=inputs,
+            company_name=current_app.config['FBD_ADMIN_COMPANY_NAME'],
+            company_site_url=current_app.config['FBD_ADMIN_COMPANY_SITE_URL'],
+        )
+    )
+
 
 def send_sample_email(email_to):
     send_email('[{}] Sample mail'.format(current_app.config['FBD_SITE_NAME']),
@@ -34,6 +48,7 @@ def send_sample_email(email_to):
                                             email_to=email_to),
                html_body=render_template('email/sample.html',
                                             email_to=email_to))
+
 
 def debug_email(subject, sender, recipients, body):
     data = '\n-----------------------------\n'

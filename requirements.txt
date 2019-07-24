@@ -1,3 +1,5 @@
+blinker
+Click
 dnspython
 Flask
 Flask-Cors
@@ -14,7 +16,6 @@ python-dateutil
 requests
 simplejson
 six
-soupsieve
 SQLAlchemy
 urllib3
 Werkzeug

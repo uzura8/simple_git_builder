@@ -1,11 +1,9 @@
 from .base import Base
 from .site_config import SiteConfig
-from .price_day import PriceDay
-from .brand import Brand
+from .contact import Contact
 
 __all__ = [
     Base,
     SiteConfig,
-    PriceDay,
-    Brand,
+    Contact,
 ]
