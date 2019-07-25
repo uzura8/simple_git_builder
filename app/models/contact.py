@@ -10,14 +10,16 @@ class Contact(Base):
     """
     __tablename__ = 'contact'
     code = db.Column('code', db.String(6), primary_key=True)
+    status = db.Column(TINYINT, nullable=False)
     subject = db.Column(db.String(64), nullable=False)
     content = db.Column(db.Text, nullable=False)
     email = db.Column(db.String(128), nullable=False)
     tel = db.Column(db.String(12), nullable=True)
-    name = db.Column(db.String(248), nullable=True)
-    name_phonetic = db.Column(db.String(248), nullable=True)
+    name = db.Column(db.String(256), nullable=True)
+    name_phonetic = db.Column(db.String(256), nullable=True)
     contact_type = db.Column(TINYINT, nullable=True)
-    status = db.Column(TINYINT, nullable=False)
+    ip = db.Column(db.String(32), nullable=True)
+    ua = db.Column(db.String(256), nullable=True)
 
 
     def to_dict(self):
@@ -48,6 +50,8 @@ class Contact(Base):
             tel=kwargs['tel'],
             name=kwargs['name'],
             name_phonetic=kwargs['name_phonetic'],
+            ip=kwargs['ip'],
+            ua=kwargs['ua'],
         )
         db.session.add(item)
         db.session.commit()

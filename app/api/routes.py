@@ -20,6 +20,8 @@ def contact():
         if form.validate_on_submit():
             vals = form.get_dict()
             vals['subject'] = current_app.config['CONTACT_SUBJECT']
+            vals['ip'] = request.remote_addr
+            vals['ua'] = request.headers.get('User-Agent')
             contact = Contact.create(vals)
             body = contact.to_dict()
 
