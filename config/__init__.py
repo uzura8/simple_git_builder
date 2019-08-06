@@ -59,6 +59,12 @@ class BaseConfig(object):
     CORS_RESOURCES = {}
 
     ## contact form
+    RECAPTCHA_USE_SSL= False
+    RECAPTCHA_PUBLIC_KEY= ''
+    RECAPTCHA_PRIVATE_KEY=''
+    RECAPTCHA_OPTIONS = {}
+    CONTACT_RECAPTCHA_IS_USE = False
+    CONTACT_RECAPTCHA_SECRET_KEY = ''
     CONTACT_EMAIL_IS_CHECK_DNS = True
     CONTACT_SUBJECT = 'お問い合わせを受け付けました'
     CONTACT_TYPE_CHOICES = [

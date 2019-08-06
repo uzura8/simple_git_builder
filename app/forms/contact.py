@@ -1,6 +1,6 @@
 import re
 from flask import current_app
-from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, TextAreaField, RadioField
 from wtforms.validators import ValidationError, DataRequired, Email, Length
 from app.common.string import validate_email as validate_email_common
@@ -19,6 +19,7 @@ class Contact(FlaskForm):
     tel = StringField('電話番号',
                 validators=[DataRequired(), Length(min=10, max=11)])
     content = TextAreaField('内容', [DataRequired(), Length(max=3000)])
+    recaptcha = RecaptchaField()
 
 
     def validate_email(self, field):
