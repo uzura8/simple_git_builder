@@ -1,7 +1,7 @@
 import os
 import json
 
-BASE_DIR = os.path.abspath('.')
+BASE_DIR = os.path.dirname(os.path.abspath(__file__)) + '/../../'
 
 
 def put_to_file(path, data, mode='a'):
