@@ -19,8 +19,13 @@ class Contact(FlaskForm):
     tel = StringField('電話番号',
                 validators=[DataRequired(), Length(min=10, max=11)])
     content = TextAreaField('内容', [DataRequired(), Length(max=3000)])
-    recaptcha = RecaptchaField()
+    recaptcha = None
 
+
+    def __init__(self, *args, **kwargs):
+        super(Contact, self).__init__(*args, **kwargs)
+        if current_app.config['CONTACT_USE_RECAPTCHA']:
+            self.recaptcha = RecaptchaField()
 
     def validate_email(self, field):
         if not current_app.config['CONTACT_EMAIL_IS_CHECK_DNS']:
