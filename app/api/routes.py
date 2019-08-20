@@ -30,11 +30,15 @@ def contact():
             body['contact_type_label'] = [ label for val, label in types\
                                     if int(val) == body['contact_type'] ][0]
 
-            body['created_at_formatted'] = conv_dt_from_utc(
-                body['created_at'],
-                current_app.config['DEFAULT_TIMEZONE'],
-                '%Y/%m/%d %H:%M'
-            )
+            if not current_app.config['DEFAULT_TIMEZONE']:
+                body['created_at_formatted'] = body['created_at'].\
+                                                    strftime('%Y/%m/%d %H:%M')
+            else:
+                body['created_at_formatted'] = conv_dt_from_utc(
+                    body['created_at'],
+                    current_app.config['DEFAULT_TIMEZONE'],
+                    '%Y/%m/%d %H:%M'
+                )
 
             send_contact_email(body['email'], body['subject'], body)
 
