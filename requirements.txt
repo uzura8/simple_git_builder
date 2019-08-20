@@ -13,6 +13,7 @@ Jinja2
 MarkupSafe
 PyMySQL
 python-dateutil
+pytz
 requests
 simplejson
 six

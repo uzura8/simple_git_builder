@@ -4,6 +4,7 @@ from . import bp
 from app.forms import Contact as ContactForm
 from app.models import Contact
 from app.email import send_contact_email
+from app.common.date import conv_dt_from_utc
 
 
 @bp.before_request
@@ -28,8 +29,12 @@ def contact():
             types = form.contact_type.choices
             body['contact_type_label'] = [ label for val, label in types\
                                     if int(val) == body['contact_type'] ][0]
-            body['created_at_formatted'] = body['created_at'].\
-                                                strftime('%Y/%m/%d %H:%M')
+
+            body['created_at_formatted'] = conv_dt_from_utc(
+                body['created_at'],
+                current_app.config['DEFAULT_TIMEZONE'],
+                '%Y/%m/%d %H:%M'
+            )
 
             send_contact_email(body['email'], body['subject'], body)
 
