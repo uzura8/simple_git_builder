@@ -6,6 +6,9 @@ SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://username:password@localhost:3306/dbna
 FBD_SITE_NAME = 'Sample Site'
 
 IS_DEBUG_LOGGING = False
+
+#DEFAULT_TIMEZONE = 'Asia/Tokyo'
+
 # Operating organization email
 FBD_ADMIN_MAIL = 'admin@example.com'
 ## Set if use error report mail
