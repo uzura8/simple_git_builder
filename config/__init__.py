@@ -13,6 +13,7 @@ class BaseConfig(object):
     SQLALCHEMY_ECHO = False
     ## Babel
     #LANGUAGES = ['en', 'ja']
+    DEFAULT_TIMEZONE = 'UTC'
 
     # Flaskbird
     FBD_SITE_NAME = 'Sample Site'
