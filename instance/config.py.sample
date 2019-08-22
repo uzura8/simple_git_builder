@@ -40,6 +40,7 @@ RECAPTCHA_PUBLIC_KEY= 'enter_your_public_key'
 RECAPTCHA_PRIVATE_KEY='enter_your_private_key'
 RECAPTCHA_OPTIONS = {'theme':'white'}
 
+#CONTACT_EMAIL_FROM_NAME = ''
 CONTACT_SUBJECT = 'お問い合わせを受け付けました'
 CONTACT_TYPE_CHOICES = [
     ('1', 'サイトについて'),

@@ -67,6 +67,7 @@ class BaseConfig(object):
     ## contact form
     CONTACT_USE_RECAPTCHA = False
     CONTACT_EMAIL_IS_CHECK_DNS = True
+    CONTACT_EMAIL_FROM_NAME = FBD_ADMIN_COMPANY_NAME
     CONTACT_SUBJECT = 'お問い合わせを受け付けました'
     CONTACT_TYPE_CHOICES = [
         ('1', 'サイトについて'),

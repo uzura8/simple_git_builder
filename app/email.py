@@ -25,7 +25,7 @@ def send_email(subject, sender, recipients, text_body='', html_body=''):
 
 
 def send_contact_email(email_to, subject, inputs):
-    admin_name = current_app.config['FBD_ADMIN_COMPANY_NAME']
+    admin_name = current_app.config['CONTACT_EMAIL_FROM_NAME']
     admin_email = current_app.config['FBD_ADMIN_MAIL']
     send_email(
         subject,
