@@ -25,6 +25,9 @@ FBD_ADMIN_MAIL = 'admin@example.com'
 ## If use local MTA.
 #MAIL_SERVER = 'localhost'
 #MAIL_PORT = 25
+#
+## If use AWS SES.
+#MAIL_USE_SES = True
 
 SCRAPE_OPTIONS = {
     'base_url': 'https://example.com',

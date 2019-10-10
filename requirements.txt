@@ -1,6 +1,9 @@
 blinker
+boto3
+botocore
 Click
 dnspython
+docutils
 Flask
 Flask-Cors
 Flask-Mail
@@ -10,11 +13,13 @@ Flask-WTF
 idna
 itsdangerous
 Jinja2
+jmespath
 MarkupSafe
 PyMySQL
 python-dateutil
 pytz
 requests
+s3transfer
 simplejson
 six
 SQLAlchemy

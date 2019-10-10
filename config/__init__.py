@@ -25,12 +25,14 @@ class BaseConfig(object):
     ## Modules
     #FBD_MODULES = ['error', 'site', 'media', 'member', 'api']
     #FBD_OPTIONAL_MODULES = []
+
     # Mail
-    #MAIL_SERVER = None
-    #MAIL_PORT = 25
-    #MAIL_USE_TLS = None
-    #MAIL_USERNAME = None
-    #MAIL_PASSWORD = None
+    MAIL_USE_SES = False
+    MAIL_SERVER = None
+    MAIL_PORT = 25
+    MAIL_USE_TLS = None
+    MAIL_USERNAME = None
+    MAIL_PASSWORD = None
     #ADMINS = None
     IS_LOGGING_MAIL = False
 
