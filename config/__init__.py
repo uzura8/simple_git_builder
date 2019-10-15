@@ -27,7 +27,10 @@ class BaseConfig(object):
     #FBD_OPTIONAL_MODULES = []
 
     # Mail
-    MAIL_USE_SES = False
+    MAIL_AWS_SES_ENABLED = False
+    MAIL_AWS_SES_REGION = ''
+    MAIL_AWS_SES_ACCESS_KEY_ID = ''
+    MAIL_AWS_SES_SECRET_ACCESS_KEY = ''
     MAIL_SERVER = None
     MAIL_PORT = 25
     MAIL_USE_TLS = None

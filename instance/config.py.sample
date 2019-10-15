@@ -11,6 +11,8 @@ IS_DEBUG_LOGGING = False
 
 # Operating organization email
 FBD_ADMIN_MAIL = 'admin@example.com'
+FBD_ADMIN_COMPANY_NAME = 'Example Company Inc.'
+FBD_ADMIN_COMPANY_SITE_URL = 'http://.example.com/'
 ## Set if use error report mail
 #IS_SEND_ERROR_REPORT_MAIL = True
 #
@@ -27,7 +29,10 @@ FBD_ADMIN_MAIL = 'admin@example.com'
 #MAIL_PORT = 25
 #
 ## If use AWS SES.
-#MAIL_USE_SES = True
+#MAIL_AWS_SES_ENABLED = True
+#MAIL_AWS_SES_REGION = 'us-west-2'
+#MAIL_AWS_SES_ACCESS_KEY_ID = ''
+#MAIL_AWS_SES_SECRET_ACCESS_KEY = ''
 
 SCRAPE_OPTIONS = {
     'base_url': 'https://example.com',

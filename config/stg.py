@@ -6,4 +6,4 @@ class StgConfig(BaseConfig):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = False
 
-    #CORS_RESOURCES = {r'/api/*': {'origins': '*'}}
+    CORS_RESOURCES = {r'/api/*': {'origins': ['https://aws-stg.pal-relations.co.jp']}}
