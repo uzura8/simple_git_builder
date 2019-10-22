@@ -45,7 +45,7 @@ LoadModule wsgi_module /PATH-TO-SITE_PACKAGES/site-packages/mod_wsgi/server/mod_
 </VirtualHost>
 ```
 
-And start wev server.
+And start web server.
 
 ```
 sudo systemctl start httpd
