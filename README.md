@@ -1,6 +1,14 @@
-# flask-api-template
+Installation
+============
 
-## setup ##
+### 1. Install required libraries ###
+
+```
+pip install -r requirements.txt
+```
+
+### 2. Setup ###
+Edit configs for your env
 
 ```
 cp instance/config.py.sample instance/config.py
@@ -8,11 +16,22 @@ vim instance/config.py
 chmod 777 var
 cp adapter.wsgi.sample adapter.wsgi
 vim adapter.wsgi
-echo "CREATE DATABASE DB-name DEFAULT CHARACTER SET utf8" | mysql -u root -p
-pip install -r requirements.txt
-python3 manage.py setup_db
-sudo vim /etc/httpd/conf.d/virtual.conf
 ```
+
+### 3. Create DB ###
+
+```
+echo "CREATE DATABASE DB-name DEFAULT CHARACTER SET utf8" | mysql -u root -p
+python3 manage.py setup_db
+```
+
+### 3. WEB Server Setting ###
+
+If use Apache, Edit config file like below.
+
+```
+sudo vim /etc/httpd/conf.d/virtual.conf
+
 LoadModule wsgi_module /PATH-TO-SITE_PACKAGES/site-packages/mod_wsgi/server/mod_wsgi-py************.so
 <VirtualHost *:80>
   ServerName example.com
@@ -25,5 +44,10 @@ LoadModule wsgi_module /PATH-TO-SITE_PACKAGES/site-packages/mod_wsgi/server/mod_
   </Directory>
 </VirtualHost>
 ```
-sudo /etc/init.d/httpd restart
+
+And start wev server.
+
+```
+sudo systemctl start httpd
+```
 
