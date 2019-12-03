@@ -79,3 +79,10 @@ class BaseConfig(object):
         ('2', '不具合について'),
         ('3', 'その他')
     ]
+
+    GIT_COMMON = {
+        'work_dir': '/var/www/work',
+        'path': '/var/www/sites',
+    }
+    GIT_REPOS = {}
+

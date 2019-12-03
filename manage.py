@@ -1,6 +1,7 @@
 from flask_script import Manager
 from app import create_app, db
 from app.email import send_email
+from app.repo_handler import RepoHandler
 
 app = create_app()
 manager = Manager(app)
@@ -43,6 +44,14 @@ def generate_config_js(output_dir):
 def sendmail(email_to, subject, body, html=0):
     '''args: to_email, subject, body'''
     send_email(subject, app.config['FBD_ADMIN_MAIL'], [email_to], text_body=body)
+
+
+@manager.command
+def deploy_repo(repo_key):
+    '''clone all branches'''
+    handler = RepoHandler()
+    handler.main(repo_key)
+    del handler
 
 
 if __name__ == '__main__':
