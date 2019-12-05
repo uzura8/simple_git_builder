@@ -115,13 +115,12 @@ class RepoHandler:
         if br == 'master':
             exec_cmd(['git', 'checkout', br])
         else:
-            exec_cmd(['git', 'checkout', 'origin/'+br])
-            exec_cmd(['git', 'checkout', '-b', br])
+            exec_cmd(['git', 'checkout', '-b', br, 'origin/'+br])
         print('Deploy {} in {} as {}'.format(br, self.repo_key, domain))
 
 
     def get_domain(self, br):
-        branch_subd = re.sub(r'[/_.@# ]', '-', br)
+        branch_subd = re.sub(r'[/_.@# ]', '-', br).lower()
         return '{}-{}.{}'.format(self.repo_key, branch_subd,
                                     self.options_common['domain'])
 
