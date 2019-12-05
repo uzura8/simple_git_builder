@@ -2,6 +2,7 @@ from flask_script import Manager
 from app import create_app, db
 from app.email import send_email
 from app.repo_handler import RepoHandler
+from app.repos_handler import ReposHandler
 
 app = create_app()
 manager = Manager(app)
@@ -53,6 +54,16 @@ def deploy_repo(repo_key, force=0, debug=0):
     '''clone branches in one repo'''
     handler = RepoHandler()
     handler.main(repo_key, force, debug)
+    del handler
+
+
+@manager.command
+@manager.option('-f', '--force', default=0, help='Set if you want to reset')
+@manager.option('-d', '--debug', default=0, help='Set if show details')
+def deploy_repos(force=0, debug=0):
+    '''clone branches in all repos'''
+    handler = ReposHandler()
+    handler.main(force, debug)
     del handler
 
 
