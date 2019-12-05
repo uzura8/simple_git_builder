@@ -1,3 +1,5 @@
+import json
+from pprint import pprint
 from flask import current_app, jsonify, request
 from flask_cors import cross_origin
 from . import bp
@@ -5,6 +7,7 @@ from app.forms import Contact as ContactForm
 from app.models import Contact
 from app.email import send_contact_email
 from app.common.date import conv_dt_from_utc
+from app.common.file import put_to_file
 
 
 @bp.before_request
@@ -50,3 +53,14 @@ def contact():
 
     return jsonify(body), 200
 
+
+@bp.route('/repos', methods=['GET', 'POST'])
+def repos():
+    #if request.headers['Content-Type'] != 'application/json':
+    #    print(request.headers['Content-Type'])
+    #    return flask.jsonify(res='error'), 400
+    data = request.data.decode('utf-8')
+    data = json.loads(data)
+    #pprint(data)
+    put_to_file('var/repos.json', json.dumps(data), mode='a')
+    return data, 200
