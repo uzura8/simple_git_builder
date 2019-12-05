@@ -2,8 +2,10 @@ import os
 import sys
 import subprocess
 import shutil
+import re
 from pprint import pprint
 from flask import current_app
+from app.common.cli import exec_cmd
 
 
 class RepoHandler:
@@ -13,7 +15,9 @@ class RepoHandler:
         self.options_common = {}
         self.repo_key = ''
         self.checkout_path = ''
-        self.debug = 0 # 1:normal / 2:detail
+        self.master_path = ''
+        self.force = 0 # 0:none / 1:force_reset
+        self.debug = 0 # 0:none / 1:normal / 2:detail
         print('Start handler')
 
 
@@ -21,7 +25,7 @@ class RepoHandler:
         print('End handler')
 
 
-    def init(self, repo_key, debug):
+    def init(self, repo_key, force, debug):
         if not repo_key:
             raise Exception('repo_key is required')
 
@@ -38,31 +42,86 @@ class RepoHandler:
 
         self.options_common = current_app.config['GIT_COMMON']
 
-        if 'path' in self.options:
-            self.checkout_path = self.options['path']
+        if 'deploy_dir' in self.options:
+            self.checkout_path = self.options['deploy_dir']
         else:
-            self.checkout_path = self.options_common['path']
+            self.checkout_path = self.options_common['deploy_dir']
 
+        self.master_path = '{}/{}'.format(
+                            self.options_common['master_repos_dir'], repo_key)
         self.repo_key = repo_key
+        self.force = int(force)
         self.debug = int(debug)
 
 
-    def main(self, repo_key, debug=0):
-        self.init(repo_key, debug)
+    def main(self, repo_key, force=0, debug=0):
+        self.init(repo_key, force, debug)
         self.execute()
 
 
     def execute(self):
-        os.chdir(self.options_common['work_dir'])
-        if os.path.exists('tmp_repo'):
-            shutil.rmtree('tmp_repo')
-        os.system('git clone {} tmp_repo'.format(self.options['url']))
-        os.chdir('tmp_repo')
-        path = os.getcwd()
-        print(path)
-        command = ['git', 'branch', '-r']
-        #res = subprocess.call(command)
-        #print(res)
-        res = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        sys.stdout.buffer.write(res.stdout)
-        #os.system('git branch -r')
+        brs = self.get_branches()
+        for br in brs:
+            self.deploy_branch(br)
+
+
+    def get_branches(self):
+        os.chdir(self.options_common['master_repos_dir'])
+
+        is_clone = False
+        if os.path.exists(self.repo_key):
+            if self.force:
+                shutil.rmtree(self.repo_key)
+                is_clone = True
+        else:
+            is_clone = True
+
+        if is_clone:
+            cmd = ['git', 'clone', self.options['url'], self.repo_key]
+            exec_cmd(cmd)
+
+        os.chdir(self.repo_key)
+        cmd = ['git', 'branch', '-r']
+        res = exec_cmd(cmd)
+        res_lines = res[0].split('\n')
+        brs = []
+        for item in res_lines:
+            if '->' in item:
+                continue
+            brs.append(item.strip().replace('origin/', ''))
+
+        return brs
+
+
+    def deploy_branch(self, br):
+        os.chdir(self.checkout_path)
+        cp_from = '{}/{}'.format(self.options_common['master_repos_dir'],
+                                    self.repo_key)
+        domain = self.get_domain(br)
+
+        is_cp = False
+        if os.path.exists(domain):
+            if self.force:
+                shutil.rmtree(domain)
+                is_cp = True
+        else:
+            is_cp = True
+
+        if is_cp:
+            cmd = ['cp', '-a', cp_from, domain]
+            exec_cmd(cmd)
+
+        os.chdir(domain)
+        if br == 'master':
+            exec_cmd(['git', 'checkout', br])
+        else:
+            exec_cmd(['git', 'checkout', 'origin/'+br])
+            exec_cmd(['git', 'checkout', '-b', br])
+        print('Deploy {} in {} as {}'.format(br, self.repo_key, domain))
+
+
+    def get_domain(self, br):
+        branch_subd = re.sub(r'[/_.@# ]', '-', br)
+        return '{}-{}.{}'.format(self.repo_key, branch_subd,
+                                    self.options_common['domain'])
+

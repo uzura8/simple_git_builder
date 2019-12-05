@@ -81,6 +81,7 @@ class BaseConfig(object):
     ]
 
     GIT_COMMON = {
+        'domain': 'example.com',
         'work_dir': '/var/www/work',
         'path': '/var/www/sites',
     }

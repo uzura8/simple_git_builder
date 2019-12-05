@@ -47,10 +47,12 @@ def sendmail(email_to, subject, body, html=0):
 
 
 @manager.command
-def deploy_repo(repo_key):
-    '''clone all branches'''
+@manager.option('-f', '--force', default=0, help='Set if you want to reset')
+@manager.option('-d', '--debug', default=0, help='Set if show details')
+def deploy_repo(repo_key, force=0, debug=0):
+    '''clone branches in one repo'''
     handler = RepoHandler()
-    handler.main(repo_key)
+    handler.main(repo_key, force, debug)
     del handler
 
 

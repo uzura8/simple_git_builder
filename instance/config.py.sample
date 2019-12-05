@@ -58,8 +58,9 @@ CONTACT_TYPE_CHOICES = [
 
 
 GIT_COMMON = {
-    'work_dir': '/var/www/work',
-    'path': '/var/www/sites',
+    'domain': 'example.com',
+    'master_repos_dir': '/var/www/work',
+    'deploy_dir': '/var/www/sites',
 }
 GIT_REPOS = {
     'sample': {
