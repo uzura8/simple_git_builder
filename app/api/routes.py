@@ -1,5 +1,7 @@
+import re
 import json
 from pprint import pprint
+from urllib.parse import unquote_plus
 from flask import current_app, jsonify, request
 from flask_cors import cross_origin
 from . import bp
@@ -54,13 +56,16 @@ def contact():
     return jsonify(body), 200
 
 
-@bp.route('/repos', methods=['GET', 'POST'])
+@bp.route('/repos', methods=['POST'])
 def repos():
     #if request.headers['Content-Type'] != 'application/json':
     #    print(request.headers['Content-Type'])
     #    return flask.jsonify(res='error'), 400
-    data = request.data.decode('utf-8')
-    data = json.loads(data)
-    #pprint(data)
-    put_to_file('var/repos.json', json.dumps(data), mode='a')
-    return data, 200
+    payload = request.get_data().decode('utf-8')
+    payload = unquote_plus(payload)
+    payload = re.sub('payload=', '', payload)
+    payload = json.loads(payload)
+    #pprint(payload)
+    payload_json = json.dumps(payload)
+    put_to_file('var/repos.json', payload_json+'\n', mode='a')
+    return payload, 200
