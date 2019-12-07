@@ -54,15 +54,19 @@ class RepoHandler:
         self.debug = int(debug)
 
 
-    def main(self, repo_key, force=0, debug=0):
+    def deploy(self, repo_key, force=0, debug=0):
         self.init(repo_key, force, debug)
-        self.execute()
-
-
-    def execute(self):
         brs = self.get_branches()
         for br in brs:
             self.deploy_branch(br)
+
+
+    def update(self, repo_key, branch, debug=0):
+        self.init(repo_key, debug=0)
+        br_path = self.get_branch_path(branch)
+        os.chdir(br_path)
+        cmd = ['git', 'pull', '--rebase', 'origin', branch]
+        res = exec_cmd(cmd)
 
 
     def get_branches(self):
@@ -123,4 +127,8 @@ class RepoHandler:
         branch_subd = re.sub(r'[/_.@# ]', '-', br).lower()
         return '{}-{}.{}'.format(self.repo_key, branch_subd,
                                     self.options_common['domain'])
+
+
+    def get_branch_path(self, br):
+        return '{}/{}'.format(self.checkout_path, self.get_domain(br))
 

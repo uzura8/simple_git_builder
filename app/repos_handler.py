@@ -21,10 +21,10 @@ class ReposHandler:
         self.debug = int(debug)
 
 
-    def main(self, force=0, debug=0):
+    def deploy(self, force=0, debug=0):
         self.init(force, debug)
         repo_keys = list(self.repos.keys())
         for repo_key in repo_keys:
             handler = RepoHandler()
-            handler.main(repo_key, force, debug)
+            handler.deploy(repo_key, force, debug)
 

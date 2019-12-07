@@ -64,6 +64,7 @@ GIT_COMMON = {
 }
 GIT_REPOS = {
     'sample': {
+        'repo_url': 'https://example.com/hoge/fuga',
         'url': 'git@example.com:hoge/fuga.git',
         'build_type': 'webpack',
     },

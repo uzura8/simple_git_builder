@@ -53,7 +53,7 @@ def sendmail(email_to, subject, body, html=0):
 def deploy_repo(repo_key, force=0, debug=0):
     '''clone branches in one repo'''
     handler = RepoHandler()
-    handler.main(repo_key, force, debug)
+    handler.deploy(repo_key, force, debug)
     del handler
 
 
@@ -63,7 +63,7 @@ def deploy_repo(repo_key, force=0, debug=0):
 def deploy_repos(force=0, debug=0):
     '''clone branches in all repos'''
     handler = ReposHandler()
-    handler.main(force, debug)
+    handler.deploy(force, debug)
     del handler
 
 

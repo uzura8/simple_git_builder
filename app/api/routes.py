@@ -10,6 +10,7 @@ from app.models import Contact
 from app.email import send_contact_email
 from app.common.date import conv_dt_from_utc
 from app.common.file import put_to_file
+from app.repo_handler import RepoHandler
 
 
 @bp.before_request
@@ -65,6 +66,19 @@ def repos():
     payload = unquote_plus(payload)
     payload = re.sub('payload=', '', payload)
     payload = json.loads(payload)
+
+    br = payload['ref'].replace('refs/heads/', '').strip()
+    repos = current_app.config['GIT_REPOS']
+    repo_key = None
+    repo = None
+    for key, val in repos.items():
+        if vals['repo_url'] == payload['repository']['url']:
+            repo_key = key
+            repo = val
+            break
+
+    handler = RepoHandler()
+    handler.update(repo_key, br)
     #pprint(payload)
     payload_json = json.dumps(payload)
     put_to_file('var/repos.json', payload_json+'\n', mode='a')
