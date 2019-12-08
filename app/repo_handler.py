@@ -101,6 +101,10 @@ class RepoHandler:
             exec_cmd(cmd)
 
         os.chdir(self.repo_key)
+        if not is_clone:
+            cmd = ['git', 'fetch', 'origin']
+            res = exec_cmd(cmd)
+
         cmd = ['git', 'branch', '-r']
         res = exec_cmd(cmd)
         res_lines = res[0].split('\n')
