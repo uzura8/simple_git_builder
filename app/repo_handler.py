@@ -64,10 +64,13 @@ class RepoHandler:
     def update(self, repo_key, branch, debug=0):
         self.init(repo_key, debug=0)
         br_path = self.get_branch_path(branch)
-        os.chdir(br_path)
-        cmd = ['git', 'pull', '--rebase', 'origin', branch]
-        res = exec_cmd(cmd)
-        pprint(res)
+        if os.path.exists(br_path):
+            os.chdir(br_path)
+            cmd = ['git', 'pull', '--rebase', 'origin', branch]
+            res = exec_cmd(cmd)
+            pprint(res)
+        else:
+            self.deploy_branch(branch)
 
 
     def delete(self, repo_key, branch, debug=0):
