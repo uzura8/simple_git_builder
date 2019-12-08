@@ -16,6 +16,7 @@ class RepoHandler:
         self.repo_key = ''
         self.checkout_path = ''
         self.master_path = ''
+        self.branches = []
         self.force = 0 # 0:none / 1:force_reset
         self.debug = 0 # 0:none / 1:normal / 2:detail
         print('Start handler')
@@ -26,6 +27,9 @@ class RepoHandler:
 
 
     def init(self, repo_key, force=0, debug=0):
+        self.force = int(force)
+        self.debug = int(debug)
+
         if not repo_key:
             raise Exception('repo_key is required')
 
@@ -50,14 +54,12 @@ class RepoHandler:
         self.master_path = '{}/{}'.format(
                             self.options_common['master_repos_dir'], repo_key)
         self.repo_key = repo_key
-        self.force = int(force)
-        self.debug = int(debug)
+        self.branches = self.get_branches()
 
 
     def deploy(self, repo_key, force=0, debug=0):
         self.init(repo_key, force, debug)
-        brs = self.get_branches()
-        for br in brs:
+        for br in self.branches:
             self.deploy_branch(br)
 
 
