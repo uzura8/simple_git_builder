@@ -69,8 +69,13 @@ class RepoHandler:
             cmd = ['git', 'pull', '--rebase', 'origin', branch]
             res = exec_cmd(cmd)
             pprint(res)
+            print('Updated ' + br_path)
         else:
             self.deploy_branch(branch)
+
+
+    def create(self, repo_key, branch, debug=0):
+        self.deploy_branch(branch)
 
 
     def delete(self, repo_key, branch, debug=0):

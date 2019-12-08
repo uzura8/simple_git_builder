@@ -84,7 +84,9 @@ def repos():
 
     if 'revisions' in payload:
         handler.update(repo_key, br)
-    else:
+    elif payload['before'] == '0000000000000000000000000000000000000000':
+        handler.create(repo_key, br)
+    elif payload['after'] == '0000000000000000000000000000000000000000':
         handler.delete(repo_key, br)
 
     return payload, 200
