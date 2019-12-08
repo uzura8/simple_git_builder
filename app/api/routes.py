@@ -66,8 +66,10 @@ def repos():
     payload = unquote_plus(payload)
     payload = re.sub('payload=', '', payload)
     payload = json.loads(payload)
+    # For debug
+    payload_json = json.dumps(payload)
+    put_to_file('var/repos.json', payload_json+'\n', mode='a')
 
-    br = payload['ref'].replace('refs/heads/', '').strip()
     repos = current_app.config['GIT_REPOS']
     repo_key = None
     repo = None
@@ -77,9 +79,12 @@ def repos():
             repo = val
             break
 
+    br = payload['ref'].replace('refs/heads/', '').strip()
     handler = RepoHandler()
-    handler.update(repo_key, br)
-    #pprint(payload)
-    payload_json = json.dumps(payload)
-    put_to_file('var/repos.json', payload_json+'\n', mode='a')
+
+    if 'revisions' in payload:
+        handler.update(repo_key, br)
+    else:
+        handler.delete(repo_key, br)
+
     return payload, 200

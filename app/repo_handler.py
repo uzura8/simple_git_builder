@@ -69,6 +69,14 @@ class RepoHandler:
         res = exec_cmd(cmd)
         pprint(res)
 
+
+    def delete(self, repo_key, branch, debug=0):
+        self.init(repo_key, debug=0)
+        br_path = self.get_branch_path(branch)
+        shutil.rmtree(br_path)
+        print('Deleted ' + br_path)
+
+
     def get_branches(self):
         os.chdir(self.options_common['master_repos_dir'])
 
