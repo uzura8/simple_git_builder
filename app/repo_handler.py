@@ -81,8 +81,11 @@ class RepoHandler:
     def delete(self, repo_key, branch, debug=0):
         self.init(repo_key, debug=0)
         br_path = self.get_branch_path(branch)
-        shutil.rmtree(br_path)
-        print('Deleted ' + br_path)
+        if os.path.exists(br_path):
+            shutil.rmtree(br_path)
+            print('Deleted ' + br_path)
+        else:
+            print(br_path + ' is already deleted ')
 
 
     def get_branches(self):
