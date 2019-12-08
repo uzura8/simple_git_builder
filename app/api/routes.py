@@ -72,7 +72,7 @@ def repos():
     repo_key = None
     repo = None
     for key, val in repos.items():
-        if vals['repo_url'] == payload['repository']['url']:
+        if val['repo_url'] == payload['repository']['url']:
             repo_key = key
             repo = val
             break

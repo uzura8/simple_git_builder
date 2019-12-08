@@ -25,7 +25,7 @@ class RepoHandler:
         print('End handler')
 
 
-    def init(self, repo_key, force, debug):
+    def init(self, repo_key, force=0, debug=0):
         if not repo_key:
             raise Exception('repo_key is required')
 
@@ -67,7 +67,7 @@ class RepoHandler:
         os.chdir(br_path)
         cmd = ['git', 'pull', '--rebase', 'origin', branch]
         res = exec_cmd(cmd)
-
+        pprint(res)
 
     def get_branches(self):
         os.chdir(self.options_common['master_repos_dir'])
