@@ -75,6 +75,7 @@ class RepoHandler:
 
 
     def create(self, repo_key, branch, debug=0):
+        self.init(repo_key, debug=0)
         self.deploy_branch(branch)
 
 
