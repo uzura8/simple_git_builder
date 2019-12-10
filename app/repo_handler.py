@@ -151,7 +151,7 @@ class RepoHandler:
 
     def get_domain(self, br):
         branch_subd = re.sub(r'[/_.@# ]', '-', br).lower()
-        return '{}-{}.{}'.format(self.repo_key, branch_subd,
+        return '{}.{}.{}'.format(self.repo_key, branch_subd,
                                     self.options_common['domain'])
 
 
