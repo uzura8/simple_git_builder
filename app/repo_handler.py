@@ -144,6 +144,8 @@ class RepoHandler:
         os.chdir(domain)
         if br == 'master':
             exec_cmd(['git', 'checkout', br])
+            cmd = ['git', 'pull', '--rebase', 'origin', br]
+            exec_cmd(cmd)
         else:
             exec_cmd(['git', 'checkout', '-b', br, 'origin/'+br])
         print('Deploy {} in {} as {}'.format(br, self.repo_key, domain))
