@@ -69,7 +69,7 @@ class RepoHandler:
         if os.path.exists(br_path):
             os.chdir(br_path)
             cmd = ['git', 'pull', '--rebase', 'origin', branch]
-            res = exec_cmd(cmd)
+            res = exec_cmd(cmd, True)
             pprint(res)
             print('Updated ' + br_path)
         else:
@@ -104,7 +104,14 @@ class RepoHandler:
 
         if is_clone:
             cmd = ['git', 'clone', self.options['url'], self.repo_key]
-            exec_cmd(cmd)
+            exec_cmd(cmd, True)
+
+            if self.options['build_type'] == 'npm':
+                if len(self.options['cmds_before_build']) > 0:
+                    for cmd in self.options['cmds_before_build']:
+                        exec_cmd(cmd)
+
+                exec_cmd(['npm', 'install'], True)
 
         os.chdir(self.repo_key)
         if not is_clone:
@@ -145,9 +152,14 @@ class RepoHandler:
         if br == 'master':
             exec_cmd(['git', 'checkout', br])
             cmd = ['git', 'pull', '--rebase', 'origin', br]
-            exec_cmd(cmd)
+            exec_cmd(cmd, True)
         else:
-            exec_cmd(['git', 'checkout', '-b', br, 'origin/'+br])
+            exec_cmd(['git', 'checkout', '-b', br, 'origin/'+br], True)
+
+        if self.options['build_type'] == 'npm':
+            exec_cmd(['npm', 'install'], True)
+            exec_cmd(['npm', 'run', 'build'], True)
+
         print('Deploy {} in {} as {}'.format(br, self.repo_key, domain))
 
 
