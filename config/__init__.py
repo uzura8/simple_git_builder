@@ -80,6 +80,8 @@ class BaseConfig(object):
         ('3', 'その他')
     ]
 
+    BUILD_CMDS = {}
+    BUILD_USER = ''
     GIT_COMMON = {
         'domain': 'example.com',
         'work_dir': '/var/www/work',
