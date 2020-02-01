@@ -19,6 +19,7 @@ class RepoHandler:
         self.checkout_path = ''
         self.master_path = ''
         self.branches = []
+        self.build_type = ''
         self.builder = ''
         self.force = 0 # 0:none / 1:force_reset
         self.debug = 0 # 0:none / 1:normal / 2:detail
@@ -62,6 +63,9 @@ class RepoHandler:
         self.repo_key = repo_key
         self.branches = self.get_branches()
 
+        if 'build_type' in self.options:
+            self.build_type = self.options['build_type']
+
         if 'builder' in self.options:
             self.builder = self.options['builder']
 
@@ -80,8 +84,11 @@ class RepoHandler:
             cmd = ['git', 'pull', '--rebase', 'origin', branch]
             res = exec_cmd(cmd, True)
 
-            if self.options['build_type'] == 'npm':
-                self.build_by_npm(self.builder, branch)
+            if self.build_type == 'npm':
+                self.npm_install(branch=branch)
+
+            if builder == 'webpack':
+                self.build_by_webpack(branch=branch)
 
             print('Updated ' + br_path)
         else:
@@ -119,12 +126,13 @@ class RepoHandler:
             exec_cmd(cmd, True, is_debug=self.debug)
             os.chdir(self.repo_key)
 
-            if self.options['build_type'] == 'npm':
+            if self.build_type == 'npm':
+                self.npm_install(path=self.master_path)
+
                 if len(self.options['cmds_before_build']) > 0:
                     for cmd in self.options['cmds_before_build']:
                         exec_cmd(cmd, True, is_debug=self.debug)
 
-                self.build_by_npm()
 
         if not is_clone:
             os.chdir(self.repo_key)
@@ -174,8 +182,11 @@ class RepoHandler:
         else:
             exec_cmd(['git', 'checkout', '-b', br, 'origin/'+br], True, is_debug=self.debug)
 
-        if self.options['build_type'] == 'npm':
-            self.build_by_npm(self.builder, br)
+        if self.build_type == 'npm':
+            self.npm_install(branch=br)
+
+        if builder == 'webpack':
+            self.build_by_webpack(branch=br)
 
         print('Deploy {} in {} as {}'.format(br, self.repo_key, domain))
 
@@ -189,12 +200,26 @@ class RepoHandler:
         return '{}/{}'.format(self.checkout_path, self.get_domain(br))
 
 
-    def build_by_npm(self, builder=None, branch=''):
-        app_dir = self.get_branch_path(branch)
+    def npm_install(self, branch='', path=''):
+        if branch and not path:
+            path = self.get_branch_path(branch)
+
+        if not path:
+            raise Exception('path or branch is required')
+
         os.chdir(app_dir)
         cmd = 'sudo -u {} {} install'.format(self.cmd_exec_user, self.cmds['npm'])
         exec_cmd(cmd, True, is_debug=self.debug)
-        if builder == 'webpack':
-            cmd = '{}/node_modules/.bin/webpack --mode=production'.format(app_dir)
-            exec_cmd(cmd, True, is_shell_option=True, is_debug=self.debug)
+
+
+    def build_by_webpack(self, branch='', path=''):
+        if branch and not path:
+            path = self.get_branch_path(branch)
+
+        if not path:
+            raise Exception('path or branch is required')
+
+        os.chdir(path)
+        cmd = '{}/node_modules/.bin/webpack --mode=production'.format(path)
+        exec_cmd(cmd, True, is_shell_option=True, is_debug=self.debug)
 
