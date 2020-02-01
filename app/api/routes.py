@@ -83,7 +83,7 @@ def repos():
     handler = RepoHandler()
 
     if 'revisions' in payload:
-        handler.update(repo_key, br)
+        handler.update(repo_key, br, payload)
     elif payload['before'] == '0000000000000000000000000000000000000000':
         handler.create(repo_key, br)
     elif payload['after'] == '0000000000000000000000000000000000000000':

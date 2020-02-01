@@ -19,8 +19,8 @@ class RepoHandler:
         self.checkout_path = ''
         self.master_path = ''
         self.branches = []
-        self.build_type = ''
-        self.builder = ''
+        self.packager = ''
+        self.build_option = None
         self.force = 0 # 0:none / 1:force_reset
         self.debug = 0 # 0:none / 1:normal / 2:detail
         print('Start handler')
@@ -63,11 +63,11 @@ class RepoHandler:
         self.repo_key = repo_key
         self.branches = self.get_branches()
 
-        if 'build_type' in self.options:
-            self.build_type = self.options['build_type']
+        if 'packager' in self.options:
+            self.packager = self.options['packager']
 
-        if 'builder' in self.options:
-            self.builder = self.options['builder']
+        if 'build' in self.options:
+            self.build_option = self.options['build']
 
 
     def deploy(self, repo_key, force=0, debug=0):
@@ -76,7 +76,7 @@ class RepoHandler:
             self.deploy_branch(br)
 
 
-    def update(self, repo_key, branch, debug=0):
+    def update(self, repo_key, branch, payload, debug=0):
         self.init(repo_key, debug=0)
         br_path = self.get_branch_path(branch)
         if os.path.exists(br_path):
@@ -84,11 +84,11 @@ class RepoHandler:
             cmd = ['git', 'pull', '--rebase', 'origin', branch]
             res = exec_cmd(cmd, True)
 
-            if self.build_type == 'npm':
+            if self.check_npm_inatall_target(payload):
                 self.npm_install(branch=branch)
 
-            if builder == 'webpack':
-                self.build_by_webpack(branch=branch)
+            if self.check_build_target(payload):
+                self.build(branch=branch)
 
             print('Updated ' + br_path)
         else:
@@ -126,7 +126,7 @@ class RepoHandler:
             exec_cmd(cmd, True, is_debug=self.debug)
             os.chdir(self.repo_key)
 
-            if self.build_type == 'npm':
+            if self.packager == 'npm':
                 self.npm_install(path=self.master_path)
 
                 if len(self.options['cmds_before_build']) > 0:
@@ -182,11 +182,11 @@ class RepoHandler:
         else:
             exec_cmd(['git', 'checkout', '-b', br, 'origin/'+br], True, is_debug=self.debug)
 
-        if self.build_type == 'npm':
+        if self.packager == 'npm':
             self.npm_install(branch=br)
 
-        if builder == 'webpack':
-            self.build_by_webpack(branch=br)
+        if self.build_option is not None:
+            self.build(branch=br)
 
         print('Deploy {} in {} as {}'.format(br, self.repo_key, domain))
 
@@ -200,6 +200,47 @@ class RepoHandler:
         return '{}/{}'.format(self.checkout_path, self.get_domain(br))
 
 
+    def check_npm_inatall_target(self, payload):
+        if self.packager != 'npm':
+            return False
+
+        if 'revisions' not in payload:
+            return False
+
+        for rev in payload['revisions']:
+            if 'modified' not in rev:
+                continue
+
+            for file_path in rev['modified']:
+                if 'package.json' in file_path:
+                    return True
+
+        return False
+
+
+    def check_build_target(self, payload):
+        if self.build_option is None:
+            return False
+
+        option = self.build_option
+
+        if not payload:
+            return False
+
+        if 'revisions' not in payload:
+            return False
+
+        for rev in payload['revisions']:
+            if 'modified' not in rev:
+                continue
+
+            for file_path in rev['modified']:
+                if option['path'] in file_path:
+                    return True
+
+        return False
+
+
     def npm_install(self, branch='', path=''):
         if branch and not path:
             path = self.get_branch_path(branch)
@@ -207,19 +248,25 @@ class RepoHandler:
         if not path:
             raise Exception('path or branch is required')
 
-        os.chdir(app_dir)
+        os.chdir(path)
         cmd = 'sudo -u {} {} install'.format(self.cmd_exec_user, self.cmds['npm'])
         exec_cmd(cmd, True, is_debug=self.debug)
 
 
-    def build_by_webpack(self, branch='', path=''):
+    def build(self, branch='', path=''):
+        if self.build_option is None:
+            raise Exception('build option is not set')
+
+        option = self.build_option
+
         if branch and not path:
             path = self.get_branch_path(branch)
 
         if not path:
             raise Exception('path or branch is required')
-
         os.chdir(path)
-        cmd = '{}/node_modules/.bin/webpack --mode=production'.format(path)
-        exec_cmd(cmd, True, is_shell_option=True, is_debug=self.debug)
+
+        if option['tool'] == 'webpack':
+            cmd = '{}/node_modules/.bin/webpack --mode=production'.format(path)
+            exec_cmd(cmd, True, is_shell_option=True, is_debug=self.debug)
 
