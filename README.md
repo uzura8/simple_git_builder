@@ -11,21 +11,14 @@ pip install -r requirements.txt
 Edit configs for your env
 
 ```
+cp adapter.wsgi.sample adapter.wsgi
 cp instance/config.py.sample instance/config.py
+vim adapter.wsgi
 vim instance/config.py
 chmod 777 var
-cp adapter.wsgi.sample adapter.wsgi
-vim adapter.wsgi
 ```
 
-### 3. Create DB ###
-
-```
-echo "CREATE DATABASE DB-name DEFAULT CHARACTER SET utf8" | mysql -u root -p
-python3 manage.py setup_db
-```
-
-### 3. WEB Server Setting ###
+### 2. WEB Server Setting ###
 
 If use Apache, Edit config file like below.
 
